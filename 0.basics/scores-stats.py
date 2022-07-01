@@ -8,8 +8,7 @@ def table_print(array, header='', select_top_value=False, all_headers=False):
     header_format = '{:^10}'
     value_format = '{:^10.0f}'
 
-    if select_top_value:
-        top = max(array)
+    top = max(array)
 
     to_print = [colored(header_format.format(header), 'cyan')]
     for value in array:
