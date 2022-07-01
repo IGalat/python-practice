@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 
 hidden_mod_keys_string = '''1 3 8 7 12
 4 7 5 10 1
