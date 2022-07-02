@@ -1,10 +1,14 @@
 import random
 from math import log, sqrt
+from typing import Callable, Union
 
 from termcolor import colored
 
 
-def table_print(array, header="", select_top_value=False, all_headers=False):
+def table_print(array: list[float]
+                , header: str = ""
+                , select_top_value: bool = False
+                , all_headers: bool = False) -> None:
     header_format = "{:^10}"
     value_format = "{:^10.0f}"
 
@@ -34,19 +38,17 @@ class Score:
     split = "--------------------------------------"
     strong_split = "++++++++++++++++++++++++++++++++++++++"
 
-    def __init__(self, eval_function):
-        self.scores = {}
+    def __init__(self, eval_function: Callable[[Union[float, int], int, bool], float]):
+        self.scores: dict = {}
         self.calculate_reward_for_confidence = eval_function
         self.rule = eval_function.__name__
 
-    def score_all(self, q) -> None:
+    def score_all(self, q: int) -> None:
         """Fill the dict SCORES"""
         for confidence in Score.CONFIDENCES:
-            self.scores[confidence] = self.calculate_reward_for_confidence(
-                confidence, q
-            )
+            self.scores[confidence] = self.calculate_reward_for_confidence(confidence, q, False)
 
-    def score_with_confidence(self, x, q) -> list:
+    def score_with_confidence(self, x: float, q: int) -> list:
         """Average score for X confidence, q answers and chances from CONFIDENCES(misnomer)"""
         other_answers_chance = 1 - x
         other_percent = other_answers_chance / (q - 1)
@@ -61,7 +63,7 @@ class Score:
 
         return avg
 
-    def result(self):
+    def result(self) -> None:
         print(Score.strong_split)
         print(colored(f"{self.rule}", "red"))
         print()
@@ -71,58 +73,51 @@ class Score:
             print(colored(f"Answers quantity: {q}", "red"))
             print()
             table_print(Score.PERCENTAGES, "%", False, True)
-            table_print(self.scores.values(), "score")
+            table_print(list(self.scores.values()), "score")
             print(Score.split, Score.split, Score.split, sep="\n")
             table_print(Score.PERCENTAGES, "succ\\cred", False, True)
             matrix = []
             for confidence in Score.CONFIDENCES:
                 matrix.append(self.score_with_confidence(confidence, q))
             # transpose matrix
-            transposed = [
-                [matrix[j][i] for j in range(len(matrix))]
-                for i in range(len(matrix[0]))
-            ]
+            transposed = [[matrix[j][i] for j in range(len(matrix))] for i in range(len(matrix[0]))]
             for i, array in enumerate(transposed):
                 table_print(array, str(Score.PERCENTAGES[i]), True, False)
         print(Score.strong_split, Score.strong_split, sep="\n")
 
 
-def basic_log_q_score(confidence, q, noop=True):
+def basic_log_q_score(confidence: float, q: int, noop: bool = True) -> float:
     return log(confidence) / log(q)
 
 
-def adjusted_log_score(confidence, q, noop=True):
+def adjusted_log_score(confidence: float, q: int, noop: bool = True) -> float:
     return (basic_log_q_score(confidence, q) + 1) * Score.SCORE_MULTI
 
 
-def brier_score(confidence, q, noop=True):
+def brier_score(confidence: float, q: int, noop: bool = True) -> float:
     return -((confidence - 1) ** 2) * Score.SCORE_MULTI
 
 
-def spherical_denominator_sq(confidence, q, inverse):
+def spherical_denominator_sq(confidence: float, q: int, inverse: bool) -> float:
     if not inverse:
         total_confidence_in_other = 1 - confidence
         number_of_other_answers = q - 1
         confidence_in_any_other = total_confidence_in_other / number_of_other_answers
-        return (confidence**2) + (
-            number_of_other_answers * (confidence_in_any_other**2)
-        )
+        return (confidence ** 2) + (number_of_other_answers * (confidence_in_any_other ** 2))
     else:
         number_of_similar_answers = q - 1
         confidence_in_odd_one = 1 - (number_of_similar_answers * confidence)
-        return (confidence_in_odd_one**2) + (
-            number_of_similar_answers * (confidence**2)
-        )
+        return (confidence_in_odd_one ** 2) + (number_of_similar_answers * (confidence ** 2))
 
 
-def spherical_zero_confidence(q):
+def spherical_zero_confidence(q: int) -> float:
     confidence = 1 / q
-    return confidence / sqrt(q * (confidence**2))
+    return confidence / sqrt(q * (confidence ** 2))
 
 
 # Non-inverse (7:1:1:1) or (1:7:7:7) and eval 1st. We're evaluating the odd toplevel.one
 # Inverse: (1:1:1:7) or (7:1:7:7) and eval 1st
-def spherical_score(confidence, q, inverse=False):
+def spherical_score(confidence: float, q: int, inverse: bool = False) -> float:
     denominator_sq = spherical_denominator_sq(confidence, q, inverse)
 
     # Zero-confidence to 0 normalization
@@ -143,10 +138,10 @@ Score(spherical_score).result()
 # Score(brier_score).result()
 
 
-def randy(q, min, max):
+def randy(q: int, min: float, max: float) -> None:
     n = 100000
-    log_s = 0
-    spherical_s = 0
+    log_s: float = 0
+    spherical_s: float = 0
     for n in range(0, n):
         confidence = random.uniform(min, max)
         log_s += adjusted_log_score(confidence, q, False)
@@ -159,7 +154,7 @@ def randy(q, min, max):
     )
 
 
-def randies():
+def randies() -> None:
     randy(2, 0, 1)
     randy(2, 0, 0.5)
     randy(2, 0.5, 1)

@@ -42,11 +42,11 @@ finishers = []
 combos = []
 
 
-def match(key1, key2):
+def match(key1: list[str], key2: list[str]) -> bool:
     return key1[3] == key2[0] and key1[4] == key2[1]
 
 
-def combine(starter, middle, finisher):
+def combine(starter: list[str], middle: list[str], finisher: list[str]) -> None:
     starter_string = " ".join(starter)
     finisher_string = " ".join(finisher)
     combos.append(f"{starter_string} {middle[2]} {finisher_string}")
