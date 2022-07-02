@@ -120,7 +120,7 @@ def spherical_zero_confidence(q):
     return confidence / sqrt(q * (confidence**2))
 
 
-# Non-inverse (7:1:1:1) or (1:7:7:7) and eval 1st. We're evaluating the odd one
+# Non-inverse (7:1:1:1) or (1:7:7:7) and eval 1st. We're evaluating the odd toplevel.one
 # Inverse: (1:1:1:7) or (7:1:7:7) and eval 1st
 def spherical_score(confidence, q, inverse=False):
     denominator_sq = spherical_denominator_sq(confidence, q, inverse)
