@@ -1,4 +1,3 @@
-
 packIncludes = "Dungeon Defenders, Dungeon Defenders - Quest for the Lost Eternia Shards Part 4, Dungeon Defenders - Etherian Holiday Extravaganza, Dungeon Defenders - Karathiki Jungle Mission Pack, Dungeon Defenders - President's Day Surprise , Dungeon Defenders - Quest for the Lost Eternia Shards Part 1, Dungeon Defenders - Quest for the Lost Eternia Shards Part 2, Dungeon Defenders - The Tinkerer's Lab Mission Pack, Dungeon Defenders Anniversary Pack, Dungeon Defenders Halloween Costume Pack, Dungeon Defenders Halloween Mission Pack, Dungeon Defenders Lucky Costume Pack, Dungeon Defenders New Heroes DLC, Dungeon Defenders The Great Turkey Hunt! Mission & Costumes, Dungeon Defenders Warping Core Challenge Mission Pack, Dungeon Defenders: Assault Mission Pack, Dungeon Defenders: Barbarian Hero DLC, Dungeon Defenders: City in the Cliffs Mission Pack, Dungeon Defenders: Etherian Festival of Love, Dungeon Defenders: Jester Hero DLC, Dungeon Defenders: Penny Arcade Character Pack, Dungeon Defenders: Quest for the Lost Eternia Shards Part 3, Dungeon Defenders: Series EV Hero DLC, Dungeon Defenders: Summoner Hero DLC, Dungeon Defenders: Talay Mining Complex Mission Pack"
 
 allDlcsListed = """
@@ -107,8 +106,8 @@ DUNGEON DEFENDERS HALLOWEEN COSTUME PACK 12 Nov, 2011
 Want to spice up your heroes? This pack includes 4 scary outfits for your TrendyNet Dungeon Defenders characters: Devil – Monk Mummy – Apprentice Pirate – Squire Witch – Huntress
 """
 
-packDlcs = [dlc.strip() for dlc in packIncludes.split(',')]
-allDlcs = allDlcsListed.split('\n\n')
+packDlcs = [dlc.strip() for dlc in packIncludes.split(",")]
+allDlcs = allDlcsListed.split("\n\n")
 
 for packDlc in packDlcs:
     packDlc = packDlc.upper()
@@ -116,4 +115,4 @@ for packDlc in packDlcs:
         if packDlc in dlc:
             allDlcs.remove(dlc)
 
-print('\n\n'.join(allDlcs))
+print("\n\n".join(allDlcs))

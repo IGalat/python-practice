@@ -1,5 +1,4 @@
-
-hidden_mod_keys_string = '''1 3 8 7 12
+hidden_mod_keys_string = """1 3 8 7 12
 4 7 5 10 1
 8 10 12 8 3
 11 4 8 4 1
@@ -34,7 +33,7 @@ hidden_mod_keys_string = '''1 3 8 7 12
 1 10 11 2 9
 2 6 6 6 5
 1 6 11 3 6
-4 7 6 4 10'''
+4 7 6 4 10"""
 
 lines = hidden_mod_keys_string.split("\n")
 keys = []
@@ -48,17 +47,17 @@ def match(key1, key2):
 
 
 def combine(starter, middle, finisher):
-    starter_string = ' '.join(starter)
-    finisher_string = ' '.join(finisher)
-    combos.append(f'{starter_string} {middle[2]} {finisher_string}')
+    starter_string = " ".join(starter)
+    finisher_string = " ".join(finisher)
+    combos.append(f"{starter_string} {middle[2]} {finisher_string}")
 
 
 for line in lines:
     key = line.split()
     keys.append(key)
-    if key[0] == '1':
+    if key[0] == "1":
         starters.append(key)
-    if key[4] == '1':
+    if key[4] == "1":
         finishers.append(key)
 
 for starter in starters:
@@ -68,7 +67,7 @@ for starter in starters:
                 if match(middle, finisher):
                     combine(starter, middle, finisher)
 
-print(f'#combos {len(combos)}')
-print('combos:\n' + '\n'.join(combos))
+print(f"#combos {len(combos)}")
+print("combos:\n" + "\n".join(combos))
 
-print(f'#starters {len(starters)}, #finishers {len(finishers)}')
+print(f"#starters {len(starters)}, #finishers {len(finishers)}")
