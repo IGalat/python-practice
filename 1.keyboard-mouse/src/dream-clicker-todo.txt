@@ -1,0 +1,8 @@
+Helpers:
+	on click, click2: get pic on square between clicks, remember coords - I can later search these coords for pic
+
+Adapter for hotkeys (from pynput, generalize):
+	Per-app hotkeys
+	convenient hotkey add/remove/list, including per app
+
+Adapter pic finder? only pyautogui so far is good
