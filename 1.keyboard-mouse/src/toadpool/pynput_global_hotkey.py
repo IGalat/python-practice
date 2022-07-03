@@ -15,12 +15,13 @@ def for_canonical(f: Any) -> Callable:
     return lambda k: f(listener.canonical(k))
 
 
-hotkeyH = keyboard.HotKey(keyboard.HotKey.parse("<ctrl>+<alt>+h"), on_activate)
+hotkeyH = keyboard.HotKey(keyboard.HotKey.parse("<shift>+h"), on_activate)
 listener = keyboard.Listener(on_press=for_canonical(hotkeyH.press), on_release=for_canonical(hotkeyH.release))
 listener.start()
 
-hotkeyG = keyboard.HotKey(keyboard.HotKey.parse("<ctrl>+<alt>+g"), on_activate)
-listener = keyboard.Listener(on_press=for_canonical(hotkeyG.press), on_release=for_canonical(hotkeyG.release))
+hotkeyG = keyboard.HotKey(keyboard.HotKey.parse("<shift>+g"), on_activate)
+listener = keyboard.Listener(on_press=for_canonical(hotkeyG.press)
+                             , on_release=for_canonical(hotkeyG.release), suppress=True)
 listener.start()
 
 listener.join()  # without it program will exit as main thread is done and they are daemons

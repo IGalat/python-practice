@@ -1,24 +1,27 @@
+from typing import Any
+
 from pynput import keyboard
 
 
-def on_press(key) -> None:
+def on_press(key: Any) -> None:
     try:
         print("alphanumeric key {0} pressed".format(key.char))
     except AttributeError:
         print("special key {0} pressed".format(key))
 
 
-def on_release(key) -> bool:
+def on_release(key: Any) -> bool:
     print("{0} released".format(key))
     if key == keyboard.Key.tab:
         # Stop listener
         return False
+    return True
 
 
 # Collect events until released
 with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
     listener.join()
 
-# ...or, in a non-blocking fashion:
-listener = keyboard.Listener(on_press=on_press, on_release=on_release)
-listener.start()
+# # ...or, in a non-blocking fashion:
+# listener = keyboard.Listener(on_press=on_press, on_release=on_release)
+# listener.start()
