@@ -1,5 +1,8 @@
 Helpers:
-	on click, click2: get pic on square between clicks, remember coords - I can later search these coords for pic
+    mouse coords display/copy (formattable; extendable so can get many points in array)
+    window name - active, all
+    copy/save pic between 2 points, and coords
+    coords of mouse + "freeze screen" - printscreen and paste into paint +F11 or something
 
 Adapter for hotkeys (from pynput, generalize):
 	Per-app hotkeys

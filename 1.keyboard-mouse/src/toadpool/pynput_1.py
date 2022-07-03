@@ -4,6 +4,7 @@ from pynput import keyboard
 
 
 def on_press(key: Any) -> None:
+    keyboard.Controller().press(key)
     try:
         print("alphanumeric key {0} pressed".format(key.char))
     except AttributeError:
@@ -11,6 +12,7 @@ def on_press(key: Any) -> None:
 
 
 def on_release(key: Any) -> bool:
+    keyboard.Controller().release(key)
     print("{0} released".format(key))
     if key == keyboard.Key.tab:
         # Stop listener
@@ -19,7 +21,7 @@ def on_release(key: Any) -> bool:
 
 
 # Collect events until released
-with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
+with keyboard.Listener(on_press=on_press, on_release=on_release, suppress=True) as listener:
     listener.join()
 
 # # ...or, in a non-blocking fashion:
