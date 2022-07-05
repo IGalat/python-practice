@@ -1,11 +1,10 @@
 import time
-from typing import Union
 
 from pynput import keyboard
 from pynput.keyboard._base import KeyCode, Key
 
 
-def on_press(key: Union[Key, KeyCode]) -> None:
+def on_press(key: Key | KeyCode) -> None:
     # ugly, but enums for different platforms are different and don't inherit
     if key.__class__.__name__ == "Key":
         print("special key {0} pressed".format(key))
@@ -15,7 +14,7 @@ def on_press(key: Union[Key, KeyCode]) -> None:
         raise Exception(f"Type of keypress {key} not expected")
 
 
-def on_release(key: Union[Key, KeyCode]) -> bool:
+def on_release(key: Key | KeyCode) -> bool:
     print("{0} released".format(key))
     if key == keyboard.Key.tab:
         # Stop listener

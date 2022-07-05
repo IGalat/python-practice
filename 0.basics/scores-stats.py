@@ -1,14 +1,13 @@
 import random
 from math import log, sqrt
-from typing import Callable, Union
+from typing import Callable
 
 from termcolor import colored
 
 
-def table_print(array: list[float]
-                , header: str = ""
-                , select_top_value: bool = False
-                , all_headers: bool = False) -> None:
+def table_print(
+    array: list[float], header: str = "", select_top_value: bool = False, all_headers: bool = False
+) -> None:
     header_format = "{:^10}"
     value_format = "{:^10.0f}"
 
@@ -38,7 +37,7 @@ class Score:
     split = "--------------------------------------"
     strong_split = "++++++++++++++++++++++++++++++++++++++"
 
-    def __init__(self, eval_function: Callable[[Union[float, int], int, bool], float]):
+    def __init__(self, eval_function: Callable[[float | int, int, bool], float]):
         self.scores: dict = {}
         self.calculate_reward_for_confidence = eval_function
         self.rule = eval_function.__name__
@@ -103,16 +102,16 @@ def spherical_denominator_sq(confidence: float, q: int, inverse: bool) -> float:
         total_confidence_in_other = 1 - confidence
         number_of_other_answers = q - 1
         confidence_in_any_other = total_confidence_in_other / number_of_other_answers
-        return (confidence ** 2) + (number_of_other_answers * (confidence_in_any_other ** 2))
+        return (confidence**2) + (number_of_other_answers * (confidence_in_any_other**2))
     else:
         number_of_similar_answers = q - 1
         confidence_in_odd_one = 1 - (number_of_similar_answers * confidence)
-        return (confidence_in_odd_one ** 2) + (number_of_similar_answers * (confidence ** 2))
+        return (confidence_in_odd_one**2) + (number_of_similar_answers * (confidence**2))
 
 
 def spherical_zero_confidence(q: int) -> float:
     confidence = 1 / q
-    return confidence / sqrt(q * (confidence ** 2))
+    return confidence / sqrt(q * (confidence**2))
 
 
 # Non-inverse (7:1:1:1) or (1:7:7:7) and eval 1st. We're evaluating the odd toplevel.one
