@@ -1,7 +1,7 @@
 from flask import Flask, url_for, redirect, abort, request
 from werkzeug.wrappers.response import Response
 
-# launch from .sh
+# launch from .sh in this folder
 
 app = Flask(__name__)
 
