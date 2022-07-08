@@ -34,13 +34,15 @@ def abort401() -> None:
 @app.route("/login_request_obj_showcase", methods=["POST", "GET"])
 def login_request_obj_showcase() -> tuple[str, int]:
     error = "Should make a POST request to this endpoint"
+    print(request.data)
     if request.method == "POST":
-        if (  # this is crap, has to be an easier way to null guard
-            hasattr(request, "form")
-            and hasattr(request.form, "username")
-            and request.form["username"] == request.form["password"]
-        ):
-            return request.form["username"], 200
+        # assign and test for not none. won't use, might be smelly though convenient
+        # assert (request_body := request.json)
+
+        request_body = request.json
+        assert request_body
+        if request_body['username'] == request_body['password']:
+            return request_body['username'], 200
         else:
             error = "Invalid username/password"
     # the code below is executed if the request method
