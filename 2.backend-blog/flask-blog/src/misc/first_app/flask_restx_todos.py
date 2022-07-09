@@ -1,8 +1,12 @@
+from enum import Enum
+
 from flask import Flask
 from flask_restx import reqparse, abort, Api, Resource
 
 app = Flask(__name__)
 api = Api(app)
+
+Endpoints = Enum("Endpoints", {"todos": "todos"}, type=str)
 
 TODOS = {
     "todo1": {"task": "build an API"},
