@@ -6,7 +6,10 @@ from flask_restx import reqparse, abort, Api, Resource
 app = Flask(__name__)
 api = Api(app)
 
-Endpoints = Enum("Endpoints", {"todos": "todos"}, type=str)
+
+class Endpoints(str, Enum):
+    todos: str = "todos"
+
 
 TODOS = {
     "todo1": {"task": "build an API"},
@@ -58,8 +61,8 @@ class TodoList(Resource):
         return TODOS[todo_id], 201
 
 
-api.add_resource(TodoList, "/todos")
-api.add_resource(Todo, "/todos/<todo_id>")
+api.add_resource(TodoList, Endpoints.todos)
+api.add_resource(Todo, Endpoints.todos + "/<todo_id>")
 
 if __name__ == "__main__":
     app.run(debug=True)
