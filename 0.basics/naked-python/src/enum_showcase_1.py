@@ -4,10 +4,6 @@ from enum import Enum, unique, auto
 # enum_showcase_2 is more useful
 
 
-def separatorLine() -> None:
-    print("--------------------------")
-
-
 @unique  # unique values
 class Season(Enum):
     spring: int = 1
@@ -67,7 +63,7 @@ def fruitsRun() -> None:
 
 if __name__ == "__main__":
     seasonRun()
-    separatorLine()
+    print()
     weekdayRun()
-    separatorLine()
+    print()
     fruitsRun()

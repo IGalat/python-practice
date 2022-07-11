@@ -71,5 +71,7 @@ def checkBark() -> None:
 
 if __name__ == "__main__":
     checkShip()
+    print()
     checkMeow()
+    print()
     checkBark()

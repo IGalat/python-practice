@@ -2,10 +2,6 @@ from enum import IntEnum, Enum, auto
 from typing import Tuple
 
 
-def separatorLine() -> None:
-    print("--------------------------")
-
-
 # members can and must be ints
 # this == RomanDigits(int, Enum)
 class RomanDigits(IntEnum):
@@ -49,12 +45,8 @@ class Months:
     SecondQuarter = Enum("SecondQuarter", ["apr", "may", "jun"], type=str)
     # only in these two it's what I want, and I have to set it myself, cannot make automatic value=name
     # the "type" though gives RuntimeError on assigning another type, good
-    ThirdQuarter = Enum(
-        "ThirdQuarter", [("jul", "jul"), ("aug", "aug"), ("spt", "spt")], type=str
-    )
-    FourthQuarter = Enum(
-        "FourthQuarter", {"oct": "oct", "nov": "nov", "dec": "dec"}, type=str
-    )
+    ThirdQuarter = Enum("ThirdQuarter", [("jul", "jul"), ("aug", "aug"), ("spt", "spt")], type=str)
+    FourthQuarter = Enum("FourthQuarter", {"oct": "oct", "nov": "nov", "dec": "dec"}, type=str)
 
     @classmethod
     def monthsRun(cls) -> None:
@@ -121,11 +113,11 @@ class Planet(Enum):
 
 if __name__ == "__main__":
     RomanDigits.romanRun()
-    separatorLine()
+    print()
     Endpoints.endpointsRun()
-    separatorLine()
+    print()
     Months.monthsRun()
-    separatorLine()
+    print()
     ScreenSize.screenRun()
-    separatorLine()
+    print()
     Planet.planetRun()

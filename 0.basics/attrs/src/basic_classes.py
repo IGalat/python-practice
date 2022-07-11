@@ -93,16 +93,17 @@ class BasicClass:
         # ab4 = BasicClass()
 
 
-# tells to not auto-create __init__. Instead __attrs_init__() is created and
+# howto not auto-create __init__. Instead __attrs_init__() is created and
 # should be called my custom __init__. Rarely required
 @attrs.define(init=False)
 class CustomInitActions:
     a: int
     b: int
     c: int
-    ab: int
     ac: int
     bc: int
+    # has to be in the end because has "value"
+    ab: int = attrs.field()
 
     def __attrs_pre_init__(self) -> None:
         # self.ab = int(str(self.a) + (str(self.b))) # object has no attribute 'a'
@@ -116,19 +117,25 @@ class CustomInitActions:
         # fields are only available after __attrs_init__
         self.ac = int(str(self.a) + (str(self.c)))
 
+    # probably best to use this
     def __attrs_post_init__(self) -> None:
         self.bc = int(str(self.b) + (str(self.c)))
 
+    # set default based on other args. doesn't work here, why?
+    @ab.default
+    def ac_init(self) -> int:
+        return int(str(self.a) + (str(self.b)))
+
     @classmethod
     def customInitRun(cls) -> None:
-        print(CustomInitActions(1, 2, 3))
-        print(f"as dict:  {attrs.asdict(CustomInitActions(4, 5, 6))}")
-        print(f"as tuple:  {attrs.astuple(CustomInitActions(4, 5, 6))}")
+        print(cust := CustomInitActions(1, 2, 3))
+        print(f"as dict:  {attrs.asdict(cust)}")
+        print(f"as tuple:  {attrs.astuple(cust)}")
 
 
 if __name__ == "__main__":
     OldStyleClass.oldRun()
-    separatorLine()
+    print()
     BasicClass.basicRun()
-    separatorLine()
+    print()
     CustomInitActions.customInitRun()
