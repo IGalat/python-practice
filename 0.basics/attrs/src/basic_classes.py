@@ -47,7 +47,7 @@ class BasicClass:
     """
     more: str = attrs.field()
 
-    # only values with default isn't required in constructor
+    # only values with default aren't required in constructor
     withDefault: int = 1
 
     # people are shared, doggos are not
@@ -93,8 +93,9 @@ class BasicClass:
         # ab4 = BasicClass()
 
 
+# This is rarely required, better to use factory.
 # howto not auto-create __init__. Instead __attrs_init__() is created and
-# should be called my custom __init__. Rarely required
+# should be called my custom __init__
 @attrs.define(init=False)
 class CustomInitActions:
     a: int
@@ -103,7 +104,7 @@ class CustomInitActions:
     ac: int
     bc: int
     # has to be in the end because has "value"
-    ab: int = attrs.field()
+    ab: int = attrs.field(init=False)
 
     def __attrs_pre_init__(self) -> None:
         # self.ab = int(str(self.a) + (str(self.b))) # object has no attribute 'a'
@@ -113,7 +114,7 @@ class CustomInitActions:
     def __init__(self, a: int, b: int, c: int, ab: int = None, ac: int = None, bc: int = None) -> None:
         # some stuff here, like super.init
 
-        self.__attrs_init__(a, b, c, ab, ac, bc)  # mypy warns that it doesn't exist
+        self.__attrs_init__(a, b, c, ac, bc)  # mypy warns that it doesn't exist
         # fields are only available after __attrs_init__
         self.ac = int(str(self.a) + (str(self.c)))
 
@@ -121,7 +122,8 @@ class CustomInitActions:
     def __attrs_post_init__(self) -> None:
         self.bc = int(str(self.b) + (str(self.c)))
 
-    # set default based on other args. doesn't work here, why?
+    # set default based on other args. works if field(init=False)
+    # this is worse than factory method see misc_functionality.User
     @ab.default
     def ac_init(self) -> int:
         return int(str(self.a) + (str(self.b)))

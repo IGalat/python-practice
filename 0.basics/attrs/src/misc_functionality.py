@@ -1,4 +1,4 @@
-from typing import ClassVar, Any, Optional
+from typing import ClassVar, Any, Optional, Final
 
 import attrs
 from typing_extensions import Self  # will be in typing module in later python, check for that.
@@ -68,7 +68,6 @@ class User:
     def from_all_2(cls, login: str, first_name: str, last_name: str, age: int, password: str) -> Self:
         fields = locals()
         exclude_fields = ["cls"]
-        print(fields)
         kwargs_to_use = {key: fields[key] for key in fields if key not in exclude_fields}
         return cls(user_id=cls.generate_next_id(), **kwargs_to_use)
 
@@ -123,10 +122,59 @@ class Player:
         print(attrs.asdict(player, filter=lambda field, v: field.name != "password"))  # same as previous
 
 
+# for Account.
+def non_negative_number(instance: Any, field: attrs.Attribute, value: Any) -> None:
+    if value < 0:
+        e = f"{field.name} of {instance} should be non-negative!"
+        # raise ValueError(e)
+        print(e)
 
+
+# ClassVar - good behaviour
+# Converters and validators - shouldn't use, factory instead
+@attrs.frozen
+class Account:
+    # built-in converter. I guess this is from string only
+    account_id: int = attrs.field(converter=int)
+    # this is much more universal. potential bugs ahoy!
+    login: str = attrs.field(converter=str)
+
+    password: str
+
+    type: str = "User"
+
+    # works very nicely. Actual class field, unlike naked python!
+    # Ignores frozen on class, can't be final?
+    description: ClassVar[str] = "Account of blahblah"
+
+    active: bool = True
+
+    # 2.5 ways to validate: callable(builtin or custom) and decorator
+    # attrs doc: "Although your initializers should do as little as possible..."
+    # probably shouldn't use validators on data classes
+    credits: int = attrs.field(default=0, validator=[attrs.validators.instance_of(int), non_negative_number])
+
+    @credits.validator
+    def credits_validate(self, field: attrs.Attribute, value: Any) -> None:
+        max_ = -1000
+        if value > max_:
+            e = f"Credits over limit of {max_}!"
+            # raise ValueError(e)
+            print(e)
+
+    @staticmethod
+    def accountRun() -> None:
+        acc = Account("123", {"lala": "fafa"}, "l33t", type="Admin", credits=-23)
+        print(acc)
+
+        print(Account.description)
+        Account.description = "new acc description"
+        print(Account.description)
 
 
 if __name__ == "__main__":
     User.userRun()
     print()
     Player.playerRun()
+    print()
+    Account.accountRun()
