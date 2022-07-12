@@ -134,7 +134,7 @@ def non_negative_number(instance: Any, field: attrs.Attribute, value: Any) -> No
 # Converters and validators - shouldn't use, factory instead
 @attrs.frozen
 class Account:
-    # built-in converter. I guess this is from string only
+    # built-in converter. From string/bytes/float only
     account_id: int = attrs.field(converter=int)
     # this is much more universal. potential bugs ahoy!
     login: str = attrs.field(converter=str)

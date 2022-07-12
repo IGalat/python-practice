@@ -1,15 +1,13 @@
+import logging
 from enum import Enum
 
-from flask import Flask
-from flask_restx import reqparse, abort, Api, Resource
+from flask import Flask, request
+from flask_restx import abort, Api, Resource
 
 app = Flask(__name__)
 api = Api(app)
 
-
-class Endpoints(str, Enum):
-    todos: str = "todos"
-
+log = logging.getLogger(__name__)
 
 TODOS = {
     "todo1": {"task": "build an API"},
@@ -18,13 +16,13 @@ TODOS = {
 }
 
 
+class Endpoints(str, Enum):
+    todos: str = "/todos"
+
+
 def abort_if_todo_doesnt_exist(todo_id: str) -> None:
     if todo_id not in TODOS:
         abort(404, message="Todo {} doesn't exist".format(todo_id))
-
-
-parser = reqparse.RequestParser()
-parser.add_argument("task")
 
 
 class Todo(Resource):
@@ -41,8 +39,8 @@ class Todo(Resource):
 
     @staticmethod
     def put(todo_id: str) -> tuple[dict[str, str], int]:
-        args = parser.parse_args()
-        task = {"task": args["task"]}
+        request_body = request.json
+        task = {"task": request_body["task"]}
         TODOS[todo_id] = task
         return task, 201
 
@@ -54,10 +52,12 @@ class TodoList(Resource):
 
     @staticmethod
     def post() -> tuple[dict[str, str], int]:
-        args = parser.parse_args()
+        request_body = request.json
+        log.info(request_body)
         todo_id = int(max(TODOS.keys()).lstrip("todo")) + 1
         todo_id = "todo%i" % todo_id
-        TODOS[todo_id] = {"task": args["task"]}
+        print(todo_id)
+        TODOS[todo_id] = {"task": request_body["task"]}
         return TODOS[todo_id], 201
 
 
