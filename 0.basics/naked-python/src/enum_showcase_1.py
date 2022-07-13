@@ -50,6 +50,7 @@ class Fruits(Enum):
     apple = auto()
     orange = auto()
     mango = auto()
+    green_apple = apple  # alias
 
 
 def fruitsRun() -> None:
@@ -59,6 +60,8 @@ def fruitsRun() -> None:
     print(f"found by string value search: {Fruits(my_external_value_string)}")
     name_string = "apple"
     print(f"found by string name search: {Fruits[name_string]}")  # [] for name search
+    name_string = "green_apple"
+    print(f"found by alias {name_string}: {Fruits[name_string]}")
 
 
 if __name__ == "__main__":
