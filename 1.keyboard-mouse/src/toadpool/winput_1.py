@@ -10,7 +10,7 @@ def mouse_callback(event: winput.MouseEvent) -> None:
 
 
 def keyboard_callback(event: winput.KeyboardEvent) -> None:
-    print(f'{event.action} {event.key}')
+    print(f"{event.action} {event.key}")
     if event.vkCode == winput.VK_ESCAPE:  # quit on pressing escape
         winput.stop()
 

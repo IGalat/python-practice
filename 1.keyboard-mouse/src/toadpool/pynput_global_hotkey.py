@@ -20,8 +20,9 @@ listener = keyboard.Listener(on_press=for_canonical(hotkeyH.press), on_release=f
 listener.start()
 
 hotkeyG = keyboard.HotKey(keyboard.HotKey.parse("<shift>+g"), on_activate)
-listener = keyboard.Listener(on_press=for_canonical(hotkeyG.press)
-                             , on_release=for_canonical(hotkeyG.release), suppress=True)
+listener = keyboard.Listener(
+    on_press=for_canonical(hotkeyG.press), on_release=for_canonical(hotkeyG.release), suppress=True
+)
 listener.start()
 
 listener.join()  # without it program will exit as main thread is done and they are daemons

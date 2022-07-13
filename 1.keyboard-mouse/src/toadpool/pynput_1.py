@@ -4,7 +4,7 @@ from pynput import keyboard
 
 
 def on_press(key: Any) -> None:
-    keyboard.Controller().press(key)  # creates loop!
+    # keyboard.Controller().press(key)  # creates loop!
     try:
         print("alphanumeric key {0} pressed".format(key.char))
     except AttributeError:
@@ -12,7 +12,7 @@ def on_press(key: Any) -> None:
 
 
 def on_release(key: Any) -> bool:
-    keyboard.Controller().release(key)  # creates loop!
+    # keyboard.Controller().release(key)  # creates loop!
     print("{0} released".format(key))
     if key == keyboard.Key.tab:
         # Stop listener
