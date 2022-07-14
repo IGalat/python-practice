@@ -5,5 +5,5 @@ from typing import List, Any, TypeGuard, TypeVar
 T = TypeVar("T")
 
 
-def is_list_of(target: Any, _type: T) -> TypeGuard[List[T]]:
-    return target is not None and isinstance(target, list) and all(type(x) == _type for x in target)
+def is_list_of(target: Any, values_type: T) -> TypeGuard[List[T]]:
+    return target is not None and isinstance(target, list) and all(type(x) == values_type for x in target)
