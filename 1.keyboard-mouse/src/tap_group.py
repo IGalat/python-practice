@@ -18,10 +18,10 @@ class TapGroup(Suspendable):
 
     @classmethod
     def from_dict(
-        cls, binds: Dict[str | tuple[str], Optional[Callable]], name: str = None
+        cls, binds: dict[str | tuple[str], Optional[Callable]], name: str = None
     ) -> Self:  # type:ignore # todo mypy
-        taps = [Tap(key, binds[key]) for key in binds]  # type:ignore # todo mypy
-        return TapGroup(taps)
+        taps = [Tap(key, binds[key]) for key in binds]
+        return TapGroup(taps, name)
 
     def get_all(self) -> list[Tap]:
         return self._taps
@@ -38,7 +38,7 @@ class TapGroup(Suspendable):
             if one:
                 taps = (taps,)
         elif isinstance(taps, dict):
-            taps = tuple([Tap(key, taps[key]) for key in taps])  # type:ignore # mypy wtf
+            taps = tuple([Tap(key, taps[key]) for key in taps])
         self._taps.extend(taps)
 
     def remove(self, taps: Tap | tuple[Tap] | str | tuple[str]) -> None:

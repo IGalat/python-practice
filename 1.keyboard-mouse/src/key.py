@@ -10,11 +10,16 @@ class Key:
     vk_code: Optional[int] = None
     vk_name: Optional[str] = None
     input_variants: Optional[list[str]] = None
-    alias_for: Optional[list[Self]] = None  # type:ignore # todo mypy
+    alias_for: list[Self] = []  # type:ignore # todo mypy
 
     def __attrs_post_init__(self) -> None:
-        if self.vk_code is None and self.alias_for is None:
+        if not self.vk_code and not self.alias_for:
             raise ValueError("Must either be a key or an alias")
+
+    def get_vk_code(self) -> int:
+        if self.vk_code is not None:
+            return self.vk_code
+        return self.alias_for[0].get_vk_code()  # type:ignore # todo mypy
 
 
 class Keys(Key, Enum):

@@ -30,7 +30,7 @@ def to_keys(hotkey: Key | tuple[Key, ...] | str | tuple[str, ...]) -> tuple[Key,
     return keys[-1], keys[:-1]
 
 
-@attrs.define
+@attrs.define(init=False)
 class Tap(Suspendable):
     additional_keys: tuple[Key, ...]
     """ For hotkey, these have to be pressed """
@@ -61,7 +61,7 @@ class Tap(Suspendable):
         *,
         interrupt_on_suspend: bool = True,
         trigger_if: Callable = None,
-    ) -> None:
+    ):
         """
         :param hotkey: Trigger keys for hotkey or hotstring.
         Examples: Keys.a; [Keys.shift, Keys.ctrl, Keys.plus]; "alt+shift+f11"
