@@ -36,8 +36,8 @@ class Keys(Key, Enum):
             return key
         except AttributeError:
             for key in cls:
-                v = key.input_variants
-                if v is not None and len(v) > 0 and input in v:
+                input_var = key.input_variants
+                if input_var and input in input_var:
                     return key
             return None
 

@@ -12,7 +12,7 @@ from util.misc import is_list_of
 @example((123, "what about tuple?"))
 @example({"some dict too": 456})
 def test_hypoDataStructures_is_list_of(input: Any) -> None:
-    tru = type(input) == list and (len(input) == 0 or type(input[0]) == int)
+    tru = type(input) == list and (not input or type(input[0]) == int)
     helper_is_list_of(input, int, tru)
 
 

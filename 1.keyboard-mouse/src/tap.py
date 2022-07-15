@@ -1,6 +1,7 @@
-from typing import Optional, Callable, List
+from typing import Optional, Callable, List, Tuple
 
 import attrs
+from interfaces import Suspendable
 
 from key import Key, Keys
 from util.misc import is_list_of
@@ -9,25 +10,27 @@ from util.misc import is_list_of
 def keys_from_string(key_str: str | List[str]) -> List[Key]:
     if isinstance(key_str, str):
         key_str = key_str.split("+")  # todo split a++ to a, +
-    return [Keys[key] for key in key_str]  # todo look in Key.input_variants as fallback;
+    keys: list[Key] = [Keys[key] for key in key_str]  # todo look in Key.input_variants as fallback;
+    return keys
 
 
-def to_keys(hotkey: Key | List[Key] | str | List[str]) -> List[Key]:
-    if isinstance(hotkey, Key):
-        keys = [hotkey]
-    elif is_list_of(hotkey, Key):
-        keys = hotkey  # type:ignore # todo mypy
+def to_keys(hotkey: Key | List[Key] | str | List[str]) -> Tuple[Key, List[Key]]:
+    """Returns (trigger_key, [additional_keys])"""
+    if one := isinstance(hotkey, Key) or is_list_of(hotkey, Key):
+        if one:
+            hotkey = [hotkey]
+        keys = hotkey
     elif isinstance(hotkey, str) or is_list_of(hotkey, str):
         keys = keys_from_string(hotkey)
     else:
         raise TypeError(f"{hotkey} is incorrect type of hotkey")
-    if len(keys) == 0 or len(keys) >= 20:
+    if not keys or len(keys) >= 20:
         raise ValueError(f"{hotkey} must have >0 and <20 keys. Resulting keys: {keys}")
-    return keys
+    return keys[-1], keys[:-1]
 
 
 @attrs.define
-class Tap:
+class Tap(Suspendable):
     additional_keys: List[Key]
     """ For hotkey, these have to be pressed """
 
@@ -63,11 +66,13 @@ class Tap:
         Examples: Keys.a; [Keys.shift, Keys.ctrl, Keys.plus]; "alt+shift+f11"
         """
 
-        keys = to_keys(hotkey)
-        self.trigger_key = keys[-1]
-        self.additional_keys = keys[:-1]
+        self.trigger_key, self.additional_keys = to_keys(hotkey)
         self.action = action
         self.interrupt_on_suspend = interrupt_on_suspend
         self.trigger_if = trigger_if
 
-    # def __eq__ # todo comparison with aliases, str, etc. , __ne__
+    def same_hotkey(self, hotkey: Tuple[Key, List[Key]]) -> bool:
+        return (self.trigger_key, self.additional_keys) == hotkey
+
+
+# def __eq__ # todo comparison with aliases, str, etc. , __ne__

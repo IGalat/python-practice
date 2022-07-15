@@ -1,9 +1,11 @@
 from typing import List, Final, Optional
 
 import attrs
+from interfaces import Suspendable
 
-import adapter
+from config import Config
 from tap_group import TapGroup
+from util.misc import is_list_of
 
 
 def to_tap_groups(taps: TapGroup | List[TapGroup] | dict) -> Optional[List[TapGroup]]:
@@ -18,24 +20,34 @@ def to_tap_groups(taps: TapGroup | List[TapGroup] | dict) -> Optional[List[TapGr
 
 
 @attrs.define
-class Tapper:
-    adapter: Optional[adapter.base.BaseAdapter | str] = None
-    groups: List[TapGroup] = []
+class Tapper(Suspendable):
+    config: Final[Config] = Config()
+    groups: Final[List[TapGroup]] = []
     controlGroup: Final[TapGroup] = TapGroup()  # doesn't get suspended, always active
-    _suspended: bool = False
 
     def __init__(self, taps: TapGroup | List[TapGroup] | dict) -> None:
         """
         :param taps: TapGroup, List[TapGroup], dict {"hotkey": action}, or None
         """
         if isinstance(taps, dict):
-            self.groups = [TapGroup.from_dict(taps)]
-        elif isinstance(taps, TapGroup):
-            self.groups = [taps]
+            self.groups.append(TapGroup.from_dict(taps))
+        elif one := isinstance(taps, TapGroup) or is_list_of(taps, TapGroup):
+            if one:
+                taps = [taps]
+            self.groups.extend(taps)
         else:
-            self.groups = taps
+            raise TypeError
 
         self.groups.append(self.controlGroup)
 
-    def start(self) -> None:
-        self.adapter = adapter.get_adapter(self.adapter)
+    def start(self, default_controls: bool = True) -> None:  # todo
+        """
+        :param default_controls: If you didn't add anything to controlGroup,
+        this will fill default controls for you, to suspend/reload/exit script.
+
+        """
+        if default_controls and not self.controlGroup:
+            self.controlGroup.add(self.config.default_controls.get_all())
+
+
+# todo add, remove, get group(s)
