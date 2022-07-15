@@ -1,4 +1,4 @@
-from typing import Optional, Callable, List
+from typing import Optional, Callable
 
 import attrs
 
@@ -7,7 +7,7 @@ from key import Key, Keys
 from util.misc import is_tuple_of
 
 
-def keys_from_string(key_str: str | List[str]) -> List[Key]:
+def keys_from_string(key_str: str | list[str]) -> list[Key]:
     if isinstance(key_str, str):
         key_str = key_str.split("+")  # todo split a++ to a, +
     keys: list[Key] = [Keys[key] for key in key_str]  # todo look in Key.input_variants as fallback;

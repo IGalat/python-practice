@@ -1,4 +1,4 @@
-from typing import List, Final, Optional
+from typing import Final, Optional
 
 import attrs
 
@@ -8,7 +8,7 @@ from tap_group import TapGroup
 from util.misc import is_list_of
 
 
-def to_tap_groups(taps: TapGroup | List[TapGroup] | dict) -> Optional[List[TapGroup]]:
+def to_tap_groups(taps: TapGroup | list[TapGroup] | dict) -> Optional[list[TapGroup]]:
     if taps is None:
         return None
     if isinstance(taps, dict):
@@ -22,12 +22,12 @@ def to_tap_groups(taps: TapGroup | List[TapGroup] | dict) -> Optional[List[TapGr
 @attrs.define
 class Tapper(Suspendable):
     config: Final[Config] = Config()
-    groups: Final[List[TapGroup]] = []
+    groups: Final[list[TapGroup]] = []
     controlGroup: Final[TapGroup] = TapGroup()  # doesn't get suspended, always active
 
-    def __init__(self, taps: TapGroup | List[TapGroup] | dict) -> None:
+    def __init__(self, taps: TapGroup | list[TapGroup] | dict) -> None:
         """
-        :param taps: TapGroup, List[TapGroup], dict {"hotkey": action}, or None
+        :param taps: TapGroup, list[TapGroup], dict {"hotkey": action}, or None
         """
         if isinstance(taps, dict):
             self.groups.append(TapGroup.from_dict(taps))
@@ -49,7 +49,7 @@ class Tapper(Suspendable):
         if default_controls and not self.controlGroup:
             self.controlGroup.add(*self.config.default_controls.get_all())
 
-    def get_groups(self) -> List[TapGroup]:
+    def get_groups(self) -> list[TapGroup]:
         return self.groups
 
 

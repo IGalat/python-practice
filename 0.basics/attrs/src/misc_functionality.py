@@ -1,4 +1,4 @@
-from typing import ClassVar, Any, Optional, Final
+from typing import ClassVar, Any, Optional
 
 import attrs
 from typing_extensions import Self  # will be in typing module in later python, check for that.

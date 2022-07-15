@@ -41,8 +41,8 @@ def login_request_obj_showcase() -> tuple[str, int]:
 
         request_body = request.json
         assert request_body
-        if request_body['username'] == request_body['password']:
-            return request_body['username'], 200
+        if request_body["username"] == request_body["password"]:
+            return request_body["username"], 200
         else:
             error = "Invalid username/password"
     # the code below is executed if the request method

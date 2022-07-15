@@ -1,5 +1,3 @@
-from typing import List
-
 import attr
 import attrs
 
@@ -51,8 +49,8 @@ class BasicClass:
     withDefault: int = 1
 
     # people are shared, doggos are not
-    people: List[str] = []
-    doggos: List[str] = attrs.Factory(list)
+    people: list[str] = []
+    doggos: list[str] = attrs.Factory(list)
 
     @classmethod
     def basicRun(cls) -> None:

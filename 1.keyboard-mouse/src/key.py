@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Optional
+from typing import Optional
 
 import attrs
 from typing_extensions import Self
@@ -9,8 +9,8 @@ from typing_extensions import Self
 class Key:
     vk_code: Optional[int] = None
     vk_name: Optional[str] = None
-    input_variants: Optional[List[str]] = None
-    alias_for: Optional[List[Self]] = None  # type:ignore # todo mypy
+    input_variants: Optional[list[str]] = None
+    alias_for: Optional[list[Self]] = None  # type:ignore # todo mypy
 
     def __attrs_post_init__(self) -> None:
         if self.vk_code is None and self.alias_for is None:

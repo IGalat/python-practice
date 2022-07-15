@@ -1,4 +1,4 @@
-from typing import List, Callable, Optional, Dict, Final
+from typing import Callable, Optional, Dict, Final
 
 import attrs
 from typing_extensions import Self
@@ -10,10 +10,10 @@ from util.misc import is_tuple_of
 
 @attrs.define
 class TapGroup(Suspendable):
-    _taps: Final[List[Tap]] = []
+    _taps: Final[list[Tap]] = []
     name: Optional[str] = None
 
-    def __init__(self, taps: List[Tap]) -> None:
+    def __init__(self, taps: list[Tap]) -> None:
         self._taps.extend(taps)
 
     @classmethod
@@ -23,7 +23,7 @@ class TapGroup(Suspendable):
         taps = [Tap(key, binds[key]) for key in binds]  # type:ignore # todo mypy
         return TapGroup(taps)
 
-    def get_all(self) -> List[Tap]:
+    def get_all(self) -> list[Tap]:
         return self._taps
 
     def get_by_hotkey(self, hotkey: str) -> Optional[Tap]:
