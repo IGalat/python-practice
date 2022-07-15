@@ -1,10 +1,10 @@
-from typing import Optional, Callable, List, Tuple
+from typing import Optional, Callable, List
 
 import attrs
-from interfaces import Suspendable
 
+from interfaces import Suspendable
 from key import Key, Keys
-from util.misc import is_list_of
+from util.misc import is_tuple_of
 
 
 def keys_from_string(key_str: str | List[str]) -> List[Key]:
@@ -14,14 +14,15 @@ def keys_from_string(key_str: str | List[str]) -> List[Key]:
     return keys
 
 
-def to_keys(hotkey: Key | List[Key] | str | List[str]) -> Tuple[Key, List[Key]]:
+def to_keys(hotkey: Key | tuple[Key, ...] | str | tuple[str, ...]) -> tuple[Key, tuple[Key, ...]]:
     """Returns (trigger_key, [additional_keys])"""
-    if one := isinstance(hotkey, Key) or is_list_of(hotkey, Key):
+    keys: tuple[Key, ...]
+    if one := isinstance(hotkey, Key) or is_tuple_of(hotkey, Key):
         if one:
-            hotkey = [hotkey]
+            hotkey = (hotkey,)
         keys = hotkey
-    elif isinstance(hotkey, str) or is_list_of(hotkey, str):
-        keys = keys_from_string(hotkey)
+    elif isinstance(hotkey, str) or is_tuple_of(hotkey, str):
+        keys = (*keys_from_string(hotkey),)
     else:
         raise TypeError(f"{hotkey} is incorrect type of hotkey")
     if not keys or len(keys) >= 20:
@@ -31,7 +32,7 @@ def to_keys(hotkey: Key | List[Key] | str | List[str]) -> Tuple[Key, List[Key]]:
 
 @attrs.define
 class Tap(Suspendable):
-    additional_keys: List[Key]
+    additional_keys: tuple[Key, ...]
     """ For hotkey, these have to be pressed """
 
     trigger_key: Key
@@ -55,7 +56,7 @@ class Tap(Suspendable):
 
     def __init__(
         self,
-        hotkey: Key | List[Key] | str | List[str],
+        hotkey: Key | tuple[Key] | str | tuple[str],
         action: Optional[Callable],
         *,
         interrupt_on_suspend: bool = True,
@@ -71,7 +72,7 @@ class Tap(Suspendable):
         self.interrupt_on_suspend = interrupt_on_suspend
         self.trigger_if = trigger_if
 
-    def same_hotkey(self, hotkey: Tuple[Key, List[Key]]) -> bool:
+    def same_hotkey(self, hotkey: tuple[Key, tuple[Key, ...]]) -> bool:
         return (self.trigger_key, self.additional_keys) == hotkey
 
 

@@ -5,18 +5,21 @@ from typing_extensions import Self
 
 from interfaces import Suspendable
 from tap import Tap, to_keys
-from util.misc import is_list_of
+from util.misc import is_tuple_of
 
 
 @attrs.define
 class TapGroup(Suspendable):
     _taps: Final[List[Tap]] = []
+    name: Optional[str] = None
 
     def __init__(self, taps: List[Tap]) -> None:
         self._taps.extend(taps)
 
     @classmethod
-    def from_dict(cls, binds: Dict[str | List[[str], Optional[Callable]]]) -> Self:  # type:ignore # todo mypy
+    def from_dict(
+        cls, binds: Dict[str | tuple[str], Optional[Callable]], name: str = None
+    ) -> Self:  # type:ignore # todo mypy
         taps = [Tap(key, binds[key]) for key in binds]  # type:ignore # todo mypy
         return TapGroup(taps)
 
@@ -30,26 +33,28 @@ class TapGroup(Suspendable):
         except StopIteration:
             return None
 
-    def add(self, taps: Dict[str | List[str], Optional[Callable]] | Tap | List[Tap]) -> None:
-        if one := isinstance(taps, Tap) or is_list_of(taps, Tap):
+    def add(self, taps: Dict[str | tuple[str], Optional[Callable]] | Tap | tuple[Tap, ...]) -> None:
+        if one := isinstance(taps, Tap) or is_tuple_of(taps, Tap):
             if one:
-                taps = [taps]
+                taps = (taps,)
         elif isinstance(taps, dict):
-            taps = [Tap(key, taps[key]) for key in taps]  # type:ignore # mypy wtf
+            taps = tuple([Tap(key, taps[key]) for key in taps])  # type:ignore # mypy wtf
         self._taps.extend(taps)
 
-    def remove(self, taps: Tap | List[Tap] | str | List[str]) -> None:
-        if one := isinstance(taps, Tap) or is_list_of(taps, Tap):
+    def remove(self, taps: Tap | tuple[Tap] | str | tuple[str]) -> None:
+        if one := isinstance(taps, Tap) or is_tuple_of(taps, Tap):
             if one:
-                taps = [taps]
+                taps = (taps,)
             for tap in taps:
                 self._taps.remove(tap)
-        elif one := isinstance(taps, str) or is_list_of(taps, str):
+            return
+        elif one := isinstance(taps, str) or is_tuple_of(taps, str):
             if one:
-                taps = [taps]
+                taps = (taps,)
             for tap_str in taps:
                 keys = to_keys(tap_str)
                 self._taps[:] = [self_tap for self_tap in self._taps if self_tap.same_hotkey(keys)]
+            return
         else:
             raise TypeError
 

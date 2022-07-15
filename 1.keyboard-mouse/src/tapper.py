@@ -1,9 +1,9 @@
 from typing import List, Final, Optional
 
 import attrs
-from interfaces import Suspendable
 
 from config import Config
+from interfaces import Suspendable
 from tap_group import TapGroup
 from util.misc import is_list_of
 
@@ -47,7 +47,10 @@ class Tapper(Suspendable):
 
         """
         if default_controls and not self.controlGroup:
-            self.controlGroup.add(self.config.default_controls.get_all())
+            self.controlGroup.add(*self.config.default_controls.get_all())
+
+    def get_groups(self) -> List[TapGroup]:
+        return self.groups
 
 
 # todo add, remove, get group(s)

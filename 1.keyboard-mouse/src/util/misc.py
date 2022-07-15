@@ -9,6 +9,10 @@ def is_list_of(target: Any, values_type: T) -> TypeGuard[List[T]]:
     return target is not None and isinstance(target, list) and all(type(x) == values_type for x in target)
 
 
+def is_tuple_of(target: Any, values_type: T) -> TypeGuard[List[T]]:
+    return target is not None and isinstance(target, tuple) and all(type(x) == values_type for x in target)
+
+
 def enum_to_list(clazz: Iterable) -> List:
     return list(map(lambda c: c.value, clazz))
 
