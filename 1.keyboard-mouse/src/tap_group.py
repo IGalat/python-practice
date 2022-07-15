@@ -8,7 +8,7 @@ from tap import Tap
 
 @attrs.define
 class TapGroup:
-    taps: List[Tap] = []
+    _taps: List[Tap] = []
     _suspended: bool = False
 
     @classmethod

@@ -8,14 +8,16 @@ from util.misc import is_list_of
 
 
 @given(lists(st.characters()) | lists(st.dates()) | lists(st.integers()))
-@example(["q", 2])
-def test_hypo_OneTypeLists_is_list_of(input: Any) -> None:
-    tru = len(input) == 0 or type(input[0]) == int
+@example(["mixed list", 2])
+@example((123, "what about tuple?"))
+@example({"some dict too": 456})
+def test_hypoDataStructures_is_list_of(input: Any) -> None:
+    tru = type(input) == list and (len(input) == 0 or type(input[0]) == int)
     helper_is_list_of(input, int, tru)
 
 
 @given(st.characters() | st.dates() | st.integers())
-def test_hypo_primitives_is_list_of(input: Any) -> None:
+def test_hypoPrimitives_is_list_of(input: Any) -> None:
     helper_is_list_of(input, int, False)
 
 
