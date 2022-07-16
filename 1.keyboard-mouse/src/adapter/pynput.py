@@ -2,4 +2,8 @@ from adapter import BaseAdapter
 
 
 class PynpytAdapter(BaseAdapter):
-    pass
+    def start(self) -> None:
+        pass
+
+    def stop(self) -> None:
+        pass
