@@ -1,4 +1,4 @@
-from typing import Final, Optional
+from typing import Final, Optional, Type
 
 import attrs
 
@@ -15,13 +15,14 @@ def to_tap_groups(taps: TapGroup | list[TapGroup] | dict) -> Optional[list[TapGr
         return [TapGroup.from_dict(taps)]
     elif isinstance(taps, TapGroup):
         return [taps]
-    elif isinstance(taps, list):
+    elif isinstance(taps, list) and is_list_of(taps, TapGroup):
         return taps
+    else:
+        raise TypeError(f"taps is {type(taps)}")
 
 
 @attrs.define
 class Tapper(Suspendable):
-    config: Final[Config] = Config()
     groups: Final[list[TapGroup]] = []
     controlGroup: Final[TapGroup] = TapGroup()  # doesn't get suspended, always active
 
@@ -46,11 +47,21 @@ class Tapper(Suspendable):
         this will fill default controls for you, to suspend/reload/exit script.
 
         """
+        Config.fill_defaults()
         if default_controls and not self.controlGroup:
-            self.controlGroup.add(*self.config.default_controls.get_all())
+            self.controlGroup.add(Config.default_controls.get_all())
 
     def get_groups(self) -> list[TapGroup]:
         return self.groups
 
+    def remove_groups(self, groups: list[TapGroup] | TapGroup) -> None:
+        groups = to_tap_groups(groups)
+        self.groups[:] = [gr for gr in self.groups if gr not in groups]
 
-# todo add, remove, get group(s)
+    def add_groups(self, groups: list[TapGroup] | TapGroup) -> None:
+        groups = to_tap_groups(groups)
+        self.groups.extend(groups)
+
+    @staticmethod
+    def config(self) -> Type[Config]:
+        return Config

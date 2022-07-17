@@ -1,6 +1,7 @@
 from typing import Final
 
 from key import Key, Keys
+from tap import Tap
 
 
 class EmulatedKeypressManager:
@@ -13,9 +14,8 @@ class EmulatedKeypressManager:
 
     @classmethod
     def will_emulate_press(cls, key: int | Key | str) -> None:
-        if isinstance(key, int):
-            int_key = key
-        elif isinstance(key, Key):
+        int_key = key  # assume int here, so IDEA calms down
+        if isinstance(key, Key):
             int_key = key.get_vk_code()
         elif isinstance(key, str):
             found = Keys.by_str(key)
@@ -38,3 +38,17 @@ class EmulatedKeypressManager:
             return False
         else:
             return True
+
+
+class HotkeyMatcher:
+    @classmethod
+    def hotkeys_with_trigger(cls, vk: int) -> list[Tap]:
+        """
+        :return: In order of relevance - first hotkey that also matches other
+        conditions should get triggered
+        """
+        pass
+
+
+class KeyState:
+    pass
