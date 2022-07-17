@@ -1,20 +1,44 @@
+import sys
+from typing import Callable
+
 from adapter.base import BaseAdapter
 
 
-def get_adapter(chosen_adapter: str | BaseAdapter | None) -> BaseAdapter:
-    if chosen_adapter is None:
-        return _default_adapter()
-        # todo choose by sys.platform "Win32" or "linux"
+def _winput_adapter() -> BaseAdapter:
+    from adapter.winput import WinputAdapter
 
-    if isinstance(chosen_adapter, str):
-        # todo  parse of options
-        return _default_adapter()
-
-    else:
-        return chosen_adapter
+    return WinputAdapter()
 
 
-def _default_adapter() -> BaseAdapter:
+def _pynput_adapter() -> BaseAdapter:
     from adapter.pynput import PynpytAdapter
 
     return PynpytAdapter()
+
+
+def _default_adapter() -> BaseAdapter:
+    from adapter.winput import WinputAdapter
+
+    return WinputAdapter()
+
+
+adapter_names: dict[str, Callable[[], BaseAdapter]] = {
+    "winput": _winput_adapter,
+}
+
+
+def _get_adapter(adapter: str | BaseAdapter | None) -> BaseAdapter:
+    if adapter is None:
+        if sys.platform == "Win32":
+            return _winput_adapter()
+        else:
+            raise NotImplementedError(
+                "For this platform no low-level adapter exists. "
+                "You can make your own, take a look at "
+                "winput.adapter package"
+            )
+
+    if isinstance(adapter, str):
+        return adapter_names[adapter]()
+
+    assert not True, f"Internal func. Should never be called with type {type(adapter)}, {adapter}"

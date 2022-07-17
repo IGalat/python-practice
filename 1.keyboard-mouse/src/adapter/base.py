@@ -5,6 +5,10 @@ from util.key_state import EmulatedKeypressManager, HotkeyMatcher
 
 
 class BaseAdapter(ABC):
+    """
+    To use an adapter that implements this, set it as value of Config.adapter
+    """
+
     @abstractmethod
     def start(self) -> None:
         pass
@@ -36,6 +40,7 @@ class BaseAdapter(ABC):
         potential_taps: list[Tap] = HotkeyMatcher.hotkeys_with_trigger(vk)
         if not potential_taps:
             return True
+        return True  # TODO
 
     @staticmethod
     def on_release(vk: int) -> bool:

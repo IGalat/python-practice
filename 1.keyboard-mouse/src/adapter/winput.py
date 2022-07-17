@@ -1,7 +1,7 @@
 from adapter import BaseAdapter
 
 
-class PynpytAdapter(BaseAdapter):
+class WinputAdapter(BaseAdapter):
     def start(self) -> None:
         pass
 

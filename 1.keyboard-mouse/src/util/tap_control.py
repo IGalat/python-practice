@@ -1,9 +1,11 @@
+import subprocess
+import sys
 from typing import Optional
 
 from tap_group import TapGroup
 
 
-class TapControl:
+class TapControl:  # todo
     @staticmethod
     def restart_script() -> None:
         pass
@@ -11,6 +13,12 @@ class TapControl:
     @staticmethod
     def terminate_script() -> None:
         pass
+
+    @staticmethod
+    def reload_script() -> None:
+        sys.stdout.flush()
+        subprocess.Popen([sys.executable] + sys.argv, creationflags=subprocess.DETACHED_PROCESS)
+        sys.exit()
 
     @staticmethod
     def suspend(tap_group: Optional[TapGroup]) -> None:

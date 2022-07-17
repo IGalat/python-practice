@@ -5,7 +5,7 @@ from typing_extensions import Self
 
 from interfaces import Suspendable
 from tap import Tap, to_keys
-from util.misc import is_tuple_of
+from util.misc import is_tuple_of, is_list_of
 
 
 @attrs.define
@@ -33,8 +33,8 @@ class TapGroup(Suspendable):
         except StopIteration:
             return None
 
-    def add(self, taps: Dict[str | tuple[str], Optional[Callable]] | Tap | tuple[Tap, ...]) -> None:
-        if one := isinstance(taps, Tap) or is_tuple_of(taps, Tap):
+    def add(self, taps: Dict[str | tuple[str], Optional[Callable]] | Tap | tuple[Tap, ...] | list[Tap]) -> None:
+        if one := isinstance(taps, Tap) or is_tuple_of(taps, Tap) or is_list_of(taps, Tap):
             if one:
                 taps = (taps,)
         elif isinstance(taps, dict):
@@ -57,5 +57,3 @@ class TapGroup(Suspendable):
             return
         else:
             raise TypeError
-
-    # todo __init__ from Tap(s)

@@ -14,7 +14,9 @@ class EmulatedKeypressManager:
 
     @classmethod
     def will_emulate_press(cls, key: int | Key | str) -> None:
-        int_key = key  # assume int here, so IDEA calms down
+        int_key: int = -1  # mypy made me do it!
+        if isinstance(key, int):
+            int_key = key
         if isinstance(key, Key):
             int_key = key.get_vk_code()
         elif isinstance(key, str):

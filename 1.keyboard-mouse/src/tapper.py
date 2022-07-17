@@ -25,6 +25,7 @@ def to_tap_groups(taps: TapGroup | list[TapGroup] | dict) -> Optional[list[TapGr
 class Tapper(Suspendable):
     groups: Final[list[TapGroup]] = []
     controlGroup: Final[TapGroup] = TapGroup()  # doesn't get suspended, always active
+    config: Type[Config] = Config
 
     def __init__(self, taps: TapGroup | list[TapGroup] | dict) -> None:
         """
@@ -47,7 +48,7 @@ class Tapper(Suspendable):
         this will fill default controls for you, to suspend/reload/exit script.
 
         """
-        Config.fill_defaults()
+        Config.fill_absent()
         if default_controls and not self.controlGroup:
             self.controlGroup.add(Config.default_controls.get_all())
 
@@ -61,7 +62,3 @@ class Tapper(Suspendable):
     def add_groups(self, groups: list[TapGroup] | TapGroup) -> None:
         groups = to_tap_groups(groups)
         self.groups.extend(groups)
-
-    @staticmethod
-    def config(self) -> Type[Config]:
-        return Config
