@@ -12,9 +12,12 @@ from util.misc import is_tuple_of, is_list_of
 class TapGroup(Suspendable):
     _taps: Final[list[Tap]] = []
     name: Optional[str] = None
+    _parent: Optional[Suspendable] = None
+    _always_active: bool = False
 
-    def __init__(self, taps: list[Tap]) -> None:
+    def __init__(self, taps: list[Tap], name: str = None) -> None:
         self._taps.extend(taps)
+        self.name = name
 
     @classmethod
     def from_dict(
@@ -57,3 +60,6 @@ class TapGroup(Suspendable):
             return
         else:
             raise TypeError
+
+    def suspended(self) -> bool:
+        return not self._suspended and not self._parent.suspended()  # type:ignore # todo mypy

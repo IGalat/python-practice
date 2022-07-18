@@ -2,7 +2,8 @@ from enum import Enum
 from typing import Optional
 
 import attrs
-from typing_extensions import Self
+
+from util.misc import flatten_to_list
 
 
 @attrs.define
@@ -10,16 +11,24 @@ class Key:
     vk_code: Optional[int] = None
     vk_name: Optional[str] = None
     input_variants: Optional[list[str]] = None
-    alias_for: list[Self] = []  # type:ignore # todo mypy
+    alias_for: list["Key"] = []
+    all_vk_codes: list[int] = []
 
     def __attrs_post_init__(self) -> None:
-        if not self.vk_code and not self.alias_for:
+        if (not self.vk_code and not self.alias_for) or (self.vk_code and self.alias_for):
             raise ValueError("Must either be a key or an alias")
+        self.all_vk_codes = self.collect_vk_codes()
 
     def get_vk_code(self) -> int:
         if self.vk_code is not None:
             return self.vk_code
-        return self.alias_for[0].get_vk_code()  # type:ignore # todo mypy
+        return self.alias_for[0].get_vk_code()
+
+    def collect_vk_codes(self) -> list[int]:
+        if self.vk_code:
+            return [self.vk_code]
+        vk_lists = [alias.collect_vk_codes() for alias in self.alias_for]
+        return flatten_to_list(vk_lists)
 
 
 class Keys(Key, Enum):

@@ -35,6 +35,8 @@ class Tap(Suspendable):
     additional_keys: tuple[Key, ...]
     """ For hotkey, these have to be pressed """
 
+    _additional_vk_codes: set[int]
+
     trigger_key: Key
     """ Main key that's watched. Last in key combination supplied """
 
@@ -54,6 +56,8 @@ class Tap(Suspendable):
     When it returns False, key is typed as when action = None.
     """
 
+    _parent: Optional[Suspendable] = None
+
     def __init__(
         self,
         hotkey: Key | tuple[Key] | str | tuple[str],
@@ -71,6 +75,9 @@ class Tap(Suspendable):
         self.action = action
         self.interrupt_on_suspend = interrupt_on_suspend
         self.trigger_if = trigger_if
+
+    def suspended(self) -> bool:
+        return not self._suspended and not self._parent.suspended()  # type:ignore # todo mypy
 
     def same_hotkey(self, hotkey: tuple[Key, tuple[Key, ...]]) -> bool:
         return (self.trigger_key, self.additional_keys) == hotkey

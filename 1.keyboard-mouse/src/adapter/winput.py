@@ -1,15 +1,49 @@
+from typing import Final, Optional
+
+from winput import winput
+
 from adapter import BaseAdapter
 
 
 class WinputAdapter(BaseAdapter):
-    def start(self) -> None:
+    WINPUT_PROPAGATE: Final[int] = 0
+    WINPUT_SUPPRESS: Final[int] = 4
+
+    EVENT_PRESS: Final[int] = 256
+    EVENT_RELEASE: Final[int] = 257
+
+    @classmethod
+    def start(cls) -> None:
+        # winput.hook_mouse(mouse_callback)
+        winput.hook_keyboard(WinputAdapter.keyboard_callback)
+        winput.wait_messages()
+
+    @classmethod
+    def stop(cls) -> None:
+        winput.stop()
+        # winput.unhook_mouse()
+        winput.unhook_keyboard()
+
+    @classmethod
+    def press_key(cls) -> None:
         pass
 
-    def stop(self) -> None:
+    @classmethod
+    def release_key(cls) -> None:
         pass
 
-    def press_key(self) -> None:
-        pass
+    @classmethod
+    def keyboard_callback(cls, event: winput.KeyboardEvent) -> Optional[int]:
+        if event.action == cls.EVENT_PRESS:
+            return cls.to_callback_result(cls.on_press(event.key))
+        elif event.action == cls.EVENT_RELEASE:
+            return cls.to_callback_result(cls.on_release(event.key))
+        else:
+            return WinputAdapter.WINPUT_PROPAGATE
 
-    def release_key(self) -> None:
-        pass
+    @staticmethod
+    def to_callback_result(inner_func_result: bool) -> int:
+        if inner_func_result:
+            return WinputAdapter.WINPUT_PROPAGATE
+        else:
+            return WinputAdapter.WINPUT_SUPPRESS

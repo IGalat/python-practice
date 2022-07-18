@@ -3,7 +3,7 @@ from typing import Final, Optional, Type
 import attrs
 
 from config import Config
-from interfaces import Suspendable
+from interfaces import Suspendable, SingletonMeta
 from tap_group import TapGroup
 from util.misc import is_list_of
 
@@ -22,8 +22,12 @@ def to_tap_groups(taps: TapGroup | list[TapGroup] | dict) -> Optional[list[TapGr
 
 
 @attrs.define
-class Tapper(Suspendable):
+class Tapper(Suspendable, metaclass=SingletonMeta):
     groups: Final[list[TapGroup]] = []
+    """
+    in order of precedence. Add more global groups last
+    """
+
     controlGroup: Final[TapGroup] = TapGroup()  # doesn't get suspended, always active
     config: Type[Config] = Config
 
@@ -31,6 +35,9 @@ class Tapper(Suspendable):
         """
         :param taps: TapGroup, list[TapGroup], dict {"hotkey": action}, or None
         """
+        self.groups.append(self.controlGroup)
+        self.controlGroup._always_active = True
+
         if isinstance(taps, dict):
             self.groups.append(TapGroup.from_dict(taps))
         elif one := isinstance(taps, TapGroup) or is_list_of(taps, TapGroup):
@@ -40,8 +47,6 @@ class Tapper(Suspendable):
         else:
             raise TypeError
 
-        self.groups.append(self.controlGroup)
-
     def start(self, default_controls: bool = True) -> None:  # todo
         """
         :param default_controls: If you didn't add anything to controlGroup,
@@ -49,8 +54,14 @@ class Tapper(Suspendable):
 
         """
         Config.fill_absent()
+
         if default_controls and not self.controlGroup:
             self.controlGroup.add(Config.default_controls.get_all())
+
+        for group in self.groups:
+            group._parent = self
+            for tap in group.get_all():
+                tap._parent = group
 
     def get_groups(self) -> list[TapGroup]:
         return self.groups
@@ -60,5 +71,5 @@ class Tapper(Suspendable):
         self.groups[:] = [gr for gr in self.groups if gr not in groups]
 
     def add_groups(self, groups: list[TapGroup] | TapGroup) -> None:
-        groups = to_tap_groups(groups)
-        self.groups.extend(groups)
+        correct_groups = to_tap_groups(groups)
+        self.groups.extend(correct_groups)

@@ -10,10 +10,10 @@ def _winput_adapter() -> BaseAdapter:
     return WinputAdapter()
 
 
-def _pynput_adapter() -> BaseAdapter:
-    from adapter.pynput import PynpytAdapter
-
-    return PynpytAdapter()
+# def _pynput_adapter() -> BaseAdapter:
+#     from adapter.pynput import PynpytAdapter
+#
+#     return PynpytAdapter()
 
 
 def _default_adapter() -> BaseAdapter:
