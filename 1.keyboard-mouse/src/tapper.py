@@ -27,7 +27,7 @@ class Tapper(Suspendable, metaclass=SingletonMeta):
     in order of precedence. Add more global groups last
     """
 
-    controlGroup: Final[TapGroup] = TapGroup([])  # doesn't get suspended, always active
+    controlGroup: Final[TapGroup] = TapGroup([], "Control")  # doesn't get suspended, always active
 
     def __init__(self, taps: TapGroup | list[TapGroup] | dict | None = None):
         """
@@ -55,6 +55,9 @@ class Tapper(Suspendable, metaclass=SingletonMeta):
         this will fill default controls for you, to suspend/reload/exit script.
 
         """
+        self._pre_start(default_controls)
+
+    def _pre_start(self, default_controls: bool) -> None:
         Config.fill_absent()
 
         if default_controls and not self.controlGroup:

@@ -29,11 +29,11 @@ adapter_names: dict[str, Callable[[], BaseAdapter]] = {
 
 def _get_adapter(adapter: str | BaseAdapter | None) -> BaseAdapter:
     if adapter is None:
-        if sys.platform == "Win32":
+        if sys.platform.lower() == "win32":
             return _winput_adapter()
         else:
             raise NotImplementedError(
-                "For this platform no low-level adapter exists. "
+                f"For this platform ({sys.platform}) no low-level adapter exists. "
                 "You can make your own, take a look at "
                 "winput.adapter package"
             )

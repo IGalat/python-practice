@@ -84,14 +84,14 @@ class HotkeyMatcher:
         conditions should get triggered
         """
         from tapper import Tapper
-        
+
         if Tapper().suspended():  # counting on singleton. rework after poc
             return cls.candidates_from_group(Tapper().controlGroup, vk)
         return flatten_to_list([cls.candidates_from_group(g, vk) for g in Tapper().groups])
 
     @classmethod
     def candidates_from_group(cls, group: TapGroup, vk: int) -> list[Tap]:
-        taps = group._taps
+        taps = group.get_all()
         if group._always_active:
             return [tap for tap in taps if cls.trigger_key_match(tap, vk)]
         else:

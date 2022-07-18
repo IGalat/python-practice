@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Callable, Optional
 
 from tap import Tap
 from util.controller import ActionRunner
@@ -48,16 +47,16 @@ class BaseAdapter(ABC):  # todo move all logic from here, on_press substitute f
             return True
         vk_pressed: set[int] = KeypressManager.keys_pressed
         try:
-            action_selected = next(BaseAdapter.should_run(tap, vk_pressed) for tap in potential_taps)
-            if not action_selected:
-                return True  # found "None" so pass through
+            tap_selected = next(tap for tap in potential_taps if BaseAdapter.all_keys_pressed(tap, vk_pressed))
+            if not tap_selected.action:
+                return True  # action is "None" so pass through
         except StopIteration:  # no match
             return True
-        ActionRunner.run(action_selected)
-        return False
+        ActionRunner.run(tap_selected.action)
+        return not tap_selected.suppress_trigger_key_on_action
 
     @staticmethod
-    def should_run(potential_taps: Tap, vk_pressed: set[int]) -> Optional[Callable]:
+    def all_keys_pressed(potential_taps: Tap, vk_pressed: set[int]) -> bool:
         pass
 
     @classmethod

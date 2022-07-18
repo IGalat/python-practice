@@ -34,8 +34,6 @@ class Tap(Suspendable):
     additional_keys: tuple[Key, ...]
     """ For hotkey, these have to be pressed """
 
-    _additional_vk_codes: set[int]
-
     trigger_key: Key
     """ Main key that's watched. Last in key combination supplied """
 
@@ -48,7 +46,9 @@ class Tap(Suspendable):
     interrupt_on_suspend: bool
     """ Should action be interrupted when hotkey, its group, or tapper is suspended? """
 
-    trigger_if: Optional[Callable] = None
+    suppress_trigger_key_on_action: bool
+
+    trigger_if: Optional[Callable]
     """ 
     If function is supplied here, it runs each time before hotkey is triggered.
     When it returns True, action runs as usual.
@@ -63,6 +63,7 @@ class Tap(Suspendable):
             action: Optional[Callable],
             *,
             interrupt_on_suspend: bool = True,
+            suppress_trigger_key_on_action: bool = True,
             trigger_if: Callable = None,
     ):
         """
@@ -73,6 +74,7 @@ class Tap(Suspendable):
         self.trigger_key, self.additional_keys = to_keys(hotkey)
         self.action = action
         self.interrupt_on_suspend = interrupt_on_suspend
+        self.suppress_trigger_key_on_action = suppress_trigger_key_on_action
         self.trigger_if = trigger_if
         self.unsuspend()
 

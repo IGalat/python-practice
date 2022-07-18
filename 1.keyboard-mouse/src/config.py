@@ -10,7 +10,7 @@ from tap_group import TapGroup
 @attrs.define
 class Config:
     adapter: ClassVar[Optional[BaseAdapter | str]] = None
-    default_controls: ClassVar[TapGroup] = TapGroup([], "Control")  # todo fill
+    default_controls: ClassVar[TapGroup] = TapGroup([])  # todo fill
     action_threads: ClassVar[int] = 10
 
     @classmethod
