@@ -3,13 +3,13 @@ from typing import Optional, Callable
 
 from interfaces import Suspendable
 from key import Key, Keys
-from util.misc import is_tuple_of
+from util.misc import is_tuple_of, func_repr
 
 
 def keys_from_string(key_str: str | list[str]) -> list[Key]:
     if isinstance(key_str, str):
         key_str = key_str.split("+")  # todo split a++ to a, +
-    keys: list[Key] = [Keys[key] for key in key_str]  # todo look in Key.input_variants as fallback;
+    keys: list[Key] = [Keys.all()[key] for key in key_str]  # todo look in Key.input_variants as fallback;
     return keys
 
 
@@ -29,7 +29,7 @@ def to_keys(hotkey: Key | tuple[Key, ...] | str | tuple[str, ...]) -> tuple[Key,
     return keys[-1], keys[:-1]
 
 
-@dataclass(init=False)
+@dataclass(init=False, repr=False)
 class Tap(Suspendable):
     additional_keys: tuple[Key, ...]
     """ For hotkey, these have to be pressed """
@@ -58,13 +58,13 @@ class Tap(Suspendable):
     _parent: Optional[Suspendable] = None
 
     def __init__(
-            self,
-            hotkey: Key | tuple[Key] | str | tuple[str],
-            action: Optional[Callable],
-            *,
-            interrupt_on_suspend: bool = True,
-            suppress_trigger_key_on_action: bool = True,
-            trigger_if: Callable = None,
+        self,
+        hotkey: Key | tuple[Key] | str | tuple[str],
+        action: Optional[Callable],
+        *,
+        interrupt_on_suspend: bool = True,
+        suppress_trigger_key_on_action: bool = True,
+        trigger_if: Callable = None,
     ):
         """
         :param hotkey: Trigger keys for hotkey or hotstring.
@@ -78,10 +78,27 @@ class Tap(Suspendable):
         self.trigger_if = trigger_if
         self.unsuspend()
 
+    def __repr__(self) -> str:
+        desc = [f"trigger_key={self.trigger_key}"]
+        if self.additional_keys:
+            desc.append(f"additional_keys={self.additional_keys}")
+        desc.append(f"action={func_repr(self.action)}")
+        if not self.interrupt_on_suspend:
+            desc.append(f"interrupt_on_suspend={self.interrupt_on_suspend}")
+        if not self.suppress_trigger_key_on_action:
+            desc.append(f"suppress_trigger_key_on_action={self.suppress_trigger_key_on_action}")
+        if self.trigger_if:
+            desc.append(f"trigger_if={func_repr(self.trigger_if)}")
+        if self._parent and hasattr(self._parent, "name"):
+            desc.append(f"parent_name='{self._parent.name}'")  # type:ignore
+        desc.append(super().__repr__())
+        return "Tap(" + ",".join(desc) + ")"
+
     def suspended(self) -> bool:
-        return not self._suspended and not self._parent.suspended()  # type:ignore # todo mypy
+        return not self._suspended and not self._parent.suspended()  # type:ignore
 
     def same_hotkey(self, hotkey: tuple[Key, tuple[Key, ...]]) -> bool:
         return (self.trigger_key, self.additional_keys) == hotkey
+
 
 # def __eq__ # todo comparison with aliases, str, etc. , __ne__

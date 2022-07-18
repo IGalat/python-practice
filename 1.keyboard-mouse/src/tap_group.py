@@ -8,7 +8,7 @@ from tap import Tap, to_keys
 from util.misc import is_tuple_of, is_list_of
 
 
-@dataclass
+@dataclass(repr=False)
 class TapGroup(Suspendable):
     _taps: Final[list[Tap]]
     name: Optional[str] = None
@@ -20,10 +20,16 @@ class TapGroup(Suspendable):
         self.name = name
         self.unsuspend()
 
+    def __repr__(self) -> str:
+        desc = [f"name={self.name}", f"_taps={self._taps}"]
+        if self._always_active:
+            desc.append(f"_always_active={self._always_active}")
+        return "TapGroup(" + ",".join(desc) + ")"
+
     @classmethod
     def from_dict(
-            cls, binds: dict[str | tuple[str], Optional[Callable]], name: str = None
-    ) -> Self:  # type:ignore # todo mypy
+        cls, binds: dict[str | tuple[str], Optional[Callable]], name: str = None
+    ) -> Self:  # type:ignore
         taps = [Tap(key, binds[key]) for key in binds]
         return TapGroup(taps, name)
 
@@ -63,4 +69,4 @@ class TapGroup(Suspendable):
             raise TypeError
 
     def suspended(self) -> bool:
-        return not self._suspended and not self._parent.suspended()  # type:ignore # todo mypy
+        return not self._suspended and not self._parent.suspended()  # type:ignore

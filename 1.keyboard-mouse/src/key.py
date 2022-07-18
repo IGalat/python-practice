@@ -1,23 +1,33 @@
-from enum import Enum
-from typing import Optional
-
-import attrs
+from dataclasses import dataclass, field
+from typing import Optional, ClassVar
 
 from util.misc import flatten_to_list
 
 
-@attrs.define
+@dataclass(repr=False)
 class Key:
     vk_code: Optional[int] = None
     vk_name: Optional[str] = None
     input_variants: Optional[list[str]] = None
-    alias_for: list["Key"] = []
-    all_vk_codes: list[int] = []
+    alias_for: list["Key"] = field(default_factory=list)
+    all_vk_codes: list[int] = field(default_factory=list, init=False)
 
-    def __attrs_post_init__(self) -> None:
+    def __post_init__(self) -> None:
         if (not self.vk_code and not self.alias_for) or (self.vk_code and self.alias_for):
             raise ValueError("Must either be a key or an alias")
         self.all_vk_codes = self.collect_vk_codes()
+
+    def __repr__(self) -> str:
+        desc = []
+        if self.vk_code:
+            desc.append(f"{self.vk_code}")
+        if self.vk_name:
+            desc.append(f"{self.vk_name}")
+        if self.input_variants:
+            desc.append("input_variants={self.input_variants}")
+        if self.alias_for:
+            desc.append(f"alias_for={self.alias_for}")
+        return "Key(" + ",".join(desc) + ")"
 
     def get_vk_code(self) -> int:
         if self.vk_code is not None:
@@ -31,12 +41,30 @@ class Key:
         return flatten_to_list(vk_lists)
 
 
-class Keys(Key, Enum):
+@dataclass
+class Keys:
+    _all: ClassVar[dict]
+
+    @classmethod
+    def all(cls) -> dict:
+        try:
+            return cls._all
+        except AttributeError:
+            cls._fill_all()
+        return cls._all
+
+    @classmethod
+    def _fill_all(cls) -> None:
+        def is_key(name: str) -> bool:
+            return not name.startswith("_") and not callable(getattr(cls, name))
+
+        cls._all = {name: value for (name, value) in vars(cls).items() if is_key(name)}
+
     @classmethod
     def by_vk_code(cls, vk: Optional[int]) -> Optional[Key]:
         if vk is None:
             return None
-        for key in cls:
+        for key in cls.all():
             if vk == key.vk_code:
                 return key
         return None
@@ -46,14 +74,16 @@ class Keys(Key, Enum):
         if input is None:
             return None
         try:
-            key = cls[input]
+            key = cls.all()[input]
             return key
         except AttributeError:
-            for key in cls:
+            for key in cls.all():
                 input_var = key.input_variants
                 if input_var and input in input_var:
                     return key
             return None
+
+    escape = Key(27, "VK_ESCAPE")
 
     a = Key(65)
     b = Key(66)
@@ -65,13 +95,16 @@ class Keys(Key, Enum):
     right_control = Key(163, "VK_RCONTROL")
 
     # aliases
+    esc = escape
+
     A = a
     B = b
+    C = c
 
     lctrl = left_control
     lcontrol = left_control
     rctrl = right_control
     rcontrol = right_control
 
-    control = Key(alias_for=[rctrl, lctrl])
+    control = Key(alias_for=[lctrl, rctrl])
     ctrl = control

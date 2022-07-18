@@ -16,4 +16,4 @@ class Config:
     @classmethod
     def fill_absent(cls) -> None:
         if not cls.adapter:
-            adapter._get_adapter(cls.adapter)
+            adapter.get_adapter(cls.adapter)

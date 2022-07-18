@@ -19,7 +19,7 @@ def on_release(key: Key | KeyCode) -> bool:
     if key == keyboard.Key.tab:
         # Stop listener
         return False
-    return True  # just for mypy
+    return True
 
 
 with keyboard.Listener(on_press=on_press, on_release=on_release, suppress=True) as listener:

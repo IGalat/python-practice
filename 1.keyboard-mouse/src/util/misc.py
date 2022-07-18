@@ -1,4 +1,4 @@
-from typing import List, Any, TypeGuard, TypeVar, Dict, Iterable
+from typing import List, Any, TypeGuard, TypeVar, Dict, Iterable, Callable, Optional
 
 # everything that's too small for a separate util module
 
@@ -23,3 +23,11 @@ def enum_to_dict(data_structure: Iterable) -> Dict[str, Any]:
 
 def flatten_to_list(data_structure: Iterable) -> list:
     return [item for sublist in data_structure for item in sublist]
+
+
+def func_repr(func: Optional[Callable]) -> str:
+    if not func:
+        return ""
+    if not callable(func):
+        return str(func)
+    return f'{str(func).partition(" at")[0]}>'

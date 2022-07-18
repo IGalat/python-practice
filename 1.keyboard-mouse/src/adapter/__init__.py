@@ -27,7 +27,7 @@ adapter_names: dict[str, Callable[[], BaseAdapter]] = {
 }
 
 
-def _get_adapter(adapter: str | BaseAdapter | None) -> BaseAdapter:
+def get_adapter(adapter: str | BaseAdapter | None) -> BaseAdapter:
     if adapter is None:
         if sys.platform.lower() == "win32":
             return _winput_adapter()

@@ -1,15 +1,13 @@
 from dataclasses import dataclass
-from typing import Final, Optional
+from typing import Final
 
 from config import Config
 from interfaces import Suspendable, SingletonMeta
 from tap_group import TapGroup
-from util.misc import is_list_of
+from util.misc import is_list_of, flatten_to_list
 
 
-def to_tap_groups(taps: TapGroup | list[TapGroup] | dict) -> Optional[list[TapGroup]]:
-    if taps is None:
-        return None
+def to_tap_groups(taps: TapGroup | list[TapGroup] | dict) -> list[TapGroup]:
     if isinstance(taps, dict):
         return [TapGroup.from_dict(taps)]
     elif isinstance(taps, TapGroup):
@@ -27,7 +25,7 @@ class Tapper(Suspendable, metaclass=SingletonMeta):
     in order of precedence. Add more global groups last
     """
 
-    controlGroup: Final[TapGroup] = TapGroup([], "Control")  # doesn't get suspended, always active
+    controlGroup: Final[TapGroup] = TapGroup([], "CONTROL_GROUP")  # doesn't get suspended, always active
 
     def __init__(self, taps: TapGroup | list[TapGroup] | dict | None = None):
         """
@@ -41,10 +39,11 @@ class Tapper(Suspendable, metaclass=SingletonMeta):
         if not taps:
             return
         if isinstance(taps, dict):
-            self.groups.append(TapGroup.from_dict(taps))
-        elif one := isinstance(taps, TapGroup) or is_list_of(taps, TapGroup):
-            if one:
-                taps = [taps]
+            g = to_tap_groups(taps)
+            g[0].name = "generic"
+            self.groups.extend(g)
+        elif isinstance(taps, TapGroup) or is_list_of(taps, TapGroup):
+            taps = flatten_to_list([taps])
             self.groups.extend(taps)
         else:
             raise TypeError
