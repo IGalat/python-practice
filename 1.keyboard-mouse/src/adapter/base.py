@@ -11,24 +11,24 @@ class BaseAdapter(ABC):  # todo move all logic from here, on_press substitute f
     To use an adapter that implements this, set it as value of Config.adapter
     """
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def start(cls) -> None:
         pass
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def stop(cls) -> None:
         """And clear resources, this is terminal"""
         pass
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def press_key(cls) -> None:
         pass
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def release_key(cls) -> None:
         pass
 
@@ -68,4 +68,6 @@ class BaseAdapter(ABC):  # todo move all logic from here, on_press substitute f
         :return If True, key release should be propagated
         If False, should be suppressed
         """
+        if not KeypressManager.was_released_real(vk):
+            return True
         return True

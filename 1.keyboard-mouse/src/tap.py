@@ -1,6 +1,5 @@
+from dataclasses import dataclass
 from typing import Optional, Callable
-
-import attrs
 
 from interfaces import Suspendable
 from key import Key, Keys
@@ -30,7 +29,7 @@ def to_keys(hotkey: Key | tuple[Key, ...] | str | tuple[str, ...]) -> tuple[Key,
     return keys[-1], keys[:-1]
 
 
-@attrs.define(init=False)
+@dataclass(init=False)
 class Tap(Suspendable):
     additional_keys: tuple[Key, ...]
     """ For hotkey, these have to be pressed """
@@ -59,12 +58,12 @@ class Tap(Suspendable):
     _parent: Optional[Suspendable] = None
 
     def __init__(
-        self,
-        hotkey: Key | tuple[Key] | str | tuple[str],
-        action: Optional[Callable],
-        *,
-        interrupt_on_suspend: bool = True,
-        trigger_if: Callable = None,
+            self,
+            hotkey: Key | tuple[Key] | str | tuple[str],
+            action: Optional[Callable],
+            *,
+            interrupt_on_suspend: bool = True,
+            trigger_if: Callable = None,
     ):
         """
         :param hotkey: Trigger keys for hotkey or hotstring.
@@ -75,12 +74,12 @@ class Tap(Suspendable):
         self.action = action
         self.interrupt_on_suspend = interrupt_on_suspend
         self.trigger_if = trigger_if
+        self.unsuspend()
 
     def suspended(self) -> bool:
         return not self._suspended and not self._parent.suspended()  # type:ignore # todo mypy
 
     def same_hotkey(self, hotkey: tuple[Key, tuple[Key, ...]]) -> bool:
         return (self.trigger_key, self.additional_keys) == hotkey
-
 
 # def __eq__ # todo comparison with aliases, str, etc. , __ne__

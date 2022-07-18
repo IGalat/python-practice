@@ -1,6 +1,6 @@
+from dataclasses import dataclass
 from typing import Callable, Optional, Dict, Final
 
-import attrs
 from typing_extensions import Self
 
 from interfaces import Suspendable
@@ -8,20 +8,21 @@ from tap import Tap, to_keys
 from util.misc import is_tuple_of, is_list_of
 
 
-@attrs.define
+@dataclass
 class TapGroup(Suspendable):
-    _taps: Final[list[Tap]] = []
+    _taps: Final[list[Tap]]
     name: Optional[str] = None
     _parent: Optional[Suspendable] = None
     _always_active: bool = False
 
     def __init__(self, taps: list[Tap], name: str = None) -> None:
-        self._taps.extend(taps)
+        self._taps = taps
         self.name = name
+        self.unsuspend()
 
     @classmethod
     def from_dict(
-        cls, binds: dict[str | tuple[str], Optional[Callable]], name: str = None
+            cls, binds: dict[str | tuple[str], Optional[Callable]], name: str = None
     ) -> Self:  # type:ignore # todo mypy
         taps = [Tap(key, binds[key]) for key in binds]
         return TapGroup(taps, name)

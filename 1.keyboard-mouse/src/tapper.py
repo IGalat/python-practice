@@ -1,6 +1,5 @@
-from typing import Final, Optional, Type
-
-import attrs
+from dataclasses import dataclass
+from typing import Final, Optional
 
 from config import Config
 from interfaces import Suspendable, SingletonMeta
@@ -21,23 +20,26 @@ def to_tap_groups(taps: TapGroup | list[TapGroup] | dict) -> Optional[list[TapGr
         raise TypeError(f"taps is {type(taps)}")
 
 
-@attrs.define
+@dataclass
 class Tapper(Suspendable, metaclass=SingletonMeta):
-    groups: Final[list[TapGroup]] = []
+    groups: Final[list[TapGroup]]
     """
     in order of precedence. Add more global groups last
     """
 
-    controlGroup: Final[TapGroup] = TapGroup()  # doesn't get suspended, always active
-    config: Type[Config] = Config
+    controlGroup: Final[TapGroup] = TapGroup([])  # doesn't get suspended, always active
 
-    def __init__(self, taps: TapGroup | list[TapGroup] | dict) -> None:
+    def __init__(self, taps: TapGroup | list[TapGroup] | dict | None = None):
         """
         :param taps: TapGroup, list[TapGroup], dict {"hotkey": action}, or None
         """
-        self.groups.append(self.controlGroup)
+        self.groups = [self.controlGroup]
         self.controlGroup._always_active = True
 
+        self.unsuspend()
+
+        if not taps:
+            return
         if isinstance(taps, dict):
             self.groups.append(TapGroup.from_dict(taps))
         elif one := isinstance(taps, TapGroup) or is_list_of(taps, TapGroup):

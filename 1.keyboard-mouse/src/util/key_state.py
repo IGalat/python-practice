@@ -3,7 +3,6 @@ from typing import Final
 from key import Key, Keys
 from tap import Tap
 from tap_group import TapGroup
-from tapper import Tapper
 from util.misc import flatten_to_list
 
 
@@ -84,6 +83,8 @@ class HotkeyMatcher:
         :return: In order of relevance - first hotkey that also matches other
         conditions should get triggered
         """
+        from tapper import Tapper
+        
         if Tapper().suspended():  # counting on singleton. rework after poc
             return cls.candidates_from_group(Tapper().controlGroup, vk)
         return flatten_to_list([cls.candidates_from_group(g, vk) for g in Tapper().groups])

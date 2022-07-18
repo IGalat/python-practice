@@ -1,9 +1,12 @@
+from dataclasses import dataclass
 from threading import Lock
+
 from typing_extensions import Self
 
 
+@dataclass
 class Suspendable:
-    _suspended: bool = False
+    _suspended: bool
 
     def suspend(self) -> None:
         self._suspended = True
