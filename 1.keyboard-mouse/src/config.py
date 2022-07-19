@@ -1,19 +1,18 @@
-from typing import Optional, ClassVar
-
-import attrs
+from dataclasses import dataclass
+from typing import ClassVar
 
 import adapter
 from adapter import BaseAdapter
 from tap_group import TapGroup
 
 
-@attrs.define
+@dataclass
 class Config:
-    adapter: ClassVar[Optional[BaseAdapter | str]] = None
+    adapter: ClassVar[BaseAdapter]
     default_controls: ClassVar[TapGroup] = TapGroup([])  # todo fill
     action_threads: ClassVar[int] = 10
 
     @classmethod
     def fill_absent(cls) -> None:
-        if not cls.adapter:
-            adapter.get_adapter(cls.adapter)
+        if not hasattr(cls, "adapter"):
+            cls.adapter = adapter.get_platform_default_adapter()

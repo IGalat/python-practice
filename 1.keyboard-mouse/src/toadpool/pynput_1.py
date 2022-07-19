@@ -21,7 +21,7 @@ def on_release(key: Any) -> bool:
 
 
 # Collect events until released
-with keyboard.Listener(on_press=on_press, on_release=on_release, suppress=True) as listener:
+with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
     listener.join()
 
 # # ...or, in a non-blocking fashion:

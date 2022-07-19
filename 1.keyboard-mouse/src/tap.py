@@ -95,7 +95,7 @@ class Tap(Suspendable):
         return "Tap(" + ",".join(desc) + ")"
 
     def suspended(self) -> bool:
-        return not self._suspended and not self._parent.suspended()  # type:ignore
+        return  self._suspended or self._parent.suspended()  # type:ignore
 
     def same_hotkey(self, hotkey: tuple[Key, tuple[Key, ...]]) -> bool:
         return (self.trigger_key, self.additional_keys) == hotkey

@@ -4,7 +4,7 @@ import hypothesis.strategies as st
 from hypothesis import given, example
 from hypothesis.strategies import lists
 
-from util.misc import is_list_of
+from util.misc import is_list_of, flatten_to_list
 
 
 @given(lists(st.characters()) | lists(st.dates()) | lists(st.integers()))
@@ -26,3 +26,10 @@ def helper_is_list_of(input: Any, type_: Type, tru: bool) -> None:
         assert is_list_of(input, type_)
     else:
         assert not is_list_of(input, type_)
+
+
+@given(st.dates() | lists(st.dates() | lists(st.dates() | lists(st.dates()))))
+def test_flatten_to_list(input: list) -> None:
+    flat = flatten_to_list(input)
+    assert isinstance(flat, list)
+    assert not any(isinstance(item, list) for item in flat)

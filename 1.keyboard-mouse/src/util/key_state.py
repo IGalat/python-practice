@@ -31,7 +31,11 @@ class KeypressManager:
     _emulated_release_count: Final[dict[int, int]] = {}
     """ key_vk: amount of times to be emulate-released """
 
-    keys_pressed: Final[set[int]] = set()
+    _keys_pressed: Final[set[int]] = set()
+
+    @classmethod
+    def keys_pressed(cls) -> set[int]:
+        return cls._keys_pressed
 
     @classmethod
     def will_emulate_press(cls, key: int | Key | str) -> None:
@@ -59,7 +63,7 @@ class KeypressManager:
             key_count[vk] -= 1
             return False
         else:
-            cls.keys_pressed.add(vk)
+            cls.keys_pressed().add(vk)
             return True
 
     @classmethod
@@ -72,7 +76,7 @@ class KeypressManager:
             key_count[vk] -= 1
             return False
         else:
-            cls.keys_pressed.remove(vk)
+            cls.keys_pressed().remove(vk)
             return True
 
 

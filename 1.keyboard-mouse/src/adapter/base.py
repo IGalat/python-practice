@@ -39,13 +39,14 @@ class BaseAdapter(ABC):  # todo move all logic from here, on_press substitute f
         :return If True, press should be propagated
         If False, should be suppressed
         """
+        print(f"Pressed vk: {vk}, all_keys_pressed: {KeypressManager.keys_pressed()}")
         if not KeypressManager.was_pressed_real(vk):
             return True
         # todo record keypress, for hotstring
         potential_taps: list[Tap] = HotkeyMatcher.active_hotkeys_with_trigger(vk)
         if not potential_taps:
             return True
-        vk_pressed: set[int] = KeypressManager.keys_pressed
+        vk_pressed: set[int] = KeypressManager.keys_pressed()
         try:
             tap_selected = next(tap for tap in potential_taps if BaseAdapter.all_keys_pressed(tap, vk_pressed))
             if not tap_selected.action:
@@ -56,8 +57,12 @@ class BaseAdapter(ABC):  # todo move all logic from here, on_press substitute f
         return not tap_selected.suppress_trigger_key_on_action
 
     @staticmethod
-    def all_keys_pressed(potential_taps: Tap, vk_pressed: set[int]) -> bool:
-        pass
+    def all_keys_pressed(tap: Tap, vk_pressed: set[int]) -> bool:
+        for key in tap.additional_keys:
+            if not any(vk in vk_pressed for vk in key.all_vk_codes):
+                return False
+        return True
+
 
     @classmethod
     def on_release(cls, vk: int) -> bool:
@@ -67,6 +72,7 @@ class BaseAdapter(ABC):  # todo move all logic from here, on_press substitute f
         :return If True, key release should be propagated
         If False, should be suppressed
         """
+        print(f"Released vk: {vk}, all_keys_pressed: {KeypressManager.keys_pressed()}")
         if not KeypressManager.was_released_real(vk):
             return True
         return True

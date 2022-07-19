@@ -55,6 +55,7 @@ class Tapper(Suspendable, metaclass=SingletonMeta):
 
         """
         self._pre_start(default_controls)
+        Config().adapter.start()
 
     def _pre_start(self, default_controls: bool) -> None:
         Config.fill_absent()

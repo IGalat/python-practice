@@ -28,7 +28,7 @@ class TapGroup(Suspendable):
 
     @classmethod
     def from_dict(
-        cls, binds: dict[str | tuple[str], Optional[Callable]], name: str = None
+            cls, binds: dict[str | tuple[str], Optional[Callable]], name: str = None
     ) -> Self:  # type:ignore
         taps = [Tap(key, binds[key]) for key in binds]
         return TapGroup(taps, name)
@@ -69,4 +69,4 @@ class TapGroup(Suspendable):
             raise TypeError
 
     def suspended(self) -> bool:
-        return not self._suspended and not self._parent.suspended()  # type:ignore
+        return self._suspended or self._parent.suspended()

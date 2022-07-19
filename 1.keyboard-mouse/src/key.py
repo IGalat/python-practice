@@ -13,7 +13,7 @@ class Key:
     all_vk_codes: list[int] = field(default_factory=list, init=False)
 
     def __post_init__(self) -> None:
-        if (not self.vk_code and not self.alias_for) or (self.vk_code and self.alias_for):
+        if not self.vk_code and not self.alias_for:
             raise ValueError("Must either be a key or an alias")
         self.all_vk_codes = self.collect_vk_codes()
 
@@ -35,9 +35,11 @@ class Key:
         return self.alias_for[0].get_vk_code()
 
     def collect_vk_codes(self) -> list[int]:
+        vk_lists = []
         if self.vk_code:
-            return [self.vk_code]
-        vk_lists = [alias.collect_vk_codes() for alias in self.alias_for]
+            vk_lists = [self.vk_code]
+        if self.alias_for:
+            vk_lists.extend([alias.collect_vk_codes() for alias in self.alias_for])
         return flatten_to_list(vk_lists)
 
 
@@ -83,6 +85,7 @@ class Keys:
                     return key
             return None
 
+
     escape = Key(27, "VK_ESCAPE")
 
     a = Key(65)
@@ -93,6 +96,8 @@ class Keys:
 
     left_control = Key(162, "VK_LCONTROL")
     right_control = Key(163, "VK_RCONTROL")
+
+    control = Key(17, alias_for=[left_control, right_control])
 
     # aliases
     esc = escape
@@ -105,6 +110,4 @@ class Keys:
     lcontrol = left_control
     rctrl = right_control
     rcontrol = right_control
-
-    control = Key(alias_for=[lctrl, rctrl])
     ctrl = control

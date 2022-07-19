@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from typing import List, Any, TypeGuard, TypeVar, Dict, Iterable, Callable, Optional
 
 # everything that's too small for a separate util module
@@ -21,8 +22,19 @@ def enum_to_dict(data_structure: Iterable) -> Dict[str, Any]:
     return dict(map(lambda c: (c.name, c.value), data_structure))
 
 
-def flatten_to_list(data_structure: Iterable) -> list:
-    return [item for sublist in data_structure for item in sublist]
+def flatten_to_list(data_structure: Sequence) -> list:
+    return list(flatten(data_structure))
+
+
+def flatten(xs: Sequence) -> Iterable:
+    if isinstance(xs, Sequence) and not isinstance(xs, (str, bytes)):
+        for x in xs:
+            if isinstance(x, Sequence) and not isinstance(x, (str, bytes)):
+                yield from flatten(x)
+            else:
+                yield x
+    else:
+        yield xs
 
 
 def func_repr(func: Optional[Callable]) -> str:

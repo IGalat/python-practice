@@ -9,8 +9,8 @@ class WinputAdapter(BaseAdapter):
     WINPUT_PROPAGATE: Final[int] = 0
     WINPUT_SUPPRESS: Final[int] = 4
 
-    EVENT_PRESS: Final[int] = 256
-    EVENT_RELEASE: Final[int] = 257
+    EVENT_PRESS: Final[set[int]] = {256, 260}
+    EVENT_RELEASE: Final[set[int]] = {257, 261}
 
     @classmethod
     def start(cls) -> None:
@@ -34,9 +34,9 @@ class WinputAdapter(BaseAdapter):
 
     @classmethod
     def keyboard_callback(cls, event: winput.KeyboardEvent) -> Optional[int]:
-        if event.action == cls.EVENT_PRESS:
+        if event.action in cls.EVENT_PRESS:
             return cls.to_callback_result(cls.on_press(event.key))
-        elif event.action == cls.EVENT_RELEASE:
+        elif event.action in cls.EVENT_RELEASE:
             return cls.to_callback_result(cls.on_release(event.key))
         else:
             return WinputAdapter.WINPUT_PROPAGATE

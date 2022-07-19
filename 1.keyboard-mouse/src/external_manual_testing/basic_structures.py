@@ -24,6 +24,5 @@ another = TapGroup.from_dict({"C": lambda: print("CC")}, "another")
 
 tapper = Tapper([generic, another])
 
-tapper._pre_start(True)
+tapper.start()
 
-pp.pprint(tapper)
