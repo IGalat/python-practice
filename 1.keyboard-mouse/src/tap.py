@@ -9,7 +9,7 @@ from util.misc import is_tuple_of, func_repr
 def keys_from_string(key_str: str | list[str]) -> list[Key]:
     if isinstance(key_str, str):
         key_str = key_str.split("+")  # todo split a++ to a, +
-    keys: list[Key] = [Keys.all()[key] for key in key_str]  # todo look in Key.input_variants as fallback;
+    keys: list[Key] = [Keys.all()[key.lower()] for key in key_str]  # todo look in Key.input_variants as fallback;
     return keys
 
 

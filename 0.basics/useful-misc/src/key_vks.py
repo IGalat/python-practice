@@ -1,203 +1,212 @@
 vk_csv = """
-1,VK_LBUTTON,Left,mouse,button
-2,VK_RBUTTON,Right,mouse,button
-3,VK_CANCEL,Control-break,processing,
-4,VK_MBUTTON,Middle,mouse,button
-5,VK_XBUTTON1,Windows,2000:,X1
-6,VK_XBUTTON2,Windows,2000:,X2
-7,—,Undefined,,
-8,VK_BACK,BACKSPACE,key,
-9,VK_TAB,TAB,key,
-10–11,—,Reserved,,
-12,VK_CLEAR,CLEAR,key,
-13,VK_RETURN,ENTER,key,
-14–15,—,Undefined,,
-16,VK_SHIFT,SHIFT,key,
-17,VK_CONTROL,CTRL,key,
-18,VK_MENU,ALT,key,
-19,VK_PAUSE,PAUSE,key,
-20,VK_CAPITAL,CAPS,LOCK,key
-21,VK_KANA,IME,Kana,mode
-21,VK_HANGUEL,IME,Hanguel,mode
-21,VK_HANGUL,IME,Hangul,mode
-22,—,Undefined,,
-23,VK_JUNJA,IME,Junja,mode
-24,VK_FINAL,IME,final,mode
-25,VK_HANJA,IME,Hanja,mode
-25,VK_KANJI,IME,Kanji,mode
-26,—,Undefined,,
-27,VK_ESCAPE,ESC,key,
-28,VK_CONVERT,IME,convert,
-29,VK_NONCONVERT,IME,nonconvert,
-30,VK_ACCEPT,IME,accept,
-31,VK_MODECHANGE,IME,mode,change
-32,VK_SPACE,SPACEBAR,,
-33,VK_PRIOR,PAGE,UP,key
-34,VK_NEXT,PAGE,DOWN,key
-35,VK_END,END,key,
-36,VK_HOME,HOME,key,
-37,VK_LEFT,LEFT,ARROW,key
-38,VK_UP,UP,ARROW,key
-39,VK_RIGHT,RIGHT,ARROW,key
-40,VK_DOWN,DOWN,ARROW,key
-41,VK_SELECT,SELECT,key,
-42,VK_PRINT,PRINT,key,
-43,VK_EXECUTE,EXECUTE,key,
-44,VK_SNAPSHOT,PRINT,SCREEN,key
-45,VK_INSERT,INS,key,
-46,VK_DELETE,DEL,key,
-47,VK_HELP,HELP,key,
-48,,0,key,
-49,,1,key,
-50,,2,key,
-51,,3,key,
-52,,4,key,
-53,,5,key,
-54,,6,key,
-55,,7,key,
-56,,8,key,
-57,,9,key,
-58–64,—,Undefined,,
-65,,A,key,
-66,,B,key,
-67,,C,key,
-68,,D,key,
-69,,E,key,
-70,,F,key,
-71,,G,key,
-72,,H,key,
-73,,I,key,
-74,,J,key,
-75,,K,key,
-76,,L,key,
-77,,M,key,
-78,,N,key,
-79,,O,key,
-80,,P,key,
-81,,Q,key,
-82,,R,key,
-83,,S,key,
-84,,T,key,
-85,,U,key,
-86,,V,key,
-87,,W,key,
-88,,X,key,
-89,,Y,key,
-90,,Z,key,
-91,VK_LWIN,Left,Windows,key
-92,VK_RWIN,Right,Windows,key
-93,VK_APPS,Applications,key,(Natural
-94,—,Reserved,,
-95,VK_SLEEP,Computer,Sleep,key
-96,VK_NUMPAD0,Numeric,keypad,0
-97,VK_NUMPAD1,Numeric,keypad,1
-98,VK_NUMPAD2,Numeric,keypad,2
-99,VK_NUMPAD3,Numeric,keypad,3
-100,VK_NUMPAD4,Numeric,keypad,4
-101,VK_NUMPAD5,Numeric,keypad,5
-102,VK_NUMPAD6,Numeric,keypad,6
-103,VK_NUMPAD7,Numeric,keypad,7
-104,VK_NUMPAD8,Numeric,keypad,8
-105,VK_NUMPAD9,Numeric,keypad,9
-106,VK_MULTIPLY,Multiply,key,
-107,VK_ADD,Add,key,
-108,VK_SEPARATOR,Separator,key,
-109,VK_SUBTRACT,Subtract,key,
-110,VK_DECIMAL,Decimal,key,
-111,VK_DIVIDE,Divide,key,
-112,VK_F1,F1,key,
-113,VK_F2,F2,key,
-114,VK_F3,F3,key,
-115,VK_F4,F4,key,
-116,VK_F5,F5,key,
-117,VK_F6,F6,key,
-118,VK_F7,F7,key,
-119,VK_F8,F8,key,
-120,VK_F9,F9,key,
-121,VK_F10,F10,key,
-122,VK_F11,F11,key,
-123,VK_F12,F12,key,
-124,VK_F13,F13,key,
-125,VK_F14,F14,key,
-126,VK_F15,F15,key,
-127,VK_F16,F16,key,
-128H,VK_F17,F17,key,
-129H,VK_F18,F18,key,
-130H,VK_F19,F19,key,
-131H,VK_F20,F20,key,
-132H,VK_F21,F21,key,
-133H,VK_F22,F22,key,
-134H,VK_F23,F23,key,
-135H,VK_F24,F24,key,
-136–143,—,Unassigned,,
-144,VK_NUMLOCK,NUM,LOCK,key
-145,VK_SCROLL,SCROLL,LOCK,key
-146–150,,OEM,specific,
-151–159,—,Unassigned,,
-160,VK_LSHIFT,Left,SHIFT,key
-161,VK_RSHIFT,Right,SHIFT,key
-162,VK_LCONTROL,Left,CONTROL,key
-163,VK_RCONTROL,Right,CONTROL,key
-164,VK_LMENU,Left,MENU,key
-165,VK_RMENU,Right,MENU,key
-166,VK_BROWSER_BACK,Windows,2000:,Browser
-167,VK_BROWSER_FORWARD,Windows,2000:,Browser
-168,VK_BROWSER_REFRESH,Windows,2000:,Browser
-169,VK_BROWSER_STOP,Windows,2000:,Browser
-170,VK_BROWSER_SEARCH,Windows,2000:,Browser
-171,VK_BROWSER_FAVORITES,Windows,2000:,Browser
-172,VK_BROWSER_HOME,Windows,2000:,Browser
-173,VK_VOLUME_MUTE,Windows,2000:,Volume
-174,VK_VOLUME_DOWN,Windows,2000:,Volume
-175,VK_VOLUME_UP,Windows,2000:,Volume
-176,VK_MEDIA_NEXT_TRACK,Windows,2000:,Next
-177,VK_MEDIA_PREV_TRACK,Windows,2000:,Previous
-178,VK_MEDIA_STOP,Windows,2000:,Stop
-179,VK_MEDIA_PLAY_PAUSE,Windows,2000:,Play/Pause
-180,VK_LAUNCH_MAIL,Windows,2000:,Start
-181,VK_LAUNCH_MEDIA_SELECT,Windows,2000:,Select
-182,VK_LAUNCH_APP1,Windows,2000:,Start
-183,VK_LAUNCH_APP2,Windows,2000:,Start
-184-185,—,Reserved,,
-186,VK_OEM_1,Windows,2000:,For
-187,VK_OEM_PLUS,Windows,2000:,For
-188,VK_OEM_COMMA,Windows,2000:,For
-189,VK_OEM_MINUS,Windows,2000:,For
-190,VK_OEM_PERIOD,Windows,2000:,For
-191,VK_OEM_2,Windows,2000:,For
-192,VK_OEM_3,Windows,2000:,For
-193–215,—,Reserved,,
-216–218,—,Unassigned,,
-219,VK_OEM_4,Windows,2000:,For
-220,VK_OEM_5,Windows,2000:,For
-221,VK_OEM_6,Windows,2000:,For
-222,VK_OEM_7,Windows,2000:,For
-223,VK_OEM_8,,,
-224,—,Reserved,,
-225,,OEM,specific,
-226,VK_OEM_102,Windows,2000:,Either
-227–228,,OEM,specific,
-229,VK_PROCESSKEY,Windows,"95/98,",Windows
-230,,OEM,specific,
-231,VK_PACKET,Windows,2000:,Used
-232,—,Unassigned,,
-233–245,,OEM,specific,
-246,VK_ATTN,Attn,key,
-247,VK_CRSEL,CrSel,key,
-248,VK_EXSEL,ExSel,key,
-249,VK_EREOF,Erase,EOF,key
-250,VK_PLAY,Play,key,
-251,VK_ZOOM,Zoom,key,
-252,VK_NONAME,Reserved,for,future
-253,VK_PA1,PA1,key,
-254,VK_OEM_CLEAR,Clear,key,
+VK_LBUTTON,1,Left mouse button
+VK_RBUTTON,2,Right mouse button
+VK_CANCEL,3,Control-break processing
+VK_MBUTTON,4,Middle mouse button (three-button mouse)
+VK_XBUTTON1,5,Windows 2000: X1 mouse button
+VK_XBUTTON2,6,Windows 2000: X2 mouse button
+—,7,Undefined
+VK_BACK,8,BACKSPACE key
+VK_TAB,9,TAB key
+—,10–11,Reserved
+VK_CLEAR,12,CLEAR key
+VK_RETURN,13,ENTER key
+—,14–15,Undefined
+VK_SHIFT,16,SHIFT key
+VK_CONTROL,17,CTRL key
+VK_MENU,18,ALT key
+VK_PAUSE,19,PAUSE key
+VK_CAPITAL,20,CAPS LOCK key
+VK_KANA,21,IME Kana mode
+VK_HANGUEL,21,IME Hanguel mode (maintained for compatibility; use VK_HANGUL)
+VK_HANGUL,21,IME Hangul mode
+—,22,Undefined
+VK_JUNJA,23,IME Junja mode
+VK_FINAL,24,IME final mode
+VK_HANJA,25,IME Hanja mode
+VK_KANJI,25,IME Kanji mode
+—,26,Undefined
+VK_ESCAPE,27,ESC key
+VK_CONVERT,28,IME convert
+VK_NONCONVERT,29,IME nonconvert
+VK_ACCEPT,30,IME accept
+VK_MODECHANGE,31,IME mode change request
+VK_SPACE,32,SPACEBAR
+VK_PRIOR,33,PAGE UP key
+VK_NEXT,34,PAGE DOWN key
+VK_END,35,END key
+VK_HOME,36,HOME key
+VK_LEFT,37,LEFT ARROW key
+VK_UP,38,UP ARROW key
+VK_RIGHT,39,RIGHT ARROW key
+VK_DOWN,40,DOWN ARROW key
+VK_SELECT,41,SELECT key
+VK_PRINT,42,PRINT key
+VK_EXECUTE,43,EXECUTE key
+VK_SNAPSHOT,44,PRINT SCREEN key
+VK_INSERT,45,INS key
+VK_DELETE,46,DEL key
+VK_HELP,47,HELP key
+ ,48,0 key
+ ,49,1 key
+ ,50,2 key
+ ,51,3 key
+ ,52,4 key
+ ,53,5 key
+ ,54,6 key
+ ,55,7 key
+ ,56,8 key
+ ,57,9 key
+—,58–64,Undefined
+ ,65,A key
+ ,66,B key
+ ,67,C key
+ ,68,D key
+ ,69,E key
+ ,70,F key
+ ,71,G key
+ ,72,H key
+ ,73,I key
+ ,74,J key
+ ,75,K key
+ ,76,L key
+ ,77,M key
+ ,78,N key
+ ,79,O key
+ ,80,P key
+ ,81,Q key
+ ,82,R key
+ ,83,S key
+ ,84,T key
+ ,85,U key
+ ,86,V key
+ ,87,W key
+ ,88,X key
+ ,89,Y key
+ ,90,Z key
+VK_LWIN,91,Left Windows key (Microsoft® Natural® keyboard)
+VK_RWIN,92,Right Windows key (Natural keyboard)
+VK_APPS,93,Applications key (Natural keyboard)
+—,94,Reserved
+VK_SLEEP,95,Computer Sleep key
+VK_NUMPAD0,96,Numeric keypad 0 key
+VK_NUMPAD1,97,Numeric keypad 1 key
+VK_NUMPAD2,98,Numeric keypad 2 key
+VK_NUMPAD3,99,Numeric keypad 3 key
+VK_NUMPAD4,100,Numeric keypad 4 key
+VK_NUMPAD5,101,Numeric keypad 5 key
+VK_NUMPAD6,102,Numeric keypad 6 key
+VK_NUMPAD7,103,Numeric keypad 7 key
+VK_NUMPAD8,104,Numeric keypad 8 key
+VK_NUMPAD9,105,Numeric keypad 9 key
+VK_MULTIPLY,106,Multiply key
+VK_ADD,107,Add key
+VK_SEPARATOR,108,Separator key
+VK_SUBTRACT,109,Subtract key
+VK_DECIMAL,110,Decimal key
+VK_DIVIDE,111,Divide key
+VK_F1,112,F1 key
+VK_F2,113,F2 key
+VK_F3,114,F3 key
+VK_F4,115,F4 key
+VK_F5,116,F5 key
+VK_F6,117,F6 key
+VK_F7,118,F7 key
+VK_F8,119,F8 key
+VK_F9,120,F9 key
+VK_F10,121,F10 key
+VK_F11,122,F11 key
+VK_F12,123,F12 key
+VK_F13,124,F13 key
+VK_F14,125,F14 key
+VK_F15,126,F15 key
+VK_F16,127,F16 key
+VK_F17,128H,F17 key
+VK_F18,129H,F18 key
+VK_F19,130H,F19 key
+VK_F20,131H,F20 key
+VK_F21,132H,F21 key
+VK_F22,133H,F22 key
+VK_F23,134H,F23 key
+VK_F24,135H,F24 key
+—,136–143,Unassigned
+VK_NUMLOCK,144,NUM LOCK key
+VK_SCROLL,145,SCROLL LOCK key
+ ,146–150,OEM specific
+—,151–159,Unassigned
+VK_LSHIFT,160,Left SHIFT key
+VK_RSHIFT,161,Right SHIFT key
+VK_LCONTROL,162,Left CONTROL key
+VK_RCONTROL,163,Right CONTROL key
+VK_LMENU,164,Left MENU key
+VK_RMENU,165,Right MENU key
+VK_BROWSER_BACK,166,Windows 2000: Browser Back key
+VK_BROWSER_FORWARD,167,Windows 2000: Browser Forward key
+VK_BROWSER_REFRESH,168,Windows 2000: Browser Refresh key
+VK_BROWSER_STOP,169,Windows 2000: Browser Stop key
+VK_BROWSER_SEARCH,170,Windows 2000: Browser Search key
+VK_BROWSER_FAVORITES,171,Windows 2000: Browser Favorites key
+VK_BROWSER_HOME,172,Windows 2000: Browser Start and Home key
+VK_VOLUME_MUTE,173,Windows 2000: Volume Mute key
+VK_VOLUME_DOWN,174,Windows 2000: Volume Down key
+VK_VOLUME_UP,175,Windows 2000: Volume Up key
+VK_MEDIA_NEXT_TRACK,176,Windows 2000: Next Track key
+VK_MEDIA_PREV_TRACK,177,Windows 2000: Previous Track key
+VK_MEDIA_STOP,178,Windows 2000: Stop Media key
+VK_MEDIA_PLAY_PAUSE,179,Windows 2000: Play/Pause Media key
+VK_LAUNCH_MAIL,180,Windows 2000: Start Mail key
+VK_LAUNCH_MEDIA_SELECT,181,Windows 2000: Select Media key
+VK_LAUNCH_APP1,182,Windows 2000: Start Application 1 key
+VK_LAUNCH_APP2,183,Windows 2000: Start Application 2 key
+—,184-185,Reserved
+VK_OEM_1,186,Windows 2000: For the US standard keyboard, the ';:' key
+VK_OEM_PLUS,187,Windows 2000: For any country/region, the '+' key
+VK_OEM_COMMA,188,Windows 2000: For any country/region, the ',' key
+VK_OEM_MINUS,189,Windows 2000: For any country/region, the '-' key
+VK_OEM_PERIOD,190,Windows 2000: For any country/region, the '.' key
+VK_OEM_2,191,Windows 2000: For the US standard keyboard, the '/?' key
+VK_OEM_3,192,Windows 2000: For the US standard keyboard, the '`~' key
+—,193–215,Reserved
+—,216–218,Unassigned
+VK_OEM_4,219,Windows 2000: For the US standard keyboard, the '[{' key
+VK_OEM_5,220,Windows 2000: For the US standard keyboard, the '\|' key
+VK_OEM_6,221,Windows 2000: For the US standard keyboard, the ']}' key
+VK_OEM_7,222,Windows 2000: For the US standard keyboard, the 'single-quote/double-quote' key
+VK_OEM_8,223,
+—,224,Reserved
+ ,225,OEM specific
+VK_OEM_102,226,Windows 2000: Either the angle bracket key or the backslash key on the RT 102-key keyboard
+ ,227–228,OEM specific
+VK_PROCESSKEY,229,Windows 95/98, Windows NT 4.0, Windows 2000: IME PROCESS key
+ ,230,OEM specific
+VK_PACKET,231,Windows 2000: Used to pass Unicode characters as if they were keystrokes. The VK_PACKET key is the low word of a 32-bit Virtual Key value used for non-keyboard input methods. For more information, see Remark in KEYBDINPUT, SendInput, WM_KEYDOWN, and WM_KEYUP
+—,232,Unassigned
+ ,233–245,OEM specific
+VK_ATTN,246,Attn key
+VK_CRSEL,247,CrSel key
+VK_EXSEL,248,ExSel key
+VK_EREOF,249,Erase EOF key
+VK_PLAY,250,Play key
+VK_ZOOM,251,Zoom key
+VK_NONAME,252,Reserved for future use
+VK_PA1,253,PA1 key
+VK_OEM_CLEAR,254,Clear key
 """
 
 lines = vk_csv.split("\n")
 
 for line in lines:
-    values = line.split(",")
-    if len(values) >= 3:
-        name = values[2].lower().replace("-", "_")
-        if not (name == "undefined" or name == "reserved" or name == "unassigned"):
-            print(f'{name} = Key({values[0]}, "{values[1]}")')
+    if line == "":
+        continue
+    vk_name, _, ending = line.partition(",")
+    vk_code, _, desc = ending.partition(",")
+    if desc.startswith("Reserved") or desc.startswith("Unassigned") or desc.startswith("Undefined"):
+        continue
+
+    desc = desc.rstrip(" key").replace("Windows 2000: ", "").replace("For the US standard keyboard, the ", "").lower().replace(
+        " ", "_").replace("-", "_")
+
+    if vk_name.strip(" ") != "":
+        vk_name = f', "{vk_name}"'
+
+    print(f"    {desc} = Key({vk_code}{vk_name})")

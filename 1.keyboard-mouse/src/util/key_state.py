@@ -76,7 +76,7 @@ class KeypressManager:
             key_count[vk] -= 1
             return False
         else:
-            cls.keys_pressed().remove(vk)
+            cls.keys_pressed().remove(vk)  # todo add catch, and GetKeyState of all keys in set
             return True
 
 
