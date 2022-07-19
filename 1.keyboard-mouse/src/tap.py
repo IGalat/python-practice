@@ -14,9 +14,9 @@ def keys_from_string(key_str: str | list[str]) -> list[Key]:
 
 
 def to_keys(hotkey: Key | tuple[Key, ...] | str | tuple[str, ...]) -> tuple[Key, tuple[Key, ...]]:
-    """Returns (trigger_key, [additional_keys])"""
+    """Returns (trigger_key, (additional_keys))"""
     keys: tuple[Key, ...]
-    if one := isinstance(hotkey, Key) or is_tuple_of(hotkey, Key):
+    if (one := isinstance(hotkey, Key)) or is_tuple_of(hotkey, Key):
         if one:
             hotkey = (hotkey,)
         keys = hotkey
@@ -37,7 +37,7 @@ class Tap(Suspendable):
     trigger_key: Key
     """ Main key that's watched. Last in key combination supplied """
 
-    action: Optional[Callable]
+    action: Optional[Callable]  # todo accept *args **kwargs, and in trigger_if
     """
     None - key will be typed as usual
     otherwise - will suppress trigger_key but not others
@@ -47,6 +47,11 @@ class Tap(Suspendable):
     """ Should action be interrupted when hotkey, its group, or tapper is suspended? """
 
     suppress_trigger_key_on_action: bool
+
+    no_additional_keys: bool
+    """
+    When True: if any keys other than specified are pressed, hotkey isn't triggered
+    """
 
     trigger_if: Optional[Callable]
     """ 
@@ -58,13 +63,14 @@ class Tap(Suspendable):
     _parent: Optional[Suspendable] = None
 
     def __init__(
-        self,
-        hotkey: Key | tuple[Key] | str | tuple[str],
-        action: Optional[Callable],
-        *,
-        interrupt_on_suspend: bool = True,
-        suppress_trigger_key_on_action: bool = True,
-        trigger_if: Callable = None,
+            self,
+            hotkey: Key | tuple[Key, ...] | str | tuple[str, ...],
+            action: Optional[Callable],
+            *,
+            interrupt_on_suspend: bool = True,
+            suppress_trigger_key_on_action: bool = True,
+            no_additional_keys: bool = False,
+            trigger_if: Callable = None,
     ):
         """
         :param hotkey: Trigger keys for hotkey or hotstring.
@@ -75,6 +81,7 @@ class Tap(Suspendable):
         self.action = action
         self.interrupt_on_suspend = interrupt_on_suspend
         self.suppress_trigger_key_on_action = suppress_trigger_key_on_action
+        self.no_additional_keys = no_additional_keys
         self.trigger_if = trigger_if
         self.unsuspend()
 
@@ -95,10 +102,9 @@ class Tap(Suspendable):
         return "Tap(" + ",".join(desc) + ")"
 
     def suspended(self) -> bool:
-        return  self._suspended or self._parent.suspended()  # type:ignore
+        return self._suspended or self._parent.suspended()  # type:ignore
 
     def same_hotkey(self, hotkey: tuple[Key, tuple[Key, ...]]) -> bool:
         return (self.trigger_key, self.additional_keys) == hotkey
-
 
 # def __eq__ # todo comparison with aliases, str, etc. , __ne__

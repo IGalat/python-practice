@@ -61,8 +61,10 @@ class BaseAdapter(ABC):  # todo move all logic from here, on_press substitute f
         for key in tap.additional_keys:
             if not any(vk in vk_pressed for vk in key.all_vk_codes):
                 return False
+        if tap.no_additional_keys:
+            if len(vk_pressed) > (len(tap.additional_keys) + 1):  # todo check instead every key pressed
+                return False
         return True
-
 
     @classmethod
     def on_release(cls, vk: int) -> bool:

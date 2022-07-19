@@ -1,5 +1,6 @@
 import pprint
 
+from key import Keys
 from tap import Tap
 from tap_group import TapGroup
 from tapper import Tapper
@@ -17,12 +18,13 @@ def print_hw() -> None:
 
 chiwawa = Tap("b", lambda: print("chiwawa!"))
 
-generic = TapGroup([chiwawa, Tap("ctrl+c", lambda: print("Aaaand cut!"))], "Generic")
+generic = TapGroup(
+    [chiwawa, Tap("ctrl+c", lambda: print("Aaaand cut!")),
+     Tap((Keys.rctrl, Keys.d), lambda: print("ctrlD!"), no_additional_keys=True)],
+    "Generic")
 
-# another = TapGroup.from_dict({Keys.c: lambda: print("CC")}, "another")  # unhashable Keys.c
 another = TapGroup.from_dict({"C": lambda: print("CC")}, "another")
 
 tapper = Tapper([generic, another])
 
 tapper.start()
-

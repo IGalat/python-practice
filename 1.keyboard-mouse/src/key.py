@@ -39,8 +39,8 @@ class Key:
         if self.vk_code:
             vk_lists = [self.vk_code]
         if self.alias_for:
-            vk_lists.extend([alias.collect_vk_codes() for alias in self.alias_for])
-        return flatten_to_list(vk_lists)
+            vk_lists.extend(flatten_to_list([alias.collect_vk_codes() for alias in self.alias_for]))
+        return vk_lists
 
 
 @dataclass
@@ -80,11 +80,10 @@ class Keys:
             return key
         except AttributeError:
             for key in cls.all():
-                input_var = key.input_variants
-                if input_var and input in input_var:
+                input_variants = key.input_variants
+                if input_variants and input in input_variants:
                     return key
             return None
-
 
     escape = Key(27, "VK_ESCAPE")
 

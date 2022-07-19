@@ -44,7 +44,7 @@ class TapGroup(Suspendable):
             return None
 
     def add(self, taps: Dict[str | tuple[str], Optional[Callable]] | Tap | tuple[Tap, ...] | list[Tap]) -> None:
-        if one := isinstance(taps, Tap) or is_tuple_of(taps, Tap) or is_list_of(taps, Tap):
+        if (one := isinstance(taps, Tap)) or is_tuple_of(taps, Tap) or is_list_of(taps, Tap):
             if one:
                 taps = (taps,)
         elif isinstance(taps, dict):
@@ -52,13 +52,13 @@ class TapGroup(Suspendable):
         self._taps.extend(taps)
 
     def remove(self, taps: Tap | tuple[Tap] | str | tuple[str]) -> None:
-        if one := isinstance(taps, Tap) or is_tuple_of(taps, Tap):
+        if (one := isinstance(taps, Tap)) or is_tuple_of(taps, Tap):
             if one:
                 taps = (taps,)
             for tap in taps:
                 self._taps.remove(tap)
             return
-        elif one := isinstance(taps, str) or is_tuple_of(taps, str):
+        elif (one := isinstance(taps, str)) or is_tuple_of(taps, str):
             if one:
                 taps = (taps,)
             for tap_str in taps:
