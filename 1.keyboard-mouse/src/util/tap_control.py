@@ -1,18 +1,21 @@
+import os
+import signal
 import subprocess
 import sys
+
+from config import Config
 
 
 class TapControl:  # todo
     @staticmethod
     def restart_script() -> None:
-        pass
+        print("Restarting script...")
+        sys.stdout.flush()
+        subprocess.Popen([sys.executable] + sys.argv, creationflags=subprocess.DETACHED_PROCESS)
+        os.kill(os.getpid(), signal.SIGINT)
 
     @staticmethod
     def terminate_script() -> None:
-        pass
-
-    @staticmethod
-    def reload_script() -> None:
-        sys.stdout.flush()
-        subprocess.Popen([sys.executable] + sys.argv, creationflags=subprocess.DETACHED_PROCESS)
-        sys.exit()
+        print("Terminating script...")
+        Config.adapter.stop()
+        os.kill(os.getpid(), signal.SIGINT)

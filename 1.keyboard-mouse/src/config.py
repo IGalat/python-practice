@@ -3,14 +3,13 @@ from typing import ClassVar
 
 import adapter
 from adapter import BaseAdapter
-from tap_group import TapGroup
 
 
 @dataclass
 class Config:
     adapter: ClassVar[BaseAdapter]
-    default_controls: ClassVar[TapGroup] = TapGroup([])  # todo fill
-    action_threads: ClassVar[int] = 10
+    action_threads: ClassVar[int] = 1
+    controller_interval_sec = 0
 
     @classmethod
     def fill_absent(cls) -> None:

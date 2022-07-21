@@ -24,7 +24,7 @@ class Key:
         if self.vk_name:
             desc.append(f"{self.vk_name}")
         if self.input_variants:
-            desc.append("input_variants={self.input_variants}")
+            desc.append(f"input_variants={self.input_variants}")
         if self.alias_for:
             desc.append(f"alias_for={self.alias_for}")
         return "Key(" + ",".join(desc) + ")"
@@ -43,12 +43,26 @@ class Key:
         return vk_lists
 
 
+def get_vk(key: int | Key | str) -> int:
+    int_key: int = -1  # mypy made me do it!
+    if isinstance(key, int):
+        int_key = key
+    if isinstance(key, Key):
+        int_key = key.get_vk_code()
+    elif isinstance(key, str):
+        found = Keys.by_str(key)
+        if not found:
+            raise ValueError(f"Tried to emulate press of {key}, but didn't find it in Keys.")
+        int_key = found.get_vk_code()
+    return int_key
+
+
 @dataclass(slots=False)
 class Keys:
-    _all: ClassVar[dict]
+    _all: ClassVar[dict[str, Key]]
 
     @classmethod
-    def all(cls) -> dict:
+    def all(cls) -> dict[str, Key]:
         try:
             return cls._all
         except AttributeError:
@@ -66,7 +80,7 @@ class Keys:
     def by_vk_code(cls, vk: Optional[int]) -> Optional[Key]:
         if vk is None:
             return None
-        for key in cls.all():
+        for key in cls.all().values():
             if vk == key.vk_code:
                 return key
         return None
@@ -78,8 +92,8 @@ class Keys:
         try:
             key = cls.all()[input]
             return key
-        except AttributeError:
-            for key in cls.all():
+        except KeyError:
+            for key in cls.all().values():
                 input_variants = key.input_variants
                 if input_variants and input in input_variants:
                     return key
@@ -256,6 +270,8 @@ class Keys:
     lmb = left_mouse_button
     rmb = right_mouse_button
     mmb = middle_mouse_button
+    x1mb = x1_mouse_button
+    x2mb = x2_mouse_button
 
     caps = caps_lock
     esc = escape
@@ -277,5 +293,3 @@ class Keys:
     dash = minus
     hyphen = minus
     dot = period
-
-

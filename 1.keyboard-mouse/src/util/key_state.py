@@ -1,23 +1,9 @@
 from typing import Final
 
-from key import Key, Keys
+from key import Key, get_vk
 from tap import Tap
 from tap_group import TapGroup
 from util.misc import flatten_to_list
-
-
-def get_vk(key: int | Key | str) -> int:
-    int_key: int = -1  # mypy made me do it!
-    if isinstance(key, int):
-        int_key = key
-    if isinstance(key, Key):
-        int_key = key.get_vk_code()
-    elif isinstance(key, str):
-        found = Keys.by_str(key)
-        if not found:
-            raise ValueError(f"Tried to emulate press of {key}, but didn't find it in Keys.")
-        int_key = found.get_vk_code()
-    return int_key
 
 
 class KeypressManager:
@@ -76,8 +62,12 @@ class KeypressManager:
             key_count[vk] -= 1
             return False
         else:
-            cls.keys_pressed().remove(vk)  # todo add catch, and GetKeyState of all keys in set
+            cls.remove_from_pressed(vk)
             return True
+
+    @classmethod
+    def remove_from_pressed(cls, vk: int) -> None:
+        cls.keys_pressed().remove(vk)  # todo add catch, and GetKeyState of all keys in set
 
 
 class HotkeyMatcher:

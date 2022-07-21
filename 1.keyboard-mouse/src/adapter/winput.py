@@ -25,12 +25,12 @@ class WinputAdapter(BaseAdapter):
         winput.unhook_keyboard()
 
     @classmethod
-    def press_key(cls) -> None:
-        pass
+    def press_key(cls, vk_code: int) -> None:
+        winput.press_key(vk_code)
 
     @classmethod
-    def release_key(cls) -> None:
-        pass
+    def release_key(cls, vk_code: int) -> None:
+        winput.release_key(vk_code)
 
     @classmethod
     def keyboard_callback(cls, event: winput.KeyboardEvent) -> Optional[int]:

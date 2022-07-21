@@ -3,8 +3,10 @@ from typing import Final
 
 from config import Config
 from interfaces import Suspendable, SingletonMeta
+from tap import Tap
 from tap_group import TapGroup
 from util.misc import is_list_of, flatten_to_list
+from util.tap_control import TapControl
 
 
 def to_tap_groups(taps: TapGroup | list[TapGroup] | dict) -> list[TapGroup]:
@@ -27,6 +29,10 @@ class Tapper(Suspendable, metaclass=SingletonMeta):
 
     controlGroup: Final[TapGroup] = TapGroup([], "CONTROL_GROUP")  # doesn't get suspended, always active
 
+    default_controls: TapGroup = TapGroup(
+        [Tap("ctrl+f2", TapControl.restart_script), Tap("f2", TapControl.terminate_script)]
+    )
+
     def __init__(self, taps: TapGroup | list[TapGroup] | dict | None = None):
         """
         :param taps: TapGroup, list[TapGroup], dict {"hotkey": action}, or None
@@ -48,20 +54,20 @@ class Tapper(Suspendable, metaclass=SingletonMeta):
         else:
             raise TypeError
 
-    def start(self, default_controls: bool = True) -> None:  # todo
+    def start(self, default_controls: bool = True) -> None:
         """
         :param default_controls: If you didn't add anything to controlGroup,
         this will fill default controls for you, to suspend/reload/exit script.
 
         """
         self._pre_start(default_controls)
-        Config().adapter.start()
+        Config.adapter.start()
 
     def _pre_start(self, default_controls: bool) -> None:
         Config.fill_absent()
 
-        if default_controls and not self.controlGroup:
-            self.controlGroup.add(Config.default_controls.get_all())
+        if default_controls and not self.controlGroup.get_all():
+            self.controlGroup.add(self.default_controls.get_all())
 
         for group in self.groups:
             group._parent = self
