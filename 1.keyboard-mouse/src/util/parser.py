@@ -23,7 +23,7 @@ class ParseError(Exception):
 
 
 class InputStringParser:
-    pattern: ClassVar[Pattern] = re.compile("\$\{[a-zA-Z1-9 ]+}")
+    pattern: ClassVar[Pattern] = re.compile("\$\([a-zA-Z1-9 ]+\)")
     dummy_char: Final[str] = chr(0x101111)
 
     @classmethod

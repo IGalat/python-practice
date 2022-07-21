@@ -28,9 +28,9 @@ class TapGroup(Suspendable):
 
     @classmethod
     def from_dict(
-            cls, binds: dict[str | tuple[str], Optional[Callable]], name: str = None
+            cls, binds: dict[str | tuple[str], Optional[Callable | str]], name: str = None
     ) -> Self:  # type:ignore
-        taps = [Tap(key, binds[key]) for key in binds]
+        taps = [Tap(key, value) for (key, value) in binds.items()]
         return TapGroup(taps, name)
 
     def get_all(self) -> list[Tap]:

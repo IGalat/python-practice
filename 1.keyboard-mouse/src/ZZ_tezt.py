@@ -14,7 +14,7 @@ def print_hw() -> None:
 
 
 def piano() -> None:
-    KeyboardController.send("hello people of earth. ipsum ${shift down}lorem${shift up} qwerty asdfgh${enter}${ctrl}")
+    KeyboardController.send("hello people of earth. ipsum $(shift down)lorem$(shift up) qwerty asdfgh$(enter)$(ctrl)")
 
 
 """ can add new key before other actions """
@@ -24,12 +24,18 @@ def piano() -> None:
 chiwawa = Tap("b", lambda: print("chiwawa!"), no_additional_keys=True)
 
 generic = TapGroup(
-    [chiwawa, Tap("ctrl+c", lambda: print("Aaaand cut!")),
-     Tap((Keys.rctrl, Keys.d), lambda: print("ctrlD!"), no_additional_keys=True)],
-    "Generic")
+    [
+        chiwawa,
+        Tap("ctrl+c", lambda: print("Aaaand cut!")),
+        Tap((Keys.rctrl, Keys.d), lambda: print("ctrlD!"), no_additional_keys=True),
+    ],
+    "Generic",
+)
 
-another = TapGroup.from_dict({"C": lambda: print("CC"), "i": piano}, "another")
+another = TapGroup.from_dict({"C": lambda: print("CC"), "i": piano, "y": "yohoho1"}, "another")
 
-tapper = Tapper([generic, another])
+remap = TapGroup.from_dict({"e": "r", "r": "e"}, "remap")
+
+tapper = Tapper([generic, another, remap])
 
 tapper.start()

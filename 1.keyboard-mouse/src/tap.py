@@ -29,6 +29,17 @@ def to_keys(hotkey: Key | tuple[Key, ...] | str | tuple[str, ...]) -> tuple[Key,
     return keys[-1], keys[:-1]
 
 
+def to_action(action: Callable | str) -> Callable:
+    if callable(action):
+        return action
+    elif isinstance(action, str):
+        from util.controller import KeyboardController
+
+        return lambda: KeyboardController.send(action)
+    else:
+        raise TypeError(type(action))
+
+
 @dataclass(init=False, repr=False)
 class Tap(Suspendable):
     additional_keys: tuple[Key, ...]
@@ -63,14 +74,14 @@ class Tap(Suspendable):
     _parent: Optional[Suspendable] = None
 
     def __init__(
-            self,
-            hotkey: Key | tuple[Key, ...] | str | tuple[str, ...],
-            action: Optional[Callable],
-            *,
-            interrupt_on_suspend: bool = True,
-            suppress_trigger_key_on_action: bool = True,
-            no_additional_keys: bool = False,
-            trigger_if: Callable = None,
+        self,
+        hotkey: Key | tuple[Key, ...] | str | tuple[str, ...],
+        action: Optional[Callable] | str,
+        *,
+        interrupt_on_suspend: bool = True,
+        suppress_trigger_key_on_action: bool = True,
+        no_additional_keys: bool = False,
+        trigger_if: Callable = None,
     ):
         """
         :param hotkey: Trigger keys for hotkey or hotstring.
@@ -78,7 +89,7 @@ class Tap(Suspendable):
         """
 
         self.trigger_key, self.additional_keys = to_keys(hotkey)
-        self.action = action
+        self.action = to_action(action)
         self.interrupt_on_suspend = interrupt_on_suspend
         self.suppress_trigger_key_on_action = suppress_trigger_key_on_action
         self.no_additional_keys = no_additional_keys
@@ -106,5 +117,6 @@ class Tap(Suspendable):
 
     def same_hotkey(self, hotkey: tuple[Key, tuple[Key, ...]]) -> bool:
         return (self.trigger_key, self.additional_keys) == hotkey
+
 
 # def __eq__ # todo comparison with aliases, str, etc. , __ne__
