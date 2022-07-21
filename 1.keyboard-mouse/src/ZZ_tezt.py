@@ -21,7 +21,7 @@ def piano() -> None:
 # Keys.f = Key(70)
 # pp.pprint(Keys.all())
 
-chiwawa = Tap("b", lambda: print("chiwawa!"), no_additional_keys=True)
+chiwawa = Tap("b", "chiwawa", no_additional_keys=True)
 
 generic = TapGroup(
     [

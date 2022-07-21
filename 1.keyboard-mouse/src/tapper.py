@@ -29,10 +29,6 @@ class Tapper(Suspendable, metaclass=SingletonMeta):
 
     controlGroup: Final[TapGroup] = TapGroup([], "CONTROL_GROUP")  # doesn't get suspended, always active
 
-    default_controls: TapGroup = TapGroup(
-        [Tap("ctrl+f2", TapControl.restart_script), Tap("f2", TapControl.terminate_script)]
-    )
-
     def __init__(self, taps: TapGroup | list[TapGroup] | dict | None = None):
         """
         :param taps: TapGroup, list[TapGroup], dict {"hotkey": action}, or None
@@ -67,7 +63,7 @@ class Tapper(Suspendable, metaclass=SingletonMeta):
         Config.fill_absent()
 
         if default_controls and not self.controlGroup.get_all():
-            self.controlGroup.add(self.default_controls.get_all())
+            self.controlGroup.add(default_control_group.get_all())
 
         for group in self.groups:
             group._parent = self
@@ -84,3 +80,12 @@ class Tapper(Suspendable, metaclass=SingletonMeta):
     def add_groups(self, groups: list[TapGroup] | TapGroup) -> None:
         correct_groups = to_tap_groups(groups)
         self.groups.extend(correct_groups)
+
+
+default_control_group: TapGroup = TapGroup(
+    [
+        Tap("ctrl+f2", TapControl.restart_script),
+        Tap("f2", TapControl.terminate_script),
+        Tap("f1", lambda: Tapper().toggle_suspend()),
+    ]
+)
