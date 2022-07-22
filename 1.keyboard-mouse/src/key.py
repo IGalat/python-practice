@@ -1,21 +1,28 @@
-from dataclasses import dataclass, field
-from typing import Optional, ClassVar
+from dataclasses import dataclass
+from typing import Optional, ClassVar, Final
 
 from util.misc import flatten_to_list
 
 
-@dataclass(repr=False)
+@dataclass(init=False, repr=False)
 class Key:
-    vk_code: Optional[int] = None
-    vk_name: Optional[str] = None
-    input_variants: Optional[list[str]] = None
-    alias_for: list["Key"] = field(default_factory=list)
-    all_vk_codes: list[int] = field(default_factory=list, init=False)
+    vk_code: Optional[int]
+    vk_name: Optional[str]
+    alias_for: list["Key"]
+    all_vk_codes: list[int]
 
-    def __post_init__(self) -> None:
+    def __init__(self, vk_code: Optional[int] = None, vk_name: Optional[str] = None, alias_for: Optional[list] = None):
+        if alias_for is None:
+            alias_for = []
+        self.vk_code = vk_code
+        self.vk_name = vk_name
+        self.alias_for = alias_for
+
         if not self.vk_code and not self.alias_for:
             raise ValueError("Must either be a key or an alias")
         self.all_vk_codes = self.collect_vk_codes()
+
+
 
     def __repr__(self) -> str:
         desc = []
@@ -23,8 +30,6 @@ class Key:
             desc.append(f"{self.vk_code}")
         if self.vk_name:
             desc.append(f"{self.vk_name}")
-        if self.input_variants:
-            desc.append(f"input_variants={self.input_variants}")
         if self.alias_for:
             desc.append(f"alias_for={self.alias_for}")
         return "Key(" + ",".join(desc) + ")"
@@ -42,6 +47,9 @@ class Key:
             vk_lists.extend(flatten_to_list([alias.collect_vk_codes() for alias in self.alias_for]))
         return vk_lists
 
+    def variants(self) -> list[str]:
+        return []
+
 
 def get_vk(key: int | Key | str) -> int:
     int_key: int = -1  # mypy made me do it!
@@ -55,6 +63,35 @@ def get_vk(key: int | Key | str) -> int:
             raise ValueError(f"Tried to emulate press of {key}, but didn't find it in Keys.")
         int_key = found.get_vk_code()
     return int_key
+
+
+@dataclass(init=False, repr=False)
+class Symbol(Key):
+    regular: Final[str]
+    uppercase: Final[Optional[str]]
+
+    def __init__(self, regular: str, uppercase: Optional[str], vk_code: Optional[int], vk_name: Optional[str] = None):
+        super().__init__(vk_code, vk_name, None)
+        self.regular = regular
+        self.uppercase = uppercase
+
+    def __repr__(self) -> str:
+        desc = [super().__repr__().lstrip("Key(").rstrip(")")]
+        if self.regular:
+            desc.append(f"regular='{self.regular}'")
+        if self.uppercase:
+            desc.append(f"uppercase='{self.uppercase}'")
+        return "Symbol(" + ",".join(desc) + ")"
+
+    def variants(self) -> list[str]:
+        result = [self.regular]
+        if self.uppercase:
+            result.append(self.uppercase)
+        return result
+
+
+class Letter(Symbol):
+    pass
 
 
 @dataclass(slots=False)
@@ -94,8 +131,7 @@ class Keys:
             return key
         except KeyError:
             for key in cls.all().values():
-                input_variants = key.input_variants
-                if input_variants and input in input_variants:
+                if input in key.variants():
                     return key
             return None
 
@@ -107,7 +143,7 @@ class Keys:
     x2_mouse_button = Key(6, "VK_XBUTTON2")
 
     backspace = Key(8, "VK_BACK")
-    tab = Key(9, "VK_TAB", input_variants=["	"])
+    tab = Symbol("	", None, 9, "VK_TAB")
     clear = Key(12, "VK_CLEAR")  # 5 (keypad without Num Lock)
     enter = Key(13, "VK_RETURN")
 
@@ -116,7 +152,7 @@ class Keys:
 
     escape = Key(27, "VK_ESCAPE")
 
-    space = Key(32, "VK_SPACE", input_variants=[" "])
+    space = Symbol(" ", None, 32, "VK_SPACE")
     page_up = Key(33, "VK_PRIOR")
     page_down = Key(34, "VK_NEXT")
     end = Key(35, "VK_END")
@@ -128,45 +164,45 @@ class Keys:
 
     print_screen = Key(44, "VK_SNAPSHOT")
     insert = Key(45, "VK_INSERT")
-    delete = Key(46, "VK_DELETE", input_variants=["del"])
+    delete = Key(46, "VK_DELETE")
 
-    zero = Key(48, input_variants=["0"])
-    one = Key(49, input_variants=["1"])
-    two = Key(50, input_variants=["2"])
-    three = Key(51, input_variants=["3"])
-    four = Key(52, input_variants=["4"])
-    five = Key(53, input_variants=["5"])
-    six = Key(54, input_variants=["6"])
-    seven = Key(55, input_variants=["7"])
-    eight = Key(56, input_variants=["8"])
-    nine = Key(57, input_variants=["9"])
+    zero = Symbol("0", ")", 48)
+    one = Symbol("1", "!", 49)
+    two = Symbol("2", "@", 50)
+    three = Symbol("3", "#", 51)
+    four = Symbol("4", "$", 52)
+    five = Symbol("5", "%", 53)
+    six = Symbol("6", "^", 54)
+    seven = Symbol("7", "&", 55)
+    eight = Symbol("8", "*", 56)
+    nine = Symbol("9", "(", 57)
 
-    a = Key(65)
-    b = Key(66)
-    c = Key(67)
-    d = Key(68)
-    e = Key(69)
-    f = Key(70)
-    g = Key(71)
-    h = Key(72)
-    i = Key(73)
-    j = Key(74)
-    k = Key(75)
-    l = Key(76)
-    m = Key(77)
-    n = Key(78)
-    o = Key(79)
-    p = Key(80)
-    q = Key(81)
-    r = Key(82)
-    s = Key(83)
-    t = Key(84)
-    u = Key(85)
-    v = Key(86)
-    w = Key(87)
-    x = Key(88)
-    y = Key(89)
-    z = Key(90)
+    a = Letter("a", "A", 65)
+    b = Letter("b", "B", 66)
+    c = Letter("c", "C", 67)
+    d = Letter("d", "D", 68)
+    e = Letter("e", "E", 69)
+    f = Letter("f", "F", 70)
+    g = Letter("g", "G", 71)
+    h = Letter("h", "H", 72)
+    i = Letter("i", "I", 73)
+    j = Letter("j", "J", 74)
+    k = Letter("k", "K", 75)
+    l = Letter("l", "L", 76)
+    m = Letter("m", "M", 77)
+    n = Letter("n", "N", 78)
+    o = Letter("o", "O", 79)
+    p = Letter("p", "P", 80)
+    q = Letter("q", "Q", 81)
+    r = Letter("r", "R", 82)
+    s = Letter("s", "S", 83)
+    t = Letter("t", "T", 84)
+    u = Letter("u", "U", 85)
+    v = Letter("v", "V", 86)
+    w = Letter("w", "W", 87)
+    x = Letter("x", "X", 88)
+    y = Letter("y", "Y", 89)
+    z = Letter("z", "Z", 90)
 
     left_windows_key = Key(91, "VK_LWIN")
     right_windows_key = Key(92, "VK_RWIN")
@@ -245,17 +281,17 @@ class Keys:
     start_application_1 = Key(182, "VK_LAUNCH_APP1")
     start_application_2 = Key(183, "VK_LAUNCH_APP2")
 
-    semicolon = Key(186, "VK_OEM_1", input_variants=[";"])
-    equals = Key(187, "VK_OEM_PLUS", input_variants=["="])
-    comma = Key(188, "VK_OEM_COMMA", input_variants=[","])
-    minus = Key(189, "VK_OEM_MINUS", input_variants=["-"])
-    period = Key(190, "VK_OEM_PERIOD", input_variants=["."])
-    slash = Key(191, "VK_OEM_2", input_variants=["/"])
-    backtick = Key(192, "VK_OEM_3", input_variants=["`"])
-    square_bracket_open = Key(219, "VK_OEM_4", input_variants=["["])
-    backslash = Key(220, "VK_OEM_5", input_variants=["\\"])
-    square_bracket_close = Key(221, "VK_OEM_6", input_variants=["]"])
-    quote = Key(222, "VK_OEM_7", input_variants=["'"])
+    semicolon = Symbol(";", ":", 186, "VK_OEM_1")
+    equals = Symbol("=", "+", 187, "VK_OEM_PLUS")
+    comma = Symbol(",", "<", 188, "VK_OEM_COMMA")
+    minus = Symbol("-", "_", 189, "VK_OEM_MINUS")
+    period = Symbol(".", ">", 190, "VK_OEM_PERIOD")
+    slash = Symbol("/", "?", 191, "VK_OEM_2")
+    backtick = Symbol("`", "~", 192, "VK_OEM_3")
+    square_bracket_open = Symbol("[", "{", 219, "VK_OEM_4")
+    backslash = Symbol("\\", "|", 220, "VK_OEM_5")
+    square_bracket_close = Symbol("]", "}", 221, "VK_OEM_6")
+    quote = Symbol("'", '"', 222, "VK_OEM_7")
 
     attn = Key(246, "VK_ATTN")
     crsel = Key(247, "VK_CRSEL")
@@ -280,15 +316,15 @@ class Keys:
 
     lshift = left_shift
     rshift = right_shift
-    shift = Key(16, "VK_SHIFT", alias_for=[left_shift, right_shift])
+    shift = Key(vk_name="VK_SHIFT", alias_for=[left_shift, right_shift])  # vk 16, but for win os it's equal to lshift
     lcontrol = left_control
     lctrl = left_control
     rcontrol = right_control
     rctrl = right_control
-    ctrl = Key(17, "VK_CONTROL", alias_for=[left_control, right_control])
+    ctrl = Key(vk_name="VK_CONTROL", alias_for=[left_control, right_control])  # vk 17
     lalt = left_alt
     ralt = right_alt
-    alt = Key(18, "VK_MENU", alias_for=[left_alt, right_alt])
+    alt = Key(vk_name="VK_MENU", alias_for=[left_alt, right_alt])  # vk 18
 
     dash = minus
     hyphen = minus

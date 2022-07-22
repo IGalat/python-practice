@@ -69,6 +69,13 @@ class KeypressManager:
     def remove_from_pressed(cls, vk: int) -> None:
         cls.keys_pressed().remove(vk)  # todo add catch, and GetKeyState of all keys in set
 
+    @classmethod
+    def is_pressed(cls, key: int | Key) -> bool:
+        if isinstance(key, Key):
+            return any(vk in cls.keys_pressed() for vk in key.all_vk_codes)
+        else:
+            return key in cls.keys_pressed()
+
 
 class HotkeyMatcher:
     @classmethod

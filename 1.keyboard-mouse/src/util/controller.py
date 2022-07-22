@@ -45,7 +45,7 @@ class KeyboardController:
             elif isinstance(arg, Key):
                 cls.click(arg.get_vk_code())
             elif isinstance(arg, str):
-                parsed: list[KeyAction] = InputStringParser.parse(arg)
+                parsed: list[KeyAction] = InputStringParser.parse(arg, KeypressManager.keys_pressed())
                 for doit in parsed:
                     actions[doit.action_option](doit.vk_code)
 

@@ -6,12 +6,22 @@ from typing import List, Any, TypeGuard, TypeVar, Dict, Iterable, Callable, Opti
 T = TypeVar("T")
 
 
+# noinspection PyTypeHints
 def is_list_of(target: Any, values_type: T) -> TypeGuard[list[T]]:
-    return target is not None and isinstance(target, list) and all(type(x) == values_type for x in target)
+    return (
+        target is not None
+        and isinstance(target, list)
+        and all(isinstance(x, values_type) for x in target)  # type: ignore
+    )
 
 
+# noinspection PyTypeHints
 def is_tuple_of(target: Any, values_type: T) -> TypeGuard[list[T]]:
-    return target is not None and isinstance(target, tuple) and all(type(x) == values_type for x in target)
+    return (
+        target is not None
+        and isinstance(target, tuple)
+        and all(isinstance(x, values_type) for x in target)  # type: ignore
+    )
 
 
 def enum_to_list(data_structure: Iterable) -> List:
