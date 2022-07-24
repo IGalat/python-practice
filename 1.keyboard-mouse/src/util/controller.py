@@ -3,7 +3,7 @@ from typing import Final, Optional, Any
 
 from adapter import BaseAdapter
 from config import Config
-from key import Key, get_vk
+from key import Key, get_vk, Keys
 from util.key_state import KeypressManager
 from util.parser import InputStringParser, KeyAction, KeyActionOptions
 from winadapter.base import Window, WindowAdapterBase
@@ -124,6 +124,8 @@ class Controller:
         exec: Optional[str] = None,
         title: Optional[str] = None
     ) -> bool:
+        # no idea why this works :D without it, only works if script console is in foreground
+        cls.click(Keys.alt)
         return cls.winadapter().set_fore(exec_or_title, handle=handle, pid=pid, exec=exec, title=title)
 
 

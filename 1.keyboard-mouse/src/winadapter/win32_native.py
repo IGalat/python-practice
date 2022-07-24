@@ -132,7 +132,7 @@ class WindowsNativeWindowAdapter(WindowAdapterBase):
         exec: Optional[str] = None,
         title: Optional[str] = None
     ) -> bool:
-        if not handle and not exec and not title:
+        if not handle and not exec_or_title and not exec and not title:
             raise ValueError("Tried to set window to fore without args")
         if handle:
             return win32gui.SetForegroundWindow(handle)

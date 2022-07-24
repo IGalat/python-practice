@@ -3,7 +3,7 @@ import pprint
 from key import Keys
 from tap import Tap
 from tapper import Tapper
-from util.controller import Controller as ct
+from util.controller import Controller as Ct
 
 pp = pprint.PrettyPrinter(compact=True, indent=2)
 
@@ -13,7 +13,7 @@ def print_hw() -> None:
 
 
 def piano() -> None:
-    ct.send("hello people of earth. ipsum $(shift down)lorem$(shift up) qweRty asdfgh$(enter)$(ctrl)")
+    Ct.send("hello people of earth. ipsum $(shift down)lorem$(shift up) qweRty asdfgh$(enter)$(ctrl)")
 
 
 tapper = Tapper()
@@ -26,7 +26,7 @@ tapper = Tapper()
 
 
 def is_npp_fore():
-    return ct.get_fore("Notepad++")
+    return Ct.get_fore("Notepad++")
 
 
 chiwawa = Tap("b", "chiwawa!", no_additional_keys=True, trigger_if=is_npp_fore)
@@ -41,15 +41,15 @@ tapper.group(
 )
 
 another = tapper.group(
-    {"C": lambda: print("CC"), "i": piano, "y": "Yohoho!"}, "another", trigger_if=lambda: ct.get_open("foobar")
+    {"C": lambda: print("CC"), "i": piano, "y": "Yohoho!"}, "another", trigger_if=lambda: Ct.get_open("foobar")
 )
 
 tapper.group({"e": "r", "r": "e"}, "remap")
 
 tapper.group(
     [
-        Tap("1", lambda: ct.mouseover(1850, 1000), suppress_trigger_key_on_action=False),
-        Tap("2", lambda: print(ct.get_mouse_pos())),
+        Tap("1", lambda: Ct.mouseover(1850, 1000), suppress_trigger_key_on_action=False),
+        Tap("2", lambda: print(Ct.get_mouse_pos())),
         Tap("delete+mmb", "Tu-Turuuu!"),
     ],
     "mouse",
@@ -57,12 +57,12 @@ tapper.group(
 
 
 def capsOn() -> None:
-    caps = "CAPS ON" if ct.toggled(Keys.caps) else "caps off"
+    caps = "CAPS ON" if Ct.toggled(Keys.caps) else "caps off"
     print(caps)
 
 
 def altGrPressed() -> None:
-    alt = "altGr PRESSED" if ct.pressed(Keys.ralt) else "altGr not pressed!"
+    alt = "altGr PRESSED" if Ct.pressed(Keys.ralt) else "altGr not pressed!"
     print(alt)
 
 
@@ -76,6 +76,10 @@ tapper.group(
     }
 )
 
-tapper.group({"9": "$(ctrl+t)", "0": "$(alt+tab)"}, "chrome", trigger_if=lambda: ct.get_fore("chrome"))
+tapper.group(
+    {"9": "$(ctrl+t)", "0": "$(alt+tab)", "-": lambda: Ct.set_fore("foobar")},
+    "chrome",
+    trigger_if=lambda: Ct.get_fore("chrome"),
+)
 
 tapper.start()
