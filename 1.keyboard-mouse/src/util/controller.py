@@ -49,6 +49,16 @@ class Controller:
                     actions[doit.action_option](doit.vk_code)
 
     @classmethod
+    def pressed(cls, key: int | Key | str) -> bool:
+        vk_code = get_vk(key)
+        return cls.adapter().pressed(vk_code)
+
+    @classmethod
+    def toggled(cls, key: int | Key | str) -> bool:
+        vk_code = get_vk(key)
+        return cls.adapter().toggled(vk_code)
+
+    @classmethod
     def get_mouse_pos(cls) -> tuple[int, int]:
         return cls.adapter().get_mouse_pos()
 

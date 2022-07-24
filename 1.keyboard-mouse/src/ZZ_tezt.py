@@ -14,7 +14,7 @@ def print_hw() -> None:
 
 
 def piano() -> None:
-    Controller.send("hello people of earth. ipsum $(shift down)lorem$(shift up) qwerty asdfgh$(enter)$(ctrl)")
+    Controller.send("hello people of earth. ipsum $(shift down)lorem$(shift up) qweRty asdfgh$(enter)$(ctrl)")
 
 
 """ can add new key before other actions """
@@ -37,10 +37,27 @@ another = TapGroup.from_dict({"C": lambda: print("CC"), "i": piano, "y": "Yohoho
 remap = TapGroup.from_dict({"e": "r", "r": "e"}, "remap")
 
 mouse = TapGroup(
-    [Tap("1", lambda: Controller.mouseover(1850, 1000)), Tap("2", lambda: print(Controller.get_mouse_pos())),
-     Tap("delete+mmb", "Tu-Turuuu!")], "mouse"
+    [
+        Tap("1", lambda: Controller.mouseover(1850, 1000)),
+        Tap("2", lambda: print(Controller.get_mouse_pos())),
+        Tap("delete+mmb", "Tu-Turuuu!"),
+    ],
+    "mouse",
 )
 
-tapper = Tapper([generic, another, remap, mouse])
+
+def capsOn() -> None:
+    caps = "CAPS ON" if Controller.toggled(Keys.caps) else "caps off"
+    print(caps)
+
+
+def altGrPressed() -> None:
+    alt = "altGr PRESSED" if Controller.pressed(Keys.ralt) else "altGr not pressed!"
+    print(alt)
+
+
+key_state = TapGroup.from_dict({"6": capsOn, "7": altGrPressed}, "key_state")
+
+tapper = Tapper([generic, another, remap, mouse, key_state])
 
 tapper.start()

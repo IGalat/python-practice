@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from key import Keys
 from tap import Tap
 from util.action_runner import ActionRunner
 from util.key_state import KeypressManager, HotkeyMatcher
@@ -9,6 +10,8 @@ class BaseAdapter(ABC):  # todo move all logic from here, on_press substitute f
     """
     To use an adapter that implements this, set it as value of Config.adapter
     """
+
+    _NEVER_PRESSED_OR_TOGGLED = (Keys.scroll_wheel_up.vk_code, Keys.scroll_wheel_down.vk_code)
 
     @classmethod
     @abstractmethod
@@ -80,8 +83,41 @@ class BaseAdapter(ABC):  # todo move all logic from here, on_press substitute f
         return True
 
     @classmethod
+    def pressed(cls, vk_code: int) -> bool:
+        if vk_code in cls._NEVER_PRESSED_OR_TOGGLED:
+            return False
+        else:
+            return cls._pressed(vk_code)
+
+    @classmethod
     @abstractmethod
+    def _pressed(cls, vk_code: int) -> bool:
+        pass
+
+    @classmethod
+    def toggled(cls, vk_code: int) -> bool:
+        if vk_code in cls._NEVER_PRESSED_OR_TOGGLED:
+            return False
+        else:
+            return cls._toggled(vk_code)
+
+    @classmethod
+    @abstractmethod
+    def _toggled(cls, vk_code: int) -> bool:
+        pass
+
+    @classmethod
     def press_mouse_button(cls, vk_code: int) -> None:
+        if vk_code == Keys.scroll_wheel_up.vk_code:
+            cls.move_mousewheel(1)
+        elif vk_code == Keys.scroll_wheel_down.vk_code:
+            cls.move_mousewheel(-1)
+        else:
+            cls._press_mouse_button(vk_code)
+
+    @classmethod
+    @abstractmethod
+    def _press_mouse_button(cls, vk_code: int) -> None:
         pass
 
     @classmethod
