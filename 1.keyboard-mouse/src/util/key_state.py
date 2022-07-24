@@ -98,16 +98,22 @@ class HotkeyMatcher:
     def candidates_from_group(cls, group: TapGroup, vk: int) -> list[Tap]:
         taps = group.get_all()
         if group._always_active:
-            return [tap for tap in taps if cls.trigger_key_match(tap, vk)]
+            return [tap for tap in taps if cls.active_with_trigger_key_match(tap, vk)]
         else:
-            if group.suspended():
+            if group.suspended() or not cls.trigger_condition_satisfied(group):
                 return []
             match = []
             for tap in taps:
-                if not tap.suspended() and cls.trigger_key_match(tap, vk):
+                if not tap.suspended() and cls.active_with_trigger_key_match(tap, vk):
                     match.append(tap)
             return match
 
     @classmethod
-    def trigger_key_match(cls, tap: Tap, vk: int) -> bool:
-        return vk in tap.trigger_key.all_vk_codes
+    def active_with_trigger_key_match(cls, tap: Tap, vk: int) -> bool:
+        if vk not in tap.trigger_key.all_vk_codes:
+            return False
+        return cls.trigger_condition_satisfied(tap)
+
+    @classmethod
+    def trigger_condition_satisfied(cls, testable: Tap | TapGroup) -> bool:
+        return not testable.trigger_if or testable.trigger_if is None or testable.trigger_if()

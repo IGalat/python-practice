@@ -86,7 +86,7 @@ class Tap(Suspendable):
         interrupt_on_suspend: bool = True,
         suppress_trigger_key_on_action: bool = True,
         no_additional_keys: bool = False,
-        trigger_if: Callable = None,
+        trigger_if: Optional[Callable] = None,
     ):
         """
         :param hotkey: Trigger keys for hotkey or hotstring.
@@ -118,7 +118,7 @@ class Tap(Suspendable):
         return "Tap(" + ",".join(desc) + ")"
 
     def suspended(self) -> bool:
-        return self._suspended or self._parent.suspended()  # type:ignore
+        return (self._suspended or self._parent.suspended()) is not None
 
     def same_hotkey(self, hotkey: tuple[Key, tuple[Key, ...]]) -> bool:
         return (self.trigger_key, self.additional_keys) == hotkey

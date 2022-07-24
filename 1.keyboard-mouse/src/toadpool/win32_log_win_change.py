@@ -29,7 +29,7 @@ WinEventProcType = ctypes.WINFUNCTYPE(
     ctypes.wintypes.LONG,
     ctypes.wintypes.LONG,
     ctypes.wintypes.DWORD,
-    ctypes.wintypes.DWORD
+    ctypes.wintypes.DWORD,
 )
 
 # The types of events we want to listen for, and the names we'll use for
@@ -41,15 +41,13 @@ eventTypes = {
     win32con.EVENT_OBJECT_SHOW: "Show",
     win32con.EVENT_SYSTEM_DIALOGSTART: "Dialog",
     win32con.EVENT_SYSTEM_CAPTURESTART: "Capture",
-    win32con.EVENT_SYSTEM_MINIMIZEEND: "UnMinimize"
+    win32con.EVENT_SYSTEM_MINIMIZEEND: "UnMinimize",
 }
 
 # limited information would be sufficient, but our platform doesn't have it.
-processFlag = getattr(win32con, 'PROCESS_QUERY_LIMITED_INFORMATION',
-                      win32con.PROCESS_QUERY_INFORMATION)
+processFlag = getattr(win32con, "PROCESS_QUERY_LIMITED_INFORMATION", win32con.PROCESS_QUERY_INFORMATION)
 
-threadFlag = getattr(win32con, 'THREAD_QUERY_LIMITED_INFORMATION',
-                     win32con.THREAD_QUERY_INFORMATION)
+threadFlag = getattr(win32con, "THREAD_QUERY_LIMITED_INFORMATION", win32con.THREAD_QUERY_INFORMATION)
 
 # store last event time for displaying time between events
 lastTime = 0
@@ -60,7 +58,7 @@ def log(msg):
 
 
 def logError(msg):
-    sys.stdout.write(msg + '\n')
+    sys.stdout.write(msg + "\n")
 
 
 def getProcessID(dwEventThread, hwnd):
@@ -74,27 +72,27 @@ def getProcessID(dwEventThread, hwnd):
         try:
             processID = kernel32.GetProcessIdOfThread(hThread)
             if not processID:
-                logError("Couldn't get process for thread %s: %s" %
-                         (hThread, ctypes.WinError()))
+                logError("Couldn't get process for thread %s: %s" % (hThread, ctypes.WinError()))
         finally:
             kernel32.CloseHandle(hThread)
     else:
-        errors = ["No thread handle for %s: %s" %
-                  (dwEventThread, ctypes.WinError(),)]
+        errors = [
+            "No thread handle for %s: %s"
+            % (
+                dwEventThread,
+                ctypes.WinError(),
+            )
+        ]
 
         if hwnd:
             processID = ctypes.wintypes.DWORD()
-            threadID = user32.GetWindowThreadProcessId(
-                hwnd, ctypes.byref(processID))
+            threadID = user32.GetWindowThreadProcessId(hwnd, ctypes.byref(processID))
             if threadID != dwEventThread:
-                logError("Window thread != event thread? %s != %s" %
-                         (threadID, dwEventThread))
+                logError("Window thread != event thread? %s != %s" % (threadID, dwEventThread))
             if processID:
                 processID = processID.value
             else:
-                errors.append(
-                    "GetWindowThreadProcessID(%s) didn't work either: %s" % (
-                        hwnd, ctypes.WinError()))
+                errors.append("GetWindowThreadProcessID(%s) didn't work either: %s" % (hwnd, ctypes.WinError()))
                 processID = None
         else:
             processID = None
@@ -115,65 +113,69 @@ def getProcessFilename(processID):
     try:
         filenameBufferSize = ctypes.wintypes.DWORD(4096)
         filename = ctypes.create_unicode_buffer(filenameBufferSize.value)
-        kernel32.QueryFullProcessImageNameW(hProcess, 0, ctypes.byref(filename),
-                                            ctypes.byref(filenameBufferSize))
+        kernel32.QueryFullProcessImageNameW(hProcess, 0, ctypes.byref(filename), ctypes.byref(filenameBufferSize))
 
         return filename.value
     finally:
         kernel32.CloseHandle(hProcess)
 
 
-def callback(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread,
-             dwmsEventTime):
-    global lastTime
+def getWindowTitleByHandle(hwnd):
     length = user32.GetWindowTextLengthW(hwnd)
-    title = ctypes.create_unicode_buffer(length + 1)
-    user32.GetWindowTextW(hwnd, title, length + 1)
+    buff = ctypes.create_unicode_buffer(length + 1)
+    user32.GetWindowTextW(hwnd, buff, length + 1)
+    return buff.value
 
-    processID = getProcessID(dwEventThread, hwnd)
 
-    shortName = '?'
-    if processID:
-        filename = getProcessFilename(processID)
+def callback(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime):
+    global lastTime
+    title = getWindowTitleByHandle(hwnd)
+
+    process_id = getProcessID(dwEventThread, hwnd)
+
+    short_name = "?"
+    if process_id:
+        filename = getProcessFilename(process_id)
         if filename:
-            shortName = '\\'.join(filename.rsplit('\\', 2)[-2:])
+            short_name = "\\".join(filename.rsplit("\\", 2)[-1:])
 
     if hwnd:
         hwnd = hex(hwnd)
     elif idObject == win32con.OBJID_CURSOR:
-        hwnd = '<Cursor>'
+        hwnd = "<Cursor>"
 
-    log(u"%s:%04.2f\t%-10s\t"
-        u"W:%-8s\tP:%-8d\tT:%-8d\t"
-        u"%s\t%s" % (
-            dwmsEventTime, float(dwmsEventTime - lastTime) / 1000, eventTypes.get(event, hex(event)),
-            hwnd, processID or -1, dwEventThread or -1,
-            shortName, title.value))
+    log(
+        "%s:%04.2f\t%-10s\t"
+        "W:%-8s\tP:%-8d\tT:%-8d\t"
+        "%s\t%s"
+        % (
+            dwmsEventTime,
+            float(dwmsEventTime - lastTime) / 1000,
+            eventTypes.get(event, hex(event)),
+            hwnd,
+            process_id or -1,
+            dwEventThread or -1,
+            short_name,
+            title,
+        )
+    )
 
     lastTime = dwmsEventTime
 
 
 def setHook(WinEventProc, eventType):
-    return user32.SetWinEventHook(
-        eventType,
-        eventType,
-        0,
-        WinEventProc,
-        0,
-        0,
-        win32con.WINEVENT_OUTOFCONTEXT
-    )
+    return user32.SetWinEventHook(eventType, eventType, 0, WinEventProc, 0, 0, win32con.WINEVENT_OUTOFCONTEXT)
 
 
 def main():
     ole32.CoInitialize(0)
 
-    WinEventProc = WinEventProcType(callback)
+    win_event_proc = WinEventProcType(callback)
     user32.SetWinEventHook.restype = ctypes.wintypes.HANDLE
 
-    hookIDs = [setHook(WinEventProc, et) for et in eventTypes.keys()]
-    if not any(hookIDs):
-        print('SetWinEventHook failed')
+    hook_ids = [setHook(win_event_proc, et) for et in eventTypes.keys()]
+    if not any(hook_ids):
+        print("SetWinEventHook failed")
         sys.exit(1)
 
     msg = ctypes.wintypes.MSG()
@@ -181,10 +183,10 @@ def main():
         user32.TranslateMessageW(msg)
         user32.DispatchMessageW(msg)
 
-    for hookID in hookIDs:
+    for hookID in hook_ids:
         user32.UnhookWinEvent(hookID)
     ole32.CoUninitialize()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

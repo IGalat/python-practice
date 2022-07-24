@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Final, Optional
+from typing import Final, Optional, Callable
 
 from config import Config
 from interfaces import Suspendable, SingletonMeta
@@ -57,7 +57,10 @@ class Tapper(Suspendable, metaclass=SingletonMeta):
 
         """
         self._pre_start(default_controls)
+
+        # todo register all adapters in an observable(or whatever) and launch each in its thread
         Config.adapter.start()
+        Config.winadapter.start()
 
     def _pre_start(self, default_controls: bool) -> None:
         Config.fill_absent()
@@ -70,11 +73,11 @@ class Tapper(Suspendable, metaclass=SingletonMeta):
             for tap in group.get_all():
                 tap._parent = group
 
-    def group(self, taps: list[Tap] | dict, name: Optional[str] = None) -> TapGroup:
+    def group(self, taps: list[Tap] | dict, name: Optional[str] = None, trigger_if: Optional[Callable] = None) -> TapGroup:
         if is_list_of(taps, Tap):
-            group = TapGroup(taps, name)
+            group = TapGroup(taps, name, trigger_if)
         else:
-            group = TapGroup.from_dict(taps, name)
+            group = TapGroup.from_dict(taps, name, trigger_if)
         self.groups.append(group)
         return group
 

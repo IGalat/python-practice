@@ -11,14 +11,16 @@ from util.misc import is_tuple_of, is_list_of
 @dataclass(repr=False)
 class TapGroup(Suspendable):
     _taps: Final[list[Tap]]
+    trigger_if: Optional[Callable]
     name: Optional[str] = None
     _parent: Optional[Suspendable] = None
     _always_active: bool = False
 
-    def __init__(self, taps: list[Tap], name: Optional[str] = None) -> None:
+    def __init__(self, taps: list[Tap], name: Optional[str] = None, trigger_if: Optional[Callable] = None) -> None:
         self._taps = taps
         self.name = name
         self.unsuspend()
+        self.trigger_if = trigger_if
 
     def __repr__(self) -> str:
         desc = [f"name={self.name}", f"_taps={self._taps}"]
@@ -28,10 +30,11 @@ class TapGroup(Suspendable):
 
     @classmethod
     def from_dict(
-        cls, binds: dict[str | tuple[str], Optional[Callable | str]], name: Optional[str] = None
+            cls, binds: dict[str | tuple[str], Optional[Callable | str]], name: Optional[str] = None,
+            trigger_if: Optional[Callable] = None
     ) -> Self:  # type:ignore
         taps = [Tap(key, value) for (key, value) in binds.items()]
-        return TapGroup(taps, name)
+        return TapGroup(taps, name, trigger_if)
 
     def get_all(self) -> list[Tap]:
         return self._taps
@@ -69,7 +72,7 @@ class TapGroup(Suspendable):
             raise TypeError
 
     def suspended(self) -> bool:
-        return self._suspended or self._parent.suspended()
+        return (self._suspended or self._parent.suspended()) is not None
 
 
 def get_group(group: TapGroup | str, groups: list[TapGroup]) -> TapGroup:

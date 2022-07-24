@@ -1,5 +1,6 @@
 import pprint
 
+from config import Config
 from key import Keys
 from tap import Tap
 from tapper import Tapper
@@ -17,12 +18,19 @@ def piano() -> None:
 
 
 tapper = Tapper()
+tapper._pre_start(True)
 
 """ can add new key before other actions """
+
+
 # Keys.f = Key(70)
 # pp.pprint(Keys.all())
 
-chiwawa = Tap("b", "chiwawa!", no_additional_keys=True)
+def is_npp_fore() -> bool:
+    return Config.winadapter.get_fore("Notepad++") is not None
+
+
+chiwawa = Tap("b", "chiwawa!", no_additional_keys=True, trigger_if=is_npp_fore)
 
 tapper.group(
     [
@@ -33,7 +41,8 @@ tapper.group(
     "Generic",
 )
 
-tapper.group({"C": lambda: print("CC"), "i": piano, "y": "Yohoho!"}, "another")
+another = tapper.group({"C": lambda: print("CC"), "i": piano, "y": "Yohoho!"}, "another",
+                       trigger_if=lambda: Config.winadapter.get_open("foobar"))
 
 tapper.group({"e": "r", "r": "e"}, "remap")
 
