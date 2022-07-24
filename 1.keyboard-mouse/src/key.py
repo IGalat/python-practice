@@ -22,8 +22,6 @@ class Key:
             raise ValueError("Must either be a key or an alias")
         self.all_vk_codes = self.collect_vk_codes()
 
-
-
     def __repr__(self) -> str:
         desc = []
         if self.vk_code:
@@ -147,6 +145,9 @@ class Keys:
     clear = Key(12, "VK_CLEAR")  # 5 (keypad without Num Lock)
     enter = Key(13, "VK_RETURN")
 
+    scroll_wheel_up = Key(14)  # not a real vks, crutch here
+    scroll_wheel_down = Key(15)
+
     pause = Key(19, "VK_PAUSE")
     caps_lock = Key(20, "VK_CAPITAL")
 
@@ -261,13 +262,13 @@ class Keys:
     right_alt = Key(165, "VK_RMENU")
 
     # ??
-    browser_bac = Key(166, "VK_BROWSER_BACK")
+    browser_back = Key(166, "VK_BROWSER_BACK")
     browser_forward = Key(167, "VK_BROWSER_FORWARD")
     browser_refresh = Key(168, "VK_BROWSER_REFRESH")
     browser_stop = Key(169, "VK_BROWSER_STOP")
     browser_search = Key(170, "VK_BROWSER_SEARCH")
     browser_favorites = Key(171, "VK_BROWSER_FAVORITES")
-    browser_start_and_hom = Key(172, "VK_BROWSER_HOME")
+    browser_start_and_home = Key(172, "VK_BROWSER_HOME")
 
     volume_mute = Key(173, "VK_VOLUME_MUTE")
     volume_down = Key(174, "VK_VOLUME_DOWN")
@@ -308,6 +309,10 @@ class Keys:
     mmb = middle_mouse_button
     x1mb = x1_mouse_button
     x2mb = x2_mouse_button
+    scroll_up = scroll_wheel_up
+    wheel_up = scroll_wheel_up
+    scroll_down = scroll_wheel_down
+    wheel_down = scroll_wheel_down
 
     caps = caps_lock
     esc = escape

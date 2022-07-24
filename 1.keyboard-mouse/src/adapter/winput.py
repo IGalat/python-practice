@@ -1,8 +1,10 @@
 from typing import Final, Optional
 
+import winput
 from winput import winput
 
 from adapter import BaseAdapter
+from key import Keys
 
 
 class WinputAdapter(BaseAdapter):
@@ -12,24 +14,51 @@ class WinputAdapter(BaseAdapter):
     EVENT_PRESS: Final[set[int]] = {256, 260}
     EVENT_RELEASE: Final[set[int]] = {257, 261}
 
+    MOUSE_MOVE = 512
+    WHEEL_MOVE = 522  # additional: +X for X times up, -X for down
+
+    LMB_DOWN = 513
+    LMB_UP = 514
+    RMB_DOWN = 516
+    RMB_UP = 517
+    MMB_DOWN = 519
+    MMB_UP = 520
+    XMB_DOWN = 523  # additional: 1 for x1, 2 for x2
+    XMB_UP = 524
+
+    MOUSE_INPUT = {  # vks to winput's button codes
+        Keys.lmb.vk_code: 1,
+        Keys.mmb.vk_code: 2,
+        Keys.rmb.vk_code: 4,
+        Keys.x1mb.vk_code: 8,
+        Keys.x2mb.vk_code: 16,
+        Keys.scroll_wheel_up.vk_code: None,
+        Keys.scroll_wheel_down.vk_code: None,
+    }
+
     @classmethod
     def start(cls) -> None:
-        # winput.hook_mouse(mouse_callback)
+        winput.set_DPI_aware(True)
+        winput.hook_mouse(WinputAdapter.mouse_callback)
         winput.hook_keyboard(WinputAdapter.keyboard_callback)
         winput.wait_messages()
 
     @classmethod
     def stop(cls) -> None:
         winput.stop()
-        # winput.unhook_mouse()
+        winput.unhook_mouse()
         winput.unhook_keyboard()
 
     @classmethod
     def press_key(cls, vk_code: int) -> None:
+        if vk_code in cls.MOUSE_INPUT:
+            cls.press_mouse_button(vk_code)
         winput.press_key(vk_code)
 
     @classmethod
     def release_key(cls, vk_code: int) -> None:
+        if vk_code in cls.MOUSE_INPUT:
+            cls.release_mouse_button(vk_code)
         winput.release_key(vk_code)
 
     @classmethod
@@ -47,3 +76,67 @@ class WinputAdapter(BaseAdapter):
             return WinputAdapter.WINPUT_PROPAGATE
         else:
             return WinputAdapter.WINPUT_SUPPRESS
+
+    # ugly as hell, don't care for poc
+    @classmethod
+    def mouse_callback(cls, event: winput.MouseEvent) -> Optional[int]:
+        if (action := event.action) == cls.MOUSE_MOVE:
+            return WinputAdapter.WINPUT_PROPAGATE
+        elif action == cls.LMB_DOWN:
+            return cls.to_callback_result(cls.on_press(Keys.lmb.get_vk_code()))
+        elif action == cls.LMB_UP:
+            return cls.to_callback_result(cls.on_release(Keys.lmb.get_vk_code()))
+
+        elif action == cls.RMB_DOWN:
+            return cls.to_callback_result(cls.on_press(Keys.rmb.get_vk_code()))
+        elif action == cls.RMB_UP:
+            return cls.to_callback_result(cls.on_release(Keys.rmb.get_vk_code()))
+
+        elif action == cls.MMB_DOWN:
+            return cls.to_callback_result(cls.on_press(Keys.mmb.get_vk_code()))
+        elif action == cls.MMB_UP:
+            return cls.to_callback_result(cls.on_release(Keys.mmb.get_vk_code()))
+
+        elif action == cls.WHEEL_MOVE:
+            if event.additional_data > 0:
+                return cls.to_callback_result(cls.on_press(Keys.wheel_up.get_vk_code()))
+            else:
+                return cls.to_callback_result(cls.on_press(Keys.wheel_down.get_vk_code()))
+
+        elif action == cls.XMB_DOWN:
+            xmb = Keys.x1mb if event.additional_data == 1 else Keys.x2mb
+            return cls.to_callback_result(cls.on_press(xmb.get_vk_code()))
+        elif action == cls.XMB_UP:
+            xmb = Keys.x1mb if event.additional_data == 1 else Keys.x2mb
+            return cls.to_callback_result(cls.on_release(xmb.get_vk_code()))
+        else:
+            raise ValueError(f"UNKNOWN EVENT IN WINPUT ADAPTER: {action}")
+
+    @classmethod
+    def press_mouse_button(cls, vk_code: int) -> None:
+        if vk_code == Keys.scroll_wheel_up.vk_code:
+            cls.move_mousewheel(1)
+        elif vk_code == Keys.scroll_wheel_down.vk_code:
+            cls.move_mousewheel(-1)
+        else:
+            winput.press_mouse_button(cls.MOUSE_INPUT[vk_code])
+
+    @classmethod
+    def release_mouse_button(cls, vk_code: int) -> None:
+        winput.release_mouse_button(cls.MOUSE_INPUT[vk_code])
+
+    @classmethod
+    def move_mousewheel(cls, times: int) -> None:
+        winput.move_mousewheel(times)
+
+    @classmethod
+    def move_mouse(cls, dx: int, dy: int) -> None:
+        winput.move_mouse(dx, dy)
+
+    @classmethod
+    def set_mouse_pos(cls, x: int, y: int) -> None:
+        winput.set_mouse_pos(x, y)
+
+    @classmethod
+    def get_mouse_pos(cls) -> tuple[int, int]:
+        return winput.get_mouse_pos()

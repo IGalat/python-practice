@@ -1,6 +1,6 @@
 from typing import Final
 
-from key import Key, get_vk
+from key import Key, get_vk, Keys
 from tap import Tap
 from tap_group import TapGroup
 from util.misc import flatten_to_list
@@ -49,7 +49,8 @@ class KeypressManager:
             key_count[vk] -= 1
             return False
         else:
-            cls.keys_pressed().add(vk)
+            if vk not in [Keys.scroll_wheel_up.vk_code, Keys.scroll_wheel_down.vk_code]:
+                cls.keys_pressed().add(vk)
             return True
 
     @classmethod

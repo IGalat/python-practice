@@ -13,8 +13,9 @@ WINPUT_SUPPRESS = 4
 
 
 def mouse_callback(event: winput.MouseEvent) -> Optional[int]:
-    if event.action == winput.WM_LBUTTONDOWN:
-        print("Left mouse button press at {}".format(event.position))
+    if event.action == 512:
+        return WINPUT_PROPAGATE
+    print(f"MOUSE: pos={event.position}, action={event.action}, time={event.time}, add={event.additional_data}, adtyp={type(event.additional_data)}")
     # return WP_DONT_PASS_INPUT_ON  # would block all mouse actions
     return WINPUT_PROPAGATE
 

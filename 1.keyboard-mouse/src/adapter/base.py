@@ -3,9 +3,7 @@ from abc import ABC, abstractmethod
 from tap import Tap
 from util.action_runner import ActionRunner
 from util.key_state import KeypressManager, HotkeyMatcher
-from timeit import default_timer as timer
 
-start_time = timer()
 
 class BaseAdapter(ABC):  # todo move all logic from here, on_press substitute f
     """
@@ -80,3 +78,33 @@ class BaseAdapter(ABC):  # todo move all logic from here, on_press substitute f
         if not KeypressManager.was_released_real(vk):
             return True
         return True
+
+    @classmethod
+    @abstractmethod
+    def press_mouse_button(cls, vk_code: int) -> None:
+        pass
+
+    @classmethod
+    @abstractmethod
+    def release_mouse_button(cls, vk_code: int) -> None:
+        pass
+
+    @classmethod
+    @abstractmethod
+    def move_mousewheel(cls, times: int) -> None:
+        pass
+
+    @classmethod
+    @abstractmethod
+    def move_mouse(cls, dx: int, dy: int) -> None:
+        pass
+
+    @classmethod
+    @abstractmethod
+    def set_mouse_pos(cls, x: int, y: int) -> None:
+        pass
+
+    @classmethod
+    @abstractmethod
+    def get_mouse_pos(cls) -> tuple[int, int]:
+        pass

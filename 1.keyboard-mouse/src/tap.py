@@ -8,8 +8,13 @@ from util.misc import is_tuple_of, func_repr
 
 def keys_from_string(key_str: str | list[str]) -> list[Key]:
     if isinstance(key_str, str):
-        key_str = key_str.split("+")  # todo split a++ to a, +
-    keys: list[Key] = [Keys.all()[key.lower()] for key in key_str]  # todo look in Key.input_variants as fallback;
+        key_str = key_str.split("+")
+    keys: list[Key] = []
+    for key in key_str:
+        found = Keys.by_str(key)
+        if not found:
+            raise ValueError(f"Could not find key corresponding to '{key}'")
+        keys.append(found)
     return keys
 
 
@@ -33,9 +38,9 @@ def to_action(action: Callable | str) -> Callable:
     if callable(action):
         return action
     elif isinstance(action, str):
-        from util.controller import KeyboardController
+        from util.controller import Controller
 
-        return lambda: KeyboardController.send(action)
+        return lambda: Controller.send(action)
     else:
         raise TypeError(type(action))
 
