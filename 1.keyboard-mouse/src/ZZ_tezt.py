@@ -76,4 +76,6 @@ tapper.group(
     }
 )
 
+tapper.group({"9": "$(ctrl+t)", "0": "$(alt+tab)"}, "chrome", trigger_if=lambda: ct.get_fore("chrome"))
+
 tapper.start()
