@@ -15,7 +15,7 @@ class TapGroup(Suspendable):
     _parent: Optional[Suspendable] = None
     _always_active: bool = False
 
-    def __init__(self, taps: list[Tap], name: str = None) -> None:
+    def __init__(self, taps: list[Tap], name: Optional[str] = None) -> None:
         self._taps = taps
         self.name = name
         self.unsuspend()
@@ -28,7 +28,7 @@ class TapGroup(Suspendable):
 
     @classmethod
     def from_dict(
-            cls, binds: dict[str | tuple[str], Optional[Callable | str]], name: str = None
+        cls, binds: dict[str | tuple[str], Optional[Callable | str]], name: Optional[str] = None
     ) -> Self:  # type:ignore
         taps = [Tap(key, value) for (key, value) in binds.items()]
         return TapGroup(taps, name)
@@ -70,3 +70,15 @@ class TapGroup(Suspendable):
 
     def suspended(self) -> bool:
         return self._suspended or self._parent.suspended()
+
+
+def get_group(group: TapGroup | str, groups: list[TapGroup]) -> TapGroup:
+    if isinstance(group, TapGroup):
+        return group
+    elif isinstance(group, str):
+        found = next(gr for gr in groups if gr.name == group)
+        if not found:
+            raise ValueError()
+        return found
+    else:
+        raise TypeError(f"Tried to find group with {group}, type {type(group)}")

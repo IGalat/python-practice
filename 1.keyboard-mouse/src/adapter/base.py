@@ -42,7 +42,6 @@ class BaseAdapter(ABC):  # todo move all logic from here, on_press substitute f
         :return If True, press should be propagated
         If False, should be suppressed
         """
-        print(f"Pressed vk: {vk}, all_keys_pressed: {KeypressManager.keys_pressed()}")
         if not KeypressManager.was_pressed_real(vk):
             return True
         # todo record keypress, for hotstring
@@ -77,7 +76,6 @@ class BaseAdapter(ABC):  # todo move all logic from here, on_press substitute f
         :return If True, key release should be propagated
         If False, should be suppressed
         """
-        print(f"Released vk: {vk}, all_keys_pressed: {KeypressManager.keys_pressed()}")
         if not KeypressManager.was_released_real(vk):
             return True
         return True

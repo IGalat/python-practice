@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-from typing import Final
+from typing import Final, Optional
 
 from config import Config
 from interfaces import Suspendable, SingletonMeta
 from tap import Tap
-from tap_group import TapGroup
+from tap_group import TapGroup, get_group
 from util.misc import is_list_of, flatten_to_list
 from util.tap_control import TapControl
 
@@ -70,6 +70,14 @@ class Tapper(Suspendable, metaclass=SingletonMeta):
             for tap in group.get_all():
                 tap._parent = group
 
+    def group(self, taps: list[Tap] | dict, name: Optional[str] = None) -> TapGroup:
+        if is_list_of(taps, Tap):
+            group = TapGroup(taps, name)
+        else:
+            group = TapGroup.from_dict(taps, name)
+        self.groups.append(group)
+        return group
+
     def get_groups(self) -> list[TapGroup]:
         return self.groups
 
@@ -80,6 +88,27 @@ class Tapper(Suspendable, metaclass=SingletonMeta):
     def add_groups(self, groups: list[TapGroup] | TapGroup) -> None:
         correct_groups = to_tap_groups(groups)
         self.groups.extend(correct_groups)
+
+    def suspend_groups(self, *groups: TapGroup | str) -> None:
+        if not groups:
+            self.suspend_groups(*self.groups)
+        for group in groups:
+            found = get_group(group, self.groups)
+            found.suspend()
+
+    def unsuspend_groups(self, *groups: TapGroup | str) -> None:
+        if not groups:
+            self.unsuspend_groups(*self.groups)
+        for group in groups:
+            found = get_group(group, self.groups)
+            found.unsuspend()
+
+    def toggle_suspend_groups(self, *groups: TapGroup | str) -> None:
+        if not groups:
+            self.toggle_suspend_groups(*self.groups)
+        for group in groups:
+            found = get_group(group, self.groups)
+            found.toggle_suspend()
 
 
 default_control_group: TapGroup = TapGroup(

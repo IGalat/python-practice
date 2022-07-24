@@ -2,7 +2,6 @@ import pprint
 
 from key import Keys
 from tap import Tap
-from tap_group import TapGroup
 from tapper import Tapper
 from util.controller import Controller
 
@@ -17,13 +16,15 @@ def piano() -> None:
     Controller.send("hello people of earth. ipsum $(shift down)lorem$(shift up) qweRty asdfgh$(enter)$(ctrl)")
 
 
+tapper = Tapper()
+
 """ can add new key before other actions """
 # Keys.f = Key(70)
 # pp.pprint(Keys.all())
 
 chiwawa = Tap("b", "chiwawa!", no_additional_keys=True)
 
-generic = TapGroup(
+tapper.group(
     [
         chiwawa,
         Tap("ctrl+c", lambda: print("Aaaand cut!")),
@@ -32,13 +33,13 @@ generic = TapGroup(
     "Generic",
 )
 
-another = TapGroup.from_dict({"C": lambda: print("CC"), "i": piano, "y": "Yohoho!"}, "another")
+tapper.group({"C": lambda: print("CC"), "i": piano, "y": "Yohoho!"}, "another")
 
-remap = TapGroup.from_dict({"e": "r", "r": "e"}, "remap")
+tapper.group({"e": "r", "r": "e"}, "remap")
 
-mouse = TapGroup(
+tapper.group(
     [
-        Tap("1", lambda: Controller.mouseover(1850, 1000)),
+        Tap("1", lambda: Controller.mouseover(1850, 1000), suppress_trigger_key_on_action=False),
         Tap("2", lambda: print(Controller.get_mouse_pos())),
         Tap("delete+mmb", "Tu-Turuuu!"),
     ],
@@ -56,8 +57,14 @@ def altGrPressed() -> None:
     print(alt)
 
 
-key_state = TapGroup.from_dict({"6": capsOn, "7": altGrPressed}, "key_state")
+tapper.group({"6": capsOn, "7": altGrPressed}, "key_state")
 
-tapper = Tapper([generic, another, remap, mouse, key_state])
+tapper.group(
+    {
+        "ctrl+down_arrow": lambda: tapper.suspend_groups("key_state", "remap"),
+        "ctrl+up_arrow": lambda: tapper.unsuspend_groups("key_state", "remap"),
+        ("ctrl", "left_arrow"): lambda: tapper.toggle_suspend_groups("Generic")
+    }
+)
 
 tapper.start()
