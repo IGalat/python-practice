@@ -68,7 +68,10 @@ class KeypressManager:
 
     @classmethod
     def remove_from_pressed(cls, vk: int) -> None:
-        cls.keys_pressed().remove(vk)  # todo add catch, and GetKeyState of all keys in set
+        try:
+            cls.keys_pressed().remove(vk)
+        except KeyError:
+            pass  # todo GetKeyState of all keys in set
 
     @classmethod
     def is_pressed(cls, key: int | Key) -> bool:

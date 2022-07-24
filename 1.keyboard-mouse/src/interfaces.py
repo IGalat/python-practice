@@ -1,30 +1,47 @@
 from dataclasses import dataclass
 from threading import Lock
+from typing import Optional, Final
 
 from typing_extensions import Self
+
+_SUSPEND_AUTO_REASON: Final[str] = "_auto"
 
 
 @dataclass(repr=False)
 class Suspendable:
-    _suspended: bool
+    _suspended: set[str]
 
     def __repr__(self) -> str:
         if self._suspended:
-            return "suspended=True"
+            return f"suspended={self._suspended}"
         else:
             return ""
 
-    def suspend(self) -> None:
-        self._suspended = True
+    def suspend(self, source: Optional[str] = None) -> bool:
+        src = source or _SUSPEND_AUTO_REASON
+        if src in self._suspended:
+            return False
+        else:
+            self._suspended.add(source or _SUSPEND_AUTO_REASON)
+            return True
 
-    def unsuspend(self) -> None:
-        self._suspended = False
+    def unsuspend(self, source: Optional[str] = None) -> bool:
+        if not hasattr(self, "_suspended"):
+            self._suspended = set()
+            return True
+        try:
+            self._suspended.remove(source or _SUSPEND_AUTO_REASON)
+            return True
+        except KeyError:
+            return False
 
-    def toggle_suspend(self) -> None:
-        self._suspended = not self._suspended
+    def toggle_suspend(self, source: Optional[str] = None) -> None:
+        if not self.unsuspend(source):
+            self.suspend(source)
 
-    def suspended(self) -> bool:
+    def suspended(self) -> set[str]:
         return self._suspended
+
 
 class SingletonMeta(type):
     _instances: dict = {}
