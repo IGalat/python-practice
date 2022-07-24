@@ -40,7 +40,7 @@ class Suspendable:
             self.suspend(source)
 
     def suspended(self) -> set[str]:
-        return self._suspended
+        return self._suspended is None or len(self._suspended) > 0
 
 
 class SingletonMeta(type):

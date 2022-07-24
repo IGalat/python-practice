@@ -20,5 +20,3 @@ class Config:
             cls.adapter = adapter.get_platform_default_adapter()
         if not hasattr(cls, "winadapter"):
             cls.winadapter = winadapter.get_platform_default_adapter()
-
-

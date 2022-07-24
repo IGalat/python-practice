@@ -116,4 +116,6 @@ class HotkeyMatcher:
 
     @classmethod
     def trigger_condition_satisfied(cls, testable: Tap | TapGroup) -> bool:
-        return not testable.trigger_if or testable.trigger_if is None or testable.trigger_if()
+        if not hasattr(testable, "trigger_if") or testable.trigger_if is None:
+            return True
+        return bool(testable.trigger_if())

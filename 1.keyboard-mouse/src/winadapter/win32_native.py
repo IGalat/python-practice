@@ -52,12 +52,12 @@ def to_window(hwnd: Any) -> Optional[Window]:
 
 
 def win_filter(
-        win: Optional[Window],
-        exec_or_title: Optional[str] = None,
-        handle: Any = None,
-        pid: Optional[int] = None,
-        exec: Optional[str] = None,
-        title: Optional[str] = None,
+    win: Optional[Window],
+    exec_or_title: Optional[str] = None,
+    handle: Any = None,
+    pid: Optional[int] = None,
+    exec: Optional[str] = None,
+    title: Optional[str] = None,
 ) -> Optional[Window]:
     if not win:
         return None
@@ -91,13 +91,13 @@ class WindowsNativeWindowAdapter(WindowAdapterBase):
 
     @classmethod
     def get_open(
-            cls,
-            exec_or_title: Optional[str] = None,
-            *,
-            handle: Any = None,
-            pid: Optional[int] = None,
-            exec: Optional[str] = None,
-            title: Optional[str] = None
+        cls,
+        exec_or_title: Optional[str] = None,
+        *,
+        handle: Any = None,
+        pid: Optional[int] = None,
+        exec: Optional[str] = None,
+        title: Optional[str] = None
     ) -> list[Window]:
         cls.win_handles = []
         win32gui.EnumWindows(cls._collect_handle_callback, None)
@@ -110,13 +110,13 @@ class WindowsNativeWindowAdapter(WindowAdapterBase):
 
     @classmethod
     def get_fore(
-            cls,
-            exec_or_title: Optional[str] = None,
-            *,
-            handle: Any = None,
-            pid: Optional[int] = None,
-            exec: Optional[str] = None,
-            title: Optional[str] = None
+        cls,
+        exec_or_title: Optional[str] = None,
+        *,
+        handle: Any = None,
+        pid: Optional[int] = None,
+        exec: Optional[str] = None,
+        title: Optional[str] = None
     ) -> Optional[Window]:
         fore = win32gui.GetForegroundWindow()
         fore = to_window(fore)
@@ -124,13 +124,13 @@ class WindowsNativeWindowAdapter(WindowAdapterBase):
 
     @classmethod
     def set_fore(
-            cls,
-            exec_or_title: Optional[str] = None,
-            *,
-            handle: Any = None,
-            pid: Optional[int] = None,
-            exec: Optional[str] = None,
-            title: Optional[str] = None
+        cls,
+        exec_or_title: Optional[str] = None,
+        *,
+        handle: Any = None,
+        pid: Optional[int] = None,
+        exec: Optional[str] = None,
+        title: Optional[str] = None
     ) -> bool:
         if not handle and not exec and not title:
             raise ValueError("Tried to set window to fore without args")

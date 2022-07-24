@@ -42,8 +42,8 @@ class WinputAdapter(BaseAdapter):
     @classmethod
     def start(cls) -> None:
         winput.set_DPI_aware(True)
-        winput.hook_mouse(WinputAdapter.mouse_callback)
-        winput.hook_keyboard(WinputAdapter.keyboard_callback)
+        # winput.hook_mouse(cls.mouse_callback)
+        winput.hook_keyboard(cls.keyboard_callback)
         winput.wait_messages()
 
     @classmethod

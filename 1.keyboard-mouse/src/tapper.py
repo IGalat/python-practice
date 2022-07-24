@@ -73,7 +73,9 @@ class Tapper(Suspendable, metaclass=SingletonMeta):
             for tap in group.get_all():
                 tap._parent = group
 
-    def group(self, taps: list[Tap] | dict, name: Optional[str] = None, trigger_if: Optional[Callable] = None) -> TapGroup:
+    def group(
+        self, taps: list[Tap] | dict, name: Optional[str] = None, trigger_if: Optional[Callable] = None
+    ) -> TapGroup:
         if is_list_of(taps, Tap):
             group = TapGroup(taps, name, trigger_if)
         else:

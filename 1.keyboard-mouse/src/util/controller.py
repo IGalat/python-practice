@@ -1,17 +1,22 @@
 import time
-from typing import Final, Optional
+from typing import Final, Optional, Any
 
 from adapter import BaseAdapter
 from config import Config
 from key import Key, get_vk
 from util.key_state import KeypressManager
 from util.parser import InputStringParser, KeyAction, KeyActionOptions
+from winadapter.base import Window, WindowAdapterBase
 
 
 class Controller:
     @classmethod
     def adapter(cls) -> BaseAdapter:
         return Config.adapter
+
+    @classmethod
+    def winadapter(cls) -> WindowAdapterBase:
+        return Config.winadapter
 
     @classmethod
     def sleep_between_actions(cls) -> None:
@@ -84,6 +89,42 @@ class Controller:
         if not isinstance(key, (list, tuple)):
             key = [key]
         [cls.send_key(k) for k in key]
+
+    @classmethod
+    def get_open(
+        cls,
+        exec_or_title: Optional[str] = None,
+        *,
+        handle: Any = None,
+        pid: Optional[int] = None,
+        exec: Optional[str] = None,
+        title: Optional[str] = None
+    ) -> list[Window]:
+        return cls.winadapter().get_open(exec_or_title, handle=handle, pid=pid, exec=exec, title=title)
+
+    @classmethod
+    def get_fore(
+        cls,
+        exec_or_title: Optional[str] = None,
+        *,
+        handle: Any = None,
+        pid: Optional[int] = None,
+        exec: Optional[str] = None,
+        title: Optional[str] = None
+    ) -> Optional[Window]:
+        return cls.winadapter().get_fore(exec_or_title, handle=handle, pid=pid, exec=exec, title=title)
+
+    @classmethod
+    def set_fore(
+        cls,
+        exec_or_title: Optional[str] = None,
+        *,
+        handle: Any = None,
+        pid: Optional[int] = None,
+        exec: Optional[str] = None,
+        title: Optional[str] = None
+    ) -> bool:
+        return cls.winadapter().set_fore(exec_or_title, handle=handle, pid=pid, exec=exec, title=title)
 
 
 actions: Final[dict] = {

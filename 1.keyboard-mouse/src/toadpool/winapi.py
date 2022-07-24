@@ -5,7 +5,7 @@ import win32api
 
 start_time = timer()
 
-buttons = { "lmb": 1, "rmb": 2} #{"l_alt": 164, "r_alt": 165}
+buttons = {"lmb": 1, "rmb": 2}  # {"l_alt": 164, "r_alt": 165}
 
 
 def is_pressed(vk: int) -> bool:

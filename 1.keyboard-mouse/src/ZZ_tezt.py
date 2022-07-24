@@ -1,10 +1,9 @@
 import pprint
 
-from config import Config
 from key import Keys
 from tap import Tap
 from tapper import Tapper
-from util.controller import Controller
+from util.controller import Controller as ct
 
 pp = pprint.PrettyPrinter(compact=True, indent=2)
 
@@ -14,11 +13,10 @@ def print_hw() -> None:
 
 
 def piano() -> None:
-    Controller.send("hello people of earth. ipsum $(shift down)lorem$(shift up) qweRty asdfgh$(enter)$(ctrl)")
+    ct.send("hello people of earth. ipsum $(shift down)lorem$(shift up) qweRty asdfgh$(enter)$(ctrl)")
 
 
 tapper = Tapper()
-tapper._pre_start(True)
 
 """ can add new key before other actions """
 
@@ -26,8 +24,9 @@ tapper._pre_start(True)
 # Keys.f = Key(70)
 # pp.pprint(Keys.all())
 
-def is_npp_fore() -> bool:
-    return Config.winadapter.get_fore("Notepad++") is not None
+
+def is_npp_fore():
+    return ct.get_fore("Notepad++")
 
 
 chiwawa = Tap("b", "chiwawa!", no_additional_keys=True, trigger_if=is_npp_fore)
@@ -41,15 +40,16 @@ tapper.group(
     "Generic",
 )
 
-another = tapper.group({"C": lambda: print("CC"), "i": piano, "y": "Yohoho!"}, "another",
-                       trigger_if=lambda: Config.winadapter.get_open("foobar"))
+another = tapper.group(
+    {"C": lambda: print("CC"), "i": piano, "y": "Yohoho!"}, "another", trigger_if=lambda: ct.get_open("foobar")
+)
 
 tapper.group({"e": "r", "r": "e"}, "remap")
 
 tapper.group(
     [
-        Tap("1", lambda: Controller.mouseover(1850, 1000), suppress_trigger_key_on_action=False),
-        Tap("2", lambda: print(Controller.get_mouse_pos())),
+        Tap("1", lambda: ct.mouseover(1850, 1000), suppress_trigger_key_on_action=False),
+        Tap("2", lambda: print(ct.get_mouse_pos())),
         Tap("delete+mmb", "Tu-Turuuu!"),
     ],
     "mouse",
@@ -57,12 +57,12 @@ tapper.group(
 
 
 def capsOn() -> None:
-    caps = "CAPS ON" if Controller.toggled(Keys.caps) else "caps off"
+    caps = "CAPS ON" if ct.toggled(Keys.caps) else "caps off"
     print(caps)
 
 
 def altGrPressed() -> None:
-    alt = "altGr PRESSED" if Controller.pressed(Keys.ralt) else "altGr not pressed!"
+    alt = "altGr PRESSED" if ct.pressed(Keys.ralt) else "altGr not pressed!"
     print(alt)
 
 
@@ -72,7 +72,7 @@ tapper.group(
     {
         "ctrl+down_arrow": lambda: tapper.suspend_groups("key_state", "remap"),
         "ctrl+up_arrow": lambda: tapper.unsuspend_groups("key_state", "remap"),
-        ("ctrl", "left_arrow"): lambda: tapper.toggle_suspend_groups("Generic")
+        ("ctrl", "left_arrow"): lambda: tapper.toggle_suspend_groups("Generic"),
     }
 )
 

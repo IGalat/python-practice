@@ -12,7 +12,7 @@ class Window:
 
 
 class WindowAdapterBase(ABC):
-    """ Only operates on visible windows with window text. May change """
+    """Only operates on visible windows with window text. May change"""
 
     @classmethod
     @abstractmethod
@@ -28,13 +28,13 @@ class WindowAdapterBase(ABC):
     @classmethod
     @abstractmethod
     def get_open(
-            cls,
-            exec_or_title: Optional[str] = None,
-            *,
-            handle: Any = None,
-            pid: Optional[int] = None,
-            exec: Optional[str] = None,
-            title: Optional[str] = None
+        cls,
+        exec_or_title: Optional[str] = None,
+        *,
+        handle: Any = None,
+        pid: Optional[int] = None,
+        exec: Optional[str] = None,
+        title: Optional[str] = None
     ) -> list[Window]:
         """
         :return: List of open windows, containing specified exec name and title
@@ -45,13 +45,13 @@ class WindowAdapterBase(ABC):
     @classmethod
     @abstractmethod
     def get_fore(
-            cls,
-            exec_or_title: Optional[str] = None,
-            *,
-            handle: Any = None,
-            pid: Optional[int] = None,
-            exec: Optional[str] = None,
-            title: Optional[str] = None
+        cls,
+        exec_or_title: Optional[str] = None,
+        *,
+        handle: Any = None,
+        pid: Optional[int] = None,
+        exec: Optional[str] = None,
+        title: Optional[str] = None
     ) -> Optional[Window]:
         """
         :return: With no inputs returns current foreground window
@@ -65,12 +65,12 @@ class WindowAdapterBase(ABC):
     @classmethod
     @abstractmethod
     def set_fore(
-            cls,
-            exec_or_title: Optional[str] = None,
-            *,
-            handle: Any = None,
-            pid: Optional[int] = None,
-            exec: Optional[str] = None,
-            title: Optional[str] = None
+        cls,
+        exec_or_title: Optional[str] = None,
+        *,
+        handle: Any = None,
+        pid: Optional[int] = None,
+        exec: Optional[str] = None,
+        title: Optional[str] = None
     ) -> bool:
         pass

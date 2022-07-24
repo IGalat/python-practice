@@ -6,6 +6,7 @@ from winadapter.base import WindowAdapterBase
 def get_platform_default_adapter() -> WindowAdapterBase:
     if sys.platform.lower() == "win32":
         from winadapter.win32_native import WindowsNativeWindowAdapter
+
         return WindowsNativeWindowAdapter()
     else:
         raise NotImplementedError(
