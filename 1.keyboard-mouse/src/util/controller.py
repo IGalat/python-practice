@@ -40,7 +40,7 @@ class Controller:
 
     @classmethod
     def release_all_keys(cls) -> None:
-        for vk in KeypressManager.keys_pressed():
+        for vk in KeypressManager.keys_pressed().copy():
             cls.release(vk, real=True)
 
     @classmethod
