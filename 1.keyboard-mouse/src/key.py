@@ -314,6 +314,11 @@ class Keys:
     scroll_down = scroll_wheel_down
     wheel_down = scroll_wheel_down
 
+    arrow_left = left_arrow
+    arrow_up = up_arrow
+    arrow_right = right_arrow
+    arrow_down = down_arrow
+
     caps = caps_lock
     esc = escape
     ins = insert

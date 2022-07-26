@@ -88,7 +88,7 @@ class Controller:
         cls.mouseover(x, y)
         if not isinstance(key, (list, tuple)):
             key = [key]
-        [cls.send_key(k) for k in key]
+        cls.send(*key)
 
     @classmethod
     def get_open(
