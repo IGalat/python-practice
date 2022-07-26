@@ -4,6 +4,7 @@ from enum import Enum
 from typing import Pattern, ClassVar, Final
 
 from key import Key, Keys, Symbol
+from util.misc import flatten_to_list
 
 
 class KeyActionOptions(str, Enum):
@@ -48,7 +49,7 @@ class InputStringParser:
 
                 key_actions.extend(cls.get_actions(char, key_found))
 
-        if were_pressed := cls.previously_pressed_modifiers(key_actions, pressed):
+        if were_pressed := cls.previously_pressed_modifiers(key_actions, pressed, replaced):
             restore = [KeyAction(vk, KeyActionOptions.PRESS) for vk in were_pressed]
             key_actions.extend(restore)
 
@@ -66,16 +67,21 @@ class InputStringParser:
         return [KeyAction(vk_code, KeyActionOptions.PRESS), *inner, KeyAction(vk_code, KeyActionOptions.RELEASE)]
 
     @classmethod
-    def previously_pressed_modifiers(cls, key_actions: list[KeyAction], pressed: set[int]) -> set[int]:
+    def previously_pressed_modifiers(
+        cls, key_actions: list[KeyAction], pressed: set[int], replaced: dict[int, list[KeyAction]]
+    ) -> set[int]:
         watched_mods_were_pressed = [mod for mod in cls.watched_shift_mods if mod.vk_code in pressed]
         if not watched_mods_were_pressed:
             return set()
 
+        were_replaced = [vk for vk in flatten_to_list(*replaced.values())]
         pressed = set(
             [
                 mod.vk_code
                 for mod in cls.watched_shift_mods
-                if mod.vk_code in pressed and cls.released(mod.vk_code, key_actions)
+                if mod.vk_code in pressed
+                and cls.released(mod.vk_code, key_actions)
+                and mod.vk_code not in were_replaced
             ]
         )
         return pressed
@@ -122,7 +128,7 @@ class InputStringParser:
         return combo
 
     @classmethod
-    def parse_single_keystroke(cls, text: str, max_len) -> KeyAction:
+    def parse_single_keystroke(cls, text: str, max_len: int) -> KeyAction:
         if max_len == 1:
             option = KeyActionOptions.CLICK
             key_str = text
