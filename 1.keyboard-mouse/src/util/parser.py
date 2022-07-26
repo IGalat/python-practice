@@ -74,7 +74,7 @@ class InputStringParser:
         if not watched_mods_were_pressed:
             return set()
 
-        were_replaced = [vk for vk in flatten_to_list(*replaced.values())]
+        were_replaced = [action.vk_code for action in flatten_to_list(*replaced.values())]
         pressed = set(
             [
                 mod.vk_code
