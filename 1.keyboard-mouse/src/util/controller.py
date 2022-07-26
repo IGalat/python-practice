@@ -23,35 +23,42 @@ class Controller:
         time.sleep(Config.controller_interval_sec)
 
     @classmethod
-    def press(cls, key: int | Key | str) -> None:
+    def press(cls, key: int | Key | str, real: bool = False) -> None:
         vk_code = get_vk(key)
-        KeypressManager.will_emulate_press(vk_code)
+        if not real:
+            KeypressManager.will_emulate_press(vk_code)
         cls.adapter().press_key(vk_code)
         cls.sleep_between_actions()
 
     @classmethod
-    def release(cls, key: int | Key | str) -> None:
+    def release(cls, key: int | Key | str, real: bool = False) -> None:
         vk_code = get_vk(key)
-        KeypressManager.will_emulate_release(vk_code)
+        if not real:
+            KeypressManager.will_emulate_release(vk_code)
         cls.adapter().release_key(vk_code)
         cls.sleep_between_actions()
 
     @classmethod
-    def send_key(cls, key: int | Key | str) -> None:
-        cls.press(key)
-        cls.release(key)
+    def release_all_keys(cls) -> None:
+        for vk in KeypressManager.keys_pressed():
+            cls.release(vk, real=True)
 
     @classmethod
-    def send(cls, *keys: int | Key | str) -> None:
+    def send_key(cls, key: int | Key | str, real: bool = False) -> None:
+        cls.press(key, real)
+        cls.release(key, real)
+
+    @classmethod
+    def send(cls, *keys: int | Key | str, real: bool = False) -> None:
         for arg in keys:
             if isinstance(arg, int):
-                cls.send_key(arg)
+                cls.send_key(arg, real)
             elif isinstance(arg, Key):
-                cls.send_key(arg.get_vk_code())
+                cls.send_key(arg.get_vk_code(), real)
             elif isinstance(arg, str):
                 parsed: list[KeyAction] = InputStringParser.parse(arg, KeypressManager.keys_pressed())
                 for doit in parsed:
-                    actions[doit.action_option](doit.vk_code)
+                    actions[doit.action_option](doit.vk_code, real)
 
     @classmethod
     def pressed(cls, key: int | Key | str) -> bool:
