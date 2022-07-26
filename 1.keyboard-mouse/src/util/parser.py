@@ -23,7 +23,7 @@ class ParseError(Exception):
 
 
 class InputStringParser:
-    pattern: ClassVar[Pattern] = re.compile("\$\([a-zA-Z0-9+ ]+\)")
+    pattern: ClassVar[Pattern] = re.compile("\$\([a-zA-Z0-9+_ ]+\)")
     dummy_char: Final[str] = chr(0x101111)
     watched_shift_mods: list[Key] = [Keys.left_shift, Keys.right_shift]  # have vk codes
 
