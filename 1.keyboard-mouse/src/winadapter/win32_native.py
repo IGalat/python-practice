@@ -2,6 +2,7 @@ import ctypes
 import ctypes.wintypes
 from typing import Any, Optional, ClassVar
 
+# pip install pywin32
 import win32con
 import win32gui
 
