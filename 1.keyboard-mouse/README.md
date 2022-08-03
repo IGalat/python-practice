@@ -19,23 +19,30 @@ Features:
 
 ### Installation
 
-Not implemented yet :) 
+Install dependencies (better to do it in virtual environment) with
 
-At this stage, create your_script.py in src/ folder. Usual imports are
+``` python
+pip install -r requirements.txt
+```
+
+Create your_script.py in src/ folder.
+
+Imports you'll use in your script:
 
 ``` python
 from tapper import Tapper
 from util.controller import Controller as Ct
 ```
-and perhaps:
+and perhaps
 ``` python
-from key import Keys
 from tap import Tap
+from tap_group import TapGroup
+from key import Keys
 ```
 
 ### Usage
 
-See `EXAMPLE.py` for working code example.
+See `EXAMPLE.py` for working code example. Try launching it to see if all dependencies work.
 
 Simplest example:
 
@@ -239,6 +246,8 @@ However, if `"1": "q"` is suspended or has `trigger_if` condition that isn't sat
 If it, or the whole `gr1`, is also not suspended/not `trigger_if`ing,
 `"ctrl+1": "a"` from `gr2` can now be triggered.
 
+
+In practice, this means you'll want to add more specialized groups and hotkeys first.
 
 ### Controls 
 
