@@ -74,7 +74,7 @@ async def count_https_in_web_pages2() -> None:
     print(f"{count_http / count_https = }")
 
 
-if __name__ == "__main__":
+def main() -> None:
     with cProfile.Profile() as pr:
         # count_https_in_web_pages()
         asyncio.run(count_https_in_web_pages2())
@@ -87,3 +87,8 @@ if __name__ == "__main__":
     # after generating the file, from console:
     # snakeviz profiler_dump.prof
     stats.dump_stats(filename="profiler_dump.prof")
+
+
+if __name__ == "__main__":
+    main()
+
