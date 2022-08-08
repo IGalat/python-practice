@@ -1,12 +1,19 @@
 import time
-from typing import Final, Optional, Any
+from typing import Any
+from typing import Final
+from typing import Optional
 
 from adapter import BaseAdapter
 from config import Config
-from key import Key, get_vk, Keys
+from key import get_vk
+from key import Key
+from key import Keys
 from util.key_state import KeypressManager
-from util.parser import InputStringParser, KeyAction, KeyActionOptions
-from winadapter.base import Window, WindowAdapterBase
+from util.parser import InputStringParser
+from util.parser import KeyAction
+from util.parser import KeyActionOptions
+from winadapter.base import Window
+from winadapter.base import WindowAdapterBase
 
 
 class Controller:
@@ -56,7 +63,9 @@ class Controller:
             elif isinstance(arg, Key):
                 cls.send_key(arg.get_vk_code(), real)
             elif isinstance(arg, str):
-                parsed: list[KeyAction] = InputStringParser.parse(arg, KeypressManager.keys_pressed())
+                parsed: list[KeyAction] = InputStringParser.parse(
+                    arg, KeypressManager.keys_pressed()
+                )
                 for doit in parsed:
                     actions[doit.action_option](doit.vk_code, real)
 
@@ -91,7 +100,12 @@ class Controller:
         cls.adapter().move_mouse(dx, dy)
 
     @classmethod
-    def click(cls, key: int | Key | str | list | tuple, x: Optional[int] = None, y: Optional[int] = None) -> None:
+    def click(
+        cls,
+        key: int | Key | str | list | tuple,
+        x: Optional[int] = None,
+        y: Optional[int] = None,
+    ) -> None:
         cls.mouseover(x, y)
         if not isinstance(key, (list, tuple)):
             key = [key]
@@ -107,7 +121,9 @@ class Controller:
         exec: Optional[str] = None,
         title: Optional[str] = None
     ) -> list[Window]:
-        return cls.winadapter().get_open(exec_or_title, handle=handle, pid=pid, exec=exec, title=title)
+        return cls.winadapter().get_open(
+            exec_or_title, handle=handle, pid=pid, exec=exec, title=title
+        )
 
     @classmethod
     def get_fore(
@@ -119,7 +135,9 @@ class Controller:
         exec: Optional[str] = None,
         title: Optional[str] = None
     ) -> Optional[Window]:
-        return cls.winadapter().get_fore(exec_or_title, handle=handle, pid=pid, exec=exec, title=title)
+        return cls.winadapter().get_fore(
+            exec_or_title, handle=handle, pid=pid, exec=exec, title=title
+        )
 
     @classmethod
     def set_fore(
@@ -133,7 +151,9 @@ class Controller:
     ) -> bool:
         # no idea why this works :D without it, only works if script console is in foreground
         cls.click(Keys.alt)
-        return cls.winadapter().set_fore(exec_or_title, handle=handle, pid=pid, exec=exec, title=title)
+        return cls.winadapter().set_fore(
+            exec_or_title, handle=handle, pid=pid, exec=exec, title=title
+        )
 
 
 actions: Final[dict] = {

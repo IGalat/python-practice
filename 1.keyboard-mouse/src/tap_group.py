@@ -1,11 +1,15 @@
 from dataclasses import dataclass
-from typing import Callable, Optional, Dict, Final
-
-from typing_extensions import Self
+from typing import Callable
+from typing import Dict
+from typing import Final
+from typing import Optional
 
 from interfaces import Suspendable
-from tap import Tap, to_keys
-from util.misc import is_tuple_of, is_list_of
+from tap import Tap
+from tap import to_keys
+from typing_extensions import Self
+from util.misc import is_list_of
+from util.misc import is_tuple_of
 
 
 @dataclass(repr=False)
@@ -16,7 +20,12 @@ class TapGroup(Suspendable):
     _parent: Optional[Suspendable] = None
     _always_active: bool = False
 
-    def __init__(self, taps: list[Tap], name: Optional[str] = None, trigger_if: Optional[Callable] = None) -> None:
+    def __init__(
+        self,
+        taps: list[Tap],
+        name: Optional[str] = None,
+        trigger_if: Optional[Callable] = None,
+    ) -> None:
         self._taps = taps
         self.name = name
         self.unsuspend()
@@ -48,12 +57,22 @@ class TapGroup(Suspendable):
         except StopIteration:
             return None
 
-    def add(self, taps: Dict[str | tuple[str], Optional[Callable]] | Tap | tuple[Tap, ...] | list[Tap]) -> None:
-        if (one := isinstance(taps, Tap)) or is_tuple_of(taps, Tap) or is_list_of(taps, Tap):
+    def add(
+        self,
+        taps: list[Tap]
+        | Dict[str | tuple[str], Optional[Callable]]
+        | Tap
+        | tuple[Tap, ...],
+    ) -> None:
+        if (
+            (one := isinstance(taps, Tap))
+            or is_tuple_of(taps, Tap)
+            or is_list_of(taps, Tap)
+        ):
             if one:
                 taps = (taps,)
         elif isinstance(taps, dict):
-            taps = tuple([Tap(key, taps[key]) for key in taps])
+            taps = tuple(Tap(key, taps[key]) for key in taps)
         self._taps.extend(taps)
 
     def remove(self, taps: Tap | tuple[Tap] | str | tuple[str]) -> None:
@@ -68,7 +87,9 @@ class TapGroup(Suspendable):
                 taps = (taps,)
             for tap_str in taps:
                 keys = to_keys(tap_str)
-                self._taps[:] = [self_tap for self_tap in self._taps if self_tap.same_hotkey(keys)]
+                self._taps[:] = [
+                    self_tap for self_tap in self._taps if self_tap.same_hotkey(keys)
+                ]
             return
         else:
             raise TypeError

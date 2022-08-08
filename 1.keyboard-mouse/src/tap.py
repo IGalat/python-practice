@@ -1,9 +1,12 @@
 from dataclasses import dataclass
-from typing import Optional, Callable
+from typing import Callable
+from typing import Optional
 
 from interfaces import Suspendable
-from key import Key, Keys
-from util.misc import is_tuple_of, func_repr
+from key import Key
+from key import Keys
+from util.misc import func_repr
+from util.misc import is_tuple_of
 
 
 def keys_from_string(key_str: str | list[str]) -> list[Key]:
@@ -18,7 +21,9 @@ def keys_from_string(key_str: str | list[str]) -> list[Key]:
     return keys
 
 
-def to_keys(hotkey: Key | tuple[Key, ...] | str | tuple[str, ...]) -> tuple[Key, tuple[Key, ...]]:
+def to_keys(
+    hotkey: Key | tuple[Key, ...] | str | tuple[str, ...]
+) -> tuple[Key, tuple[Key, ...]]:
     """Returns (trigger_key, (additional_keys))"""
     keys: tuple[Key, ...]
     if (one := isinstance(hotkey, Key)) or is_tuple_of(hotkey, Key):
@@ -70,7 +75,7 @@ class Tap(Suspendable):
     """
 
     trigger_if: Optional[Callable]
-    """ 
+    """
     If function is supplied here, it runs each time before hotkey is triggered.
     When it returns True, action runs as usual.
     When it returns False, key is typed as when action = None.
@@ -109,7 +114,9 @@ class Tap(Suspendable):
         if not self.interrupt_on_suspend:
             desc.append(f"interrupt_on_suspend={self.interrupt_on_suspend}")
         if not self.suppress_trigger_key_on_action:
-            desc.append(f"suppress_trigger_key_on_action={self.suppress_trigger_key_on_action}")
+            desc.append(
+                f"suppress_trigger_key_on_action={self.suppress_trigger_key_on_action}"
+            )
         if self.trigger_if:
             desc.append(f"trigger_if={func_repr(self.trigger_if)}")
         if self._parent and hasattr(self._parent, "name"):

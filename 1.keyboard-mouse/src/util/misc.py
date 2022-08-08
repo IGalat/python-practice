@@ -1,5 +1,12 @@
 from collections.abc import Sequence
-from typing import List, Any, TypeGuard, TypeVar, Dict, Iterable, Callable, Optional
+from typing import Any
+from typing import Callable
+from typing import Dict
+from typing import Iterable
+from typing import List
+from typing import Optional
+from typing import TypeGuard
+from typing import TypeVar
 
 # everything that's too small for a separate util module
 

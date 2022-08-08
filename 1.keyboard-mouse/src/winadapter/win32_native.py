@@ -1,10 +1,10 @@
-import ctypes
 import ctypes.wintypes
-from typing import Any, Optional, ClassVar
+from typing import Any
+from typing import ClassVar
+from typing import Optional
 
 import win32con
 import win32gui
-
 from winadapter import WindowAdapterBase
 from winadapter.base import Window
 
@@ -12,7 +12,9 @@ user32 = ctypes.windll.user32
 ole32 = ctypes.windll.ole32
 kernel32 = ctypes.windll.kernel32
 
-processFlag = getattr(win32con, "PROCESS_QUERY_LIMITED_INFORMATION", win32con.PROCESS_QUERY_INFORMATION)
+processFlag = getattr(
+    win32con, "PROCESS_QUERY_LIMITED_INFORMATION", win32con.PROCESS_QUERY_INFORMATION
+)
 
 
 def get_pid(hwnd: Any) -> Optional[int]:
@@ -32,7 +34,9 @@ def get_process_exec(pid: Optional[int]) -> Optional[str]:
     try:
         filename_buffer_size = ctypes.wintypes.DWORD(4096)
         filename = ctypes.create_unicode_buffer(filename_buffer_size.value)
-        kernel32.QueryFullProcessImageNameW(h_process, 0, ctypes.byref(filename), ctypes.byref(filename_buffer_size))
+        kernel32.QueryFullProcessImageNameW(
+            h_process, 0, ctypes.byref(filename), ctypes.byref(filename_buffer_size)
+        )
         return filename.value
     finally:
         kernel32.CloseHandle(h_process)
@@ -65,7 +69,11 @@ def win_filter(
         return None
     if pid and win.pid != pid:
         return None
-    if exec_or_title and exec_or_title not in win.exec and exec_or_title not in win.title:
+    if (
+        exec_or_title
+        and exec_or_title not in win.exec
+        and exec_or_title not in win.title
+    ):
         return None
     if exec and exec not in win.exec:
         return None
@@ -136,7 +144,9 @@ class WindowsNativeWindowAdapter(WindowAdapterBase):
             raise ValueError("Tried to set window to fore without args")
         if handle:
             return win32gui.SetForegroundWindow(handle)
-        open = cls.get_open(exec_or_title, handle=handle, pid=pid, exec=exec, title=title)
+        open = cls.get_open(
+            exec_or_title, handle=handle, pid=pid, exec=exec, title=title
+        )
         if not open:
             return False
         return win32gui.SetForegroundWindow(open[0].handle)

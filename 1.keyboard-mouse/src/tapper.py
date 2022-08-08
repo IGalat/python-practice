@@ -1,11 +1,16 @@
 from dataclasses import dataclass
-from typing import Final, Optional, Callable
+from typing import Callable
+from typing import Final
+from typing import Optional
 
 from config import Config
-from interfaces import Suspendable, SingletonMeta
+from interfaces import SingletonMeta
+from interfaces import Suspendable
 from tap import Tap
-from tap_group import TapGroup, get_group
-from util.misc import is_list_of, flatten_to_list
+from tap_group import get_group
+from tap_group import TapGroup
+from util.misc import flatten_to_list
+from util.misc import is_list_of
 from util.tap_control import TapControl
 
 
@@ -27,7 +32,9 @@ class Tapper(Suspendable, metaclass=SingletonMeta):
     in order of precedence. Add more global groups last
     """
 
-    controlGroup: Final[TapGroup] = TapGroup([], "CONTROL_GROUP")  # doesn't get suspended, always active
+    controlGroup: Final[TapGroup] = TapGroup(
+        [], "CONTROL_GROUP"
+    )  # doesn't get suspended, always active
 
     def __init__(self, taps: TapGroup | list[TapGroup] | dict | None = None):
         """
@@ -74,7 +81,10 @@ class Tapper(Suspendable, metaclass=SingletonMeta):
                 tap._parent = group
 
     def group(
-        self, taps: list[Tap] | dict, name: Optional[str] = None, trigger_if: Optional[Callable] = None
+        self,
+        taps: list[Tap] | dict,
+        name: Optional[str] = None,
+        trigger_if: Optional[Callable] = None,
     ) -> TapGroup:
         if is_list_of(taps, Tap):
             group = TapGroup(taps, name, trigger_if)

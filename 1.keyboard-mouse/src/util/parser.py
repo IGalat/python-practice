@@ -1,9 +1,13 @@
 import re
 from dataclasses import dataclass
 from enum import Enum
-from typing import Pattern, ClassVar, Final
+from typing import ClassVar
+from typing import Final
+from typing import Pattern
 
-from key import Key, Keys, Symbol
+from key import Key
+from key import Keys
+from key import Symbol
 from util.misc import flatten_to_list
 
 
@@ -24,7 +28,7 @@ class ParseError(Exception):
 
 
 class InputStringParser:
-    pattern: ClassVar[Pattern] = re.compile("\$\([a-zA-Z0-9+_ ]+\)")
+    pattern: ClassVar[Pattern] = re.compile(r"\$\([a-zA-Z0-9+_ ]+\)")
     dummy_char: Final[str] = chr(0x101111)
     watched_shift_mods: list[Key] = [Keys.left_shift, Keys.right_shift]  # have vk codes
 
@@ -33,7 +37,9 @@ class InputStringParser:
         key_actions: list[KeyAction] = []
         text, replaced = cls.replace_patterns(text)
 
-        real_mods_pressed = [mod for mod in cls.watched_shift_mods if mod.vk_code in pressed]
+        real_mods_pressed = [
+            mod for mod in cls.watched_shift_mods if mod.vk_code in pressed
+        ]
 
         for i, char in enumerate(text):
             if char == cls.dummy_char:
@@ -42,14 +48,22 @@ class InputStringParser:
                 key_found = Keys.by_str(char)
                 if not key_found:
                     raise ParseError(text, char)
-                if isinstance(key_found, Symbol) and real_mods_pressed and len(text) > 1:
+                if (
+                    isinstance(key_found, Symbol)
+                    and real_mods_pressed
+                    and len(text) > 1
+                ):
                     for mod in real_mods_pressed:
-                        key_actions.append(KeyAction(mod.vk_code, KeyActionOptions.RELEASE))
+                        key_actions.append(
+                            KeyAction(mod.vk_code, KeyActionOptions.RELEASE)
+                        )
                         real_mods_pressed.remove(mod)
 
                 key_actions.extend(cls.get_actions(char, key_found))
 
-        if were_pressed := cls.previously_pressed_modifiers(key_actions, pressed, replaced):
+        if were_pressed := cls.previously_pressed_modifiers(
+            key_actions, pressed, replaced
+        ):
             restore = [KeyAction(vk, KeyActionOptions.PRESS) for vk in were_pressed]
             key_actions.extend(restore)
 
@@ -58,32 +72,44 @@ class InputStringParser:
     @classmethod
     def get_actions(cls, char: str, key: Key) -> list[KeyAction]:
         if isinstance(key, Symbol) and key.uppercase == char:
-            return cls._surround([KeyAction(key.get_vk_code(), KeyActionOptions.CLICK)], Keys.shift.get_vk_code())
+            return cls._surround(
+                [KeyAction(key.get_vk_code(), KeyActionOptions.CLICK)],
+                Keys.shift.get_vk_code(),
+            )
         else:
             return [KeyAction(key.get_vk_code(), KeyActionOptions.CLICK)]
 
     @classmethod
     def _surround(cls, inner: list[KeyAction], vk_code: int) -> list[KeyAction]:
-        return [KeyAction(vk_code, KeyActionOptions.PRESS), *inner, KeyAction(vk_code, KeyActionOptions.RELEASE)]
+        return [
+            KeyAction(vk_code, KeyActionOptions.PRESS),
+            *inner,
+            KeyAction(vk_code, KeyActionOptions.RELEASE),
+        ]
 
     @classmethod
     def previously_pressed_modifiers(
-        cls, key_actions: list[KeyAction], pressed: set[int], replaced: dict[int, list[KeyAction]]
+        cls,
+        key_actions: list[KeyAction],
+        pressed: set[int],
+        replaced: dict[int, list[KeyAction]],
     ) -> set[int]:
-        watched_mods_were_pressed = [mod for mod in cls.watched_shift_mods if mod.vk_code in pressed]
+        watched_mods_were_pressed = [
+            mod for mod in cls.watched_shift_mods if mod.vk_code in pressed
+        ]
         if not watched_mods_were_pressed:
             return set()
 
-        were_replaced = [action.vk_code for action in flatten_to_list(*replaced.values())]
-        pressed = set(
-            [
-                mod.vk_code
-                for mod in cls.watched_shift_mods
-                if mod.vk_code in pressed
-                and cls.released(mod.vk_code, key_actions)
-                and mod.vk_code not in were_replaced
-            ]
-        )
+        were_replaced = [
+            action.vk_code for action in flatten_to_list(*replaced.values())
+        ]
+        pressed = {
+            mod.vk_code
+            for mod in cls.watched_shift_mods
+            if mod.vk_code in pressed
+            and cls.released(mod.vk_code, key_actions)
+            and mod.vk_code not in were_replaced
+        }
         return pressed
 
     @classmethod
@@ -93,7 +119,10 @@ class InputStringParser:
         """
         for action in reversed(key_actions):
             if action.vk_code == vk:
-                if action.action_option in [KeyActionOptions.PRESS, KeyActionOptions.RELEASE]:
+                if action.action_option in [
+                    KeyActionOptions.PRESS,
+                    KeyActionOptions.RELEASE,
+                ]:
                     return True
                 else:
                     return False
