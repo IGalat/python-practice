@@ -14,7 +14,7 @@ T = TypeVar("T")
 
 
 # noinspection PyTypeHints
-def is_list_of(target: Any, values_type: T) -> TypeGuard[list[T]]:
+def is_list_of(target: Any, values_type: type[T]) -> TypeGuard[list[T]]:
     return (
         target is not None
         and isinstance(target, list)
@@ -23,7 +23,7 @@ def is_list_of(target: Any, values_type: T) -> TypeGuard[list[T]]:
 
 
 # noinspection PyTypeHints
-def is_tuple_of(target: Any, values_type: T) -> TypeGuard[list[T]]:
+def is_tuple_of(target: Any, values_type: type[T]) -> TypeGuard[list[T]]:
     return (
         target is not None
         and isinstance(target, tuple)
