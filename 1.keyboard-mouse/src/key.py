@@ -1,5 +1,7 @@
 from dataclasses import dataclass
-from typing import Optional, ClassVar, Final
+from typing import ClassVar
+from typing import Final
+from typing import Optional
 
 from util.misc import flatten_to_list
 
@@ -11,7 +13,12 @@ class Key:
     alias_for: list["Key"]
     all_vk_codes: list[int]
 
-    def __init__(self, vk_code: Optional[int] = None, vk_name: Optional[str] = None, alias_for: Optional[list] = None):
+    def __init__(
+        self,
+        vk_code: Optional[int] = None,
+        vk_name: Optional[str] = None,
+        alias_for: Optional[list] = None,
+    ):
         if alias_for is None:
             alias_for = []
         self.vk_code = vk_code
@@ -42,7 +49,9 @@ class Key:
         if self.vk_code:
             vk_lists = [self.vk_code]
         if self.alias_for:
-            vk_lists.extend(flatten_to_list([alias.collect_vk_codes() for alias in self.alias_for]))
+            vk_lists.extend(
+                flatten_to_list([alias.collect_vk_codes() for alias in self.alias_for])
+            )
         return vk_lists
 
     def variants(self) -> list[str]:
@@ -58,7 +67,9 @@ def get_vk(key: int | Key | str) -> int:
     elif isinstance(key, str):
         found = Keys.by_str(key)
         if not found:
-            raise ValueError(f"Tried to emulate press of {key}, but didn't find it in Keys.")
+            raise ValueError(
+                f"Tried to emulate press of {key}, but didn't find it in Keys."
+            )
         int_key = found.get_vk_code()
     return int_key
 
@@ -68,7 +79,13 @@ class Symbol(Key):
     regular: Final[str]
     uppercase: Final[Optional[str]]
 
-    def __init__(self, regular: str, uppercase: Optional[str], vk_code: Optional[int], vk_name: Optional[str] = None):
+    def __init__(
+        self,
+        regular: str,
+        uppercase: Optional[str],
+        vk_code: Optional[int],
+        vk_name: Optional[str] = None,
+    ):
         super().__init__(vk_code, vk_name, None)
         self.regular = regular
         self.uppercase = uppercase
@@ -224,7 +241,7 @@ class Keys:
     numpad_add = Key(107, "VK_ADD")
     separator = Key(108, "VK_SEPARATOR")  # ??
     numpad_subtract = Key(109, "VK_SUBTRACT")
-    decimal = Key(110, "VK_DECIMAL")  # ??
+    decimal = Key(110, "VK_DECIMAL")  # numpad dot. when num lock is off - it's delete
     numpad_divide = Key(111, "VK_DIVIDE")
     f1 = Key(112, "VK_F1")
     f2 = Key(113, "VK_F2")
@@ -326,7 +343,9 @@ class Keys:
 
     lshift = left_shift
     rshift = right_shift
-    shift = Key(vk_name="VK_SHIFT", alias_for=[left_shift, right_shift])  # vk 16, but for win os it's equal to lshift
+    shift = Key(
+        vk_name="VK_SHIFT", alias_for=[left_shift, right_shift]
+    )  # vk 16, but for win os it's equal to lshift
     lcontrol = left_control
     lctrl = left_control
     rcontrol = right_control
