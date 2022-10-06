@@ -1,6 +1,8 @@
 from typing import Final
 
-from key import Key, get_vk, Keys
+from key import get_vk
+from key import Key
+from key import Keys
 from tap import Tap
 from tap_group import TapGroup
 from util.misc import flatten_to_list
@@ -92,7 +94,9 @@ class HotkeyMatcher:
 
         if Tapper().suspended():  # counting on singleton. rework after poc
             return cls.candidates_from_group(Tapper().controlGroup, vk)
-        return flatten_to_list([cls.candidates_from_group(g, vk) for g in Tapper().groups])
+        return flatten_to_list(
+            [cls.candidates_from_group(g, vk) for g in Tapper().groups]
+        )
 
     @classmethod
     def candidates_from_group(cls, group: TapGroup, vk: int) -> list[Tap]:

@@ -1,7 +1,7 @@
 from hypothesis import given
 from hypothesis.strategies import sampled_from
-
-from key import Keys, Key
+from key import Key
+from key import Keys
 from util.misc import enum_to_dict
 
 

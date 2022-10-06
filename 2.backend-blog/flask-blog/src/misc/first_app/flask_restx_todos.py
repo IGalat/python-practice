@@ -1,8 +1,11 @@
 import logging
 from enum import Enum
 
-from flask import Flask, request
-from flask_restx import abort, Api, Resource
+from flask import Flask
+from flask import request
+from flask_restx import abort
+from flask_restx import Api
+from flask_restx import Resource
 
 app = Flask(__name__)
 api = Api(app)
@@ -22,7 +25,7 @@ class Endpoints(str, Enum):
 
 def abort_if_todo_doesnt_exist(todo_id: str) -> None:
     if todo_id not in TODOS:
-        abort(404, message="Todo {} doesn't exist".format(todo_id))
+        abort(404, message=f"Todo {todo_id} doesn't exist")
 
 
 class Todo(Resource):

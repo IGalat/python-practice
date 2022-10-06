@@ -1,4 +1,4 @@
-import ctypes.wintypes
+import ctypes
 from typing import Any
 
 user32 = ctypes.windll.user32

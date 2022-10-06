@@ -1,4 +1,4 @@
-vk_csv = """
+vk_csv = r"""
 VK_LBUTTON,1,Left mouse button
 VK_RBUTTON,2,Right mouse button
 VK_CANCEL,3,Control-break processing
@@ -200,11 +200,21 @@ for line in lines:
         continue
     vk_name, _, ending = line.partition(",")
     vk_code, _, desc = ending.partition(",")
-    if desc.startswith("Reserved") or desc.startswith("Unassigned") or desc.startswith("Undefined"):
+    if (
+        desc.startswith("Reserved")
+        or desc.startswith("Unassigned")
+        or desc.startswith("Undefined")
+    ):
         continue
 
-    desc = desc.rstrip(" key").replace("Windows 2000: ", "").replace("For the US standard keyboard, the ", "").lower().replace(
-        " ", "_").replace("-", "_")
+    desc = (
+        desc.rstrip(" key")
+        .replace("Windows 2000: ", "")
+        .replace("For the US standard keyboard, the ", "")
+        .lower()
+        .replace(" ", "_")
+        .replace("-", "_")
+    )
 
     if vk_name.strip(" ") != "":
         vk_name = f', "{vk_name}"'

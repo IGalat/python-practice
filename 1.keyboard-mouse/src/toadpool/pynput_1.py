@@ -6,14 +6,14 @@ from pynput import keyboard
 def on_press(key: Any) -> None:
     # keyboard.Controller().press(key)  # creates loop!
     try:
-        print("alphanumeric key {0} pressed".format(key.char))
+        print(f"alphanumeric key {key.char} pressed")
     except AttributeError:
-        print("special key {0} pressed".format(key))
+        print(f"special key {key} pressed")
 
 
 def on_release(key: Any) -> bool:
     # keyboard.Controller().release(key)  # creates loop!
-    print("{0} released".format(key))
+    print(f"{key} released")
     if key == keyboard.Key.tab:
         # Stop listener
         return False

@@ -23,4 +23,6 @@ def supply_AA_BB_CC_conftest_to_out_of_package():
 # has to be exported manually
 
 
-external_conditional_skip_marker = pytest.mark.skipif("qua" == "linux", reason="does not run on linux")
+external_conditional_skip_marker = pytest.mark.skipif(
+    "qua" == "linux", reason="does not run on linux"
+)

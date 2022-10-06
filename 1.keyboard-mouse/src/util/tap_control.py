@@ -11,7 +11,9 @@ class TapControl:  # todo
     def restart_script() -> None:
         print("Restarting script...")
         sys.stdout.flush()
-        subprocess.Popen([sys.executable] + sys.argv, creationflags=subprocess.DETACHED_PROCESS)
+        subprocess.Popen(
+            [sys.executable] + sys.argv, creationflags=subprocess.DETACHED_PROCESS
+        )
         os.kill(os.getpid(), signal.SIGINT)
 
     @staticmethod

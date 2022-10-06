@@ -1,4 +1,6 @@
-from hypothesis import given, strategies as st, example
+from hypothesis import example
+from hypothesis import given
+from hypothesis import strategies as st
 
 
 # some code to test. encode + decode = original str

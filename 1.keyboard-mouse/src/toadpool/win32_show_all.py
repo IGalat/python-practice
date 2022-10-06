@@ -1,4 +1,3 @@
-import ctypes
 import ctypes.wintypes
 import time
 
@@ -9,8 +8,12 @@ user32 = ctypes.windll.user32
 ole32 = ctypes.windll.ole32
 kernel32 = ctypes.windll.kernel32
 
-processFlag = getattr(win32con, "PROCESS_QUERY_LIMITED_INFORMATION", win32con.PROCESS_QUERY_INFORMATION)
-threadFlag = getattr(win32con, "THREAD_QUERY_LIMITED_INFORMATION", win32con.THREAD_QUERY_INFORMATION)
+processFlag = getattr(
+    win32con, "PROCESS_QUERY_LIMITED_INFORMATION", win32con.PROCESS_QUERY_INFORMATION
+)
+threadFlag = getattr(
+    win32con, "THREAD_QUERY_LIMITED_INFORMATION", win32con.THREAD_QUERY_INFORMATION
+)
 
 
 def getProcessID(hwnd):
@@ -35,7 +38,9 @@ def getProcessFilename(processID):
     try:
         filename_buffer_size = ctypes.wintypes.DWORD(4096)
         filename = ctypes.create_unicode_buffer(filename_buffer_size.value)
-        kernel32.QueryFullProcessImageNameW(h_process, 0, ctypes.byref(filename), ctypes.byref(filename_buffer_size))
+        kernel32.QueryFullProcessImageNameW(
+            h_process, 0, ctypes.byref(filename), ctypes.byref(filename_buffer_size)
+        )
         return filename.value
     finally:
         kernel32.CloseHandle(h_process)

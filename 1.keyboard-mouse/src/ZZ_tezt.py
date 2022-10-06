@@ -13,7 +13,9 @@ def print_hw() -> None:
 
 
 def piano() -> None:
-    Ct.send("hello people of earth. ipsum $(shift down)lorem$(shift up) qweRty asdfgh$(enter)$(ctrl)")
+    Ct.send(
+        "hello people of earth. ipsum $(shift down)lorem$(shift up) qweRty asdfgh$(enter)$(ctrl)"
+    )
 
 
 tapper = Tapper()
@@ -41,14 +43,18 @@ tapper.group(
 )
 
 another = tapper.group(
-    {"C": lambda: print("CC"), "i": piano, "y": "Yohoho!"}, "another", trigger_if=lambda: Ct.get_open("foobar")
+    {"C": lambda: print("CC"), "i": piano, "y": "Yohoho!"},
+    "another",
+    trigger_if=lambda: Ct.get_open("foobar"),
 )
 
 tapper.group({"e": "r", "r": "e"}, "remap")
 
 tapper.group(
     [
-        Tap("1", lambda: Ct.mouseover(1850, 1000), suppress_trigger_key_on_action=False),
+        Tap(
+            "1", lambda: Ct.mouseover(1850, 1000), suppress_trigger_key_on_action=False
+        ),
         Tap("2", lambda: print(Ct.get_mouse_pos())),
         Tap("delete+mmb", "Tu-Turuuu!"),
     ],

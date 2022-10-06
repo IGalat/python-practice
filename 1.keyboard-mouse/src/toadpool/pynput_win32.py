@@ -1,4 +1,5 @@
-from pynput import keyboard, mouse
+from pynput import keyboard
+from pynput import mouse
 
 
 def keyboard_event_filter(msg: int, data) -> bool:

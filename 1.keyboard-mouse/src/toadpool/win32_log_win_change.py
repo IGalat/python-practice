@@ -8,14 +8,13 @@ https://mail.python.org/pipermail/python-win32/2009-July/009381.html
 and David Heffernan:
 http://stackoverflow.com/a/15898768/9585
 """
-
-import ctypes
 import ctypes.wintypes
 import sys
 
+import win32con
+
 # using pywin32 for constants and ctypes for everything else seems a little
 # indecisive, but whatevs.
-import win32con
 
 user32 = ctypes.windll.user32
 ole32 = ctypes.windll.ole32
@@ -45,9 +44,13 @@ eventTypes = {
 }
 
 # limited information would be sufficient, but our platform doesn't have it.
-processFlag = getattr(win32con, "PROCESS_QUERY_LIMITED_INFORMATION", win32con.PROCESS_QUERY_INFORMATION)
+processFlag = getattr(
+    win32con, "PROCESS_QUERY_LIMITED_INFORMATION", win32con.PROCESS_QUERY_INFORMATION
+)
 
-threadFlag = getattr(win32con, "THREAD_QUERY_LIMITED_INFORMATION", win32con.THREAD_QUERY_INFORMATION)
+threadFlag = getattr(
+    win32con, "THREAD_QUERY_LIMITED_INFORMATION", win32con.THREAD_QUERY_INFORMATION
+)
 
 # store last event time for displaying time between events
 lastTime = 0
@@ -72,7 +75,10 @@ def getProcessID(dwEventThread, hwnd):
         try:
             processID = kernel32.GetProcessIdOfThread(hThread)
             if not processID:
-                logError("Couldn't get process for thread %s: %s" % (hThread, ctypes.WinError()))
+                logError(
+                    "Couldn't get process for thread %s: %s"
+                    % (hThread, ctypes.WinError())
+                )
         finally:
             kernel32.CloseHandle(hThread)
     else:
@@ -88,11 +94,17 @@ def getProcessID(dwEventThread, hwnd):
             processID = ctypes.wintypes.DWORD()
             threadID = user32.GetWindowThreadProcessId(hwnd, ctypes.byref(processID))
             if threadID != dwEventThread:
-                logError("Window thread != event thread? %s != %s" % (threadID, dwEventThread))
+                logError(
+                    "Window thread != event thread? %s != %s"
+                    % (threadID, dwEventThread)
+                )
             if processID:
                 processID = processID.value
             else:
-                errors.append("GetWindowThreadProcessID(%s) didn't work either: %s" % (hwnd, ctypes.WinError()))
+                errors.append(
+                    "GetWindowThreadProcessID(%s) didn't work either: %s"
+                    % (hwnd, ctypes.WinError())
+                )
                 processID = None
         else:
             processID = None
@@ -107,13 +119,15 @@ def getProcessID(dwEventThread, hwnd):
 def getProcessFilename(processID):
     hProcess = kernel32.OpenProcess(processFlag, 0, processID)
     if not hProcess:
-        logError("OpenProcess(%s) failed: %s" % (processID, ctypes.WinError()))
+        logError(f"OpenProcess({processID}) failed: {ctypes.WinError()}")
         return None
 
     try:
         filenameBufferSize = ctypes.wintypes.DWORD(4096)
         filename = ctypes.create_unicode_buffer(filenameBufferSize.value)
-        kernel32.QueryFullProcessImageNameW(hProcess, 0, ctypes.byref(filename), ctypes.byref(filenameBufferSize))
+        kernel32.QueryFullProcessImageNameW(
+            hProcess, 0, ctypes.byref(filename), ctypes.byref(filenameBufferSize)
+        )
 
         return filename.value
     finally:
@@ -127,7 +141,9 @@ def getWindowTitleByHandle(hwnd):
     return buff.value
 
 
-def callback(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime):
+def callback(
+    hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime
+):
     global lastTime
     title = getWindowTitleByHandle(hwnd)
 
@@ -164,7 +180,9 @@ def callback(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsE
 
 
 def setHook(WinEventProc, eventType):
-    return user32.SetWinEventHook(eventType, eventType, 0, WinEventProc, 0, 0, win32con.WINEVENT_OUTOFCONTEXT)
+    return user32.SetWinEventHook(
+        eventType, eventType, 0, WinEventProc, 0, 0, win32con.WINEVENT_OUTOFCONTEXT
+    )
 
 
 def main():

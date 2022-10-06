@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from threading import Lock
-from typing import Optional, Final
+from typing import Final
+from typing import Optional
 
 from typing_extensions import Self
 

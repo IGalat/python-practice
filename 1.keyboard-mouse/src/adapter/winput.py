@@ -1,11 +1,11 @@
 import ctypes
-from typing import Final, Optional
+from typing import Final
+from typing import Optional
 
 import winput
-from winput import winput
-
 from adapter import BaseAdapter
 from key import Keys
+from winput import winput
 
 WINPUT_PROPAGATE: Final[int] = 0
 WINPUT_SUPPRESS: Final[int] = 4
@@ -114,7 +114,9 @@ class WinputAdapter(BaseAdapter):
             if event.additional_data > 0:
                 return cls.to_callback_result(cls.on_press(Keys.wheel_up.get_vk_code()))
             else:
-                return cls.to_callback_result(cls.on_press(Keys.wheel_down.get_vk_code()))
+                return cls.to_callback_result(
+                    cls.on_press(Keys.wheel_down.get_vk_code())
+                )
 
         elif action == XMB_DOWN:
             xmb = Keys.x1mb if event.additional_data == 1 else Keys.x2mb

@@ -1,7 +1,11 @@
-from typing import ClassVar, Any, Optional
+from typing import Any
+from typing import ClassVar
+from typing import Optional
 
 import attrs
-from typing_extensions import Self  # will be in typing module in later python, check for that.
+from typing_extensions import (
+    Self,
+)  # will be in typing module in later python, check for that.
 
 
 # factory method best practice
@@ -46,7 +50,9 @@ class User:
 
     @classmethod
     def new_with_id(cls, **kwargs: Any) -> "User":
-        return User(user_id=cls.generate_next_id(), **kwargs)  # idea warns because of cls, not User. Why?
+        return User(
+            user_id=cls.generate_next_id(), **kwargs
+        )  # idea warns because of cls, not User. Why?
 
     # still not best
     @classmethod
@@ -65,28 +71,57 @@ class User:
 
     # best method? can be simplified by for instead of dict comp
     @classmethod
-    def from_all_2(cls, login: str, first_name: str, last_name: str, age: int, password: str) -> Self:
+    def from_all_2(
+        cls, login: str, first_name: str, last_name: str, age: int, password: str
+    ) -> Self:
         fields = locals()
         exclude_fields = ["cls"]
-        kwargs_to_use = {key: fields[key] for key in fields if key not in exclude_fields}
+        kwargs_to_use = {
+            key: fields[key] for key in fields if key not in exclude_fields
+        }
         return cls(user_id=cls.generate_next_id(), **kwargs_to_use)
 
     # example with additional transformations
     # * in args means all args after have to be kw
     @classmethod
-    def from_full_name(cls, *, login: str, full_name: str, password: str, age: Optional[int] = 0) -> Self:
+    def from_full_name(
+        cls, *, login: str, full_name: str, password: str, age: Optional[int] = 0
+    ) -> Self:
         first_name, last_name = full_name.split(" ")
 
         fields = locals()  # this after transformations
-        for field in ["cls", "full_name"]:  # if any intermediate variables, have to exclude them too!
+        for field in [
+            "cls",
+            "full_name",
+        ]:  # if any intermediate variables, have to exclude them too!
             fields.pop(field)
         return cls(user_id=cls.generate_next_id(), **fields)
 
     @classmethod
     def userRun(cls) -> None:
-        print(User.from_all_1(login="xx_PWN_xx", first_name="vasya", last_name="pupkin", age=11, password="pa55"))
-        print(User.from_all_2(login="LinusT", first_name="Linus", last_name="Torwald", age=200, password="WinSucks"))
-        print(User.from_full_name(login="VVV", full_name="Julius Caesar", password="DaddyCool"))
+        print(
+            User.from_all_1(
+                login="xx_PWN_xx",
+                first_name="vasya",
+                last_name="pupkin",
+                age=11,
+                password="pa55",
+            )
+        )
+        print(
+            User.from_all_2(
+                login="LinusT",
+                first_name="Linus",
+                last_name="Torwald",
+                age=200,
+                password="WinSucks",
+            )
+        )
+        print(
+            User.from_full_name(
+                login="VVV", full_name="Julius Caesar", password="DaddyCool"
+            )
+        )
 
 
 # exclude / transform fields in repr, asdict, astuple
@@ -119,7 +154,9 @@ class Player:
         print(attrs.asdict(player))
         player = attrs.evolve(player, first_name="Jimm")  # false positive warning
         print(attrs.asdict(player, filter=Player.exclude_pass))
-        print(attrs.asdict(player, filter=lambda field, v: field.name != "password"))  # same as previous
+        print(
+            attrs.asdict(player, filter=lambda field, v: field.name != "password")
+        )  # same as previous
 
 
 # for Account.
@@ -152,7 +189,9 @@ class Account:
     # 2.5 ways to validate: callable(builtin or custom) and decorator
     # attrs doc: "Although your initializers should do as little as possible..."
     # probably shouldn't use validators on data classes
-    credits: int = attrs.field(default=0, validator=[attrs.validators.instance_of(int), non_negative_number])
+    credits: int = attrs.field(
+        default=0, validator=[attrs.validators.instance_of(int), non_negative_number]
+    )
 
     @credits.validator
     def credits_validate(self, field: attrs.Attribute, value: Any) -> None:

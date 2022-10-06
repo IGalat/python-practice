@@ -3,8 +3,9 @@ from typing import Generator
 
 import pytest
 from flask.testing import FlaskClient
-
-from misc.first_app.flask_restx_todos import app, Endpoints, TODOS
+from misc.first_app.flask_restx_todos import app
+from misc.first_app.flask_restx_todos import Endpoints
+from misc.first_app.flask_restx_todos import TODOS
 
 log = logging.getLogger(__name__)
 

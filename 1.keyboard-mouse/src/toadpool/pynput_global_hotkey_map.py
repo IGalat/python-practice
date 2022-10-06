@@ -9,5 +9,7 @@ def on_activate_i() -> None:
     print("<ctrl>+<alt>+i pressed")
 
 
-with keyboard.GlobalHotKeys({"<ctrl>+<alt>+h": on_activate_h, "<ctrl>+<alt>+i": on_activate_i}) as h:
+with keyboard.GlobalHotKeys(
+    {"<ctrl>+<alt>+h": on_activate_h, "<ctrl>+<alt>+i": on_activate_i}
+) as h:
     h.join()

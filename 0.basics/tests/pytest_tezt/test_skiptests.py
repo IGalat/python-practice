@@ -1,7 +1,6 @@
 import sys
 
 import pytest
-
 from pytest_tezt.conftest import external_conditional_skip_marker
 
 
@@ -36,7 +35,9 @@ def test_add_5():
 # good idea to have one file where you define the markers
 # which you then consistently apply throughout your test suite.
 # has to be imported manually, unlike test fixtures from conftest
-my_conditional_skip_marker = pytest.mark.skipif(sys.platform == "linux", reason="does not run on linux")
+my_conditional_skip_marker = pytest.mark.skipif(
+    sys.platform == "linux", reason="does not run on linux"
+)
 
 
 # If multiple skipif decorators are applied to a test function,

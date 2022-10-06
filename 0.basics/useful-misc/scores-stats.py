@@ -1,12 +1,16 @@
 import random
-from math import log, sqrt
+from math import log
+from math import sqrt
 from typing import Callable
 
 from termcolor import colored
 
 
 def table_print(
-    array: list[float], header: str = "", select_top_value: bool = False, all_headers: bool = False
+    array: list[float],
+    header: str = "",
+    select_top_value: bool = False,
+    all_headers: bool = False,
 ) -> None:
     header_format = "{:^10}"
     value_format = "{:^10.0f}"
@@ -45,7 +49,9 @@ class Score:
     def score_all(self, q: int) -> None:
         """Fill the dict SCORES"""
         for confidence in Score.CONFIDENCES:
-            self.scores[confidence] = self.calculate_reward_for_confidence(confidence, q, False)
+            self.scores[confidence] = self.calculate_reward_for_confidence(
+                confidence, q, False
+            )
 
     def score_with_confidence(self, x: float, q: int) -> list:
         """Average score for X confidence, q answers and chances from CONFIDENCES(misnomer)"""
@@ -79,7 +85,10 @@ class Score:
             for confidence in Score.CONFIDENCES:
                 matrix.append(self.score_with_confidence(confidence, q))
             # transpose matrix
-            transposed = [[matrix[j][i] for j in range(len(matrix))] for i in range(len(matrix[0]))]
+            transposed = [
+                [matrix[j][i] for j in range(len(matrix))]
+                for i in range(len(matrix[0]))
+            ]
             for i, array in enumerate(transposed):
                 table_print(array, str(Score.PERCENTAGES[i]), True, False)
         print(Score.strong_split, Score.strong_split, sep="\n")
@@ -102,11 +111,15 @@ def spherical_denominator_sq(confidence: float, q: int, inverse: bool) -> float:
         total_confidence_in_other = 1 - confidence
         number_of_other_answers = q - 1
         confidence_in_any_other = total_confidence_in_other / number_of_other_answers
-        return (confidence**2) + (number_of_other_answers * (confidence_in_any_other**2))
+        return (confidence**2) + (
+            number_of_other_answers * (confidence_in_any_other**2)
+        )
     else:
         number_of_similar_answers = q - 1
         confidence_in_odd_one = 1 - (number_of_similar_answers * confidence)
-        return (confidence_in_odd_one**2) + (number_of_similar_answers * (confidence**2))
+        return (confidence_in_odd_one**2) + (
+            number_of_similar_answers * (confidence**2)
+        )
 
 
 def spherical_zero_confidence(q: int) -> float:

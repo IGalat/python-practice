@@ -1,10 +1,12 @@
-from typing import Any, Type
+from typing import Any
+from typing import Type
 
 import hypothesis.strategies as st
-from hypothesis import given, example
+from hypothesis import example
+from hypothesis import given
 from hypothesis.strategies import lists
-
-from util.misc import is_list_of, flatten_to_list
+from util.misc import flatten_to_list
+from util.misc import is_list_of
 
 
 @given(lists(st.characters()) | lists(st.dates()) | lists(st.integers()))

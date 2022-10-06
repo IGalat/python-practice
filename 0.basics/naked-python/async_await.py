@@ -8,7 +8,9 @@ async def hello():
 
 
 async def main():
-    result = await asyncio.gather(hello(), hello())  # immediately starts, result is list in order of starting
+    result = await asyncio.gather(
+        hello(), hello()
+    )  # immediately starts, result is list in order of starting
     print(result)
 
 

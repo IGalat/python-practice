@@ -1,4 +1,6 @@
-from enum import IntEnum, Enum, auto
+from enum import auto
+from enum import Enum
+from enum import IntEnum
 from typing import Tuple
 
 
@@ -45,8 +47,12 @@ class Months:
     SecondQuarter = Enum("SecondQuarter", ["apr", "may", "jun"], type=str)
     # only in these two it's what I want, and I have to set it myself, cannot make automatic value=name
     # the "type" though gives RuntimeError on assigning another type, good
-    ThirdQuarter = Enum("ThirdQuarter", [("jul", "jul"), ("aug", "aug"), ("spt", "spt")], type=str)
-    FourthQuarter = Enum("FourthQuarter", {"oct": "oct", "nov": "nov", "dec": "dec"}, type=str)
+    ThirdQuarter = Enum(
+        "ThirdQuarter", [("jul", "jul"), ("aug", "aug"), ("spt", "spt")], type=str
+    )
+    FourthQuarter = Enum(
+        "FourthQuarter", {"oct": "oct", "nov": "nov", "dec": "dec"}, type=str
+    )
 
     @classmethod
     def monthsRun(cls) -> None:

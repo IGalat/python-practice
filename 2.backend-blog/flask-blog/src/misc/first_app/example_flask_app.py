@@ -1,4 +1,8 @@
-from flask import Flask, url_for, redirect, abort, request
+from flask import abort
+from flask import Flask
+from flask import redirect
+from flask import request
+from flask import url_for
 from werkzeug.wrappers.response import Response
 
 # launch from .sh in this folder

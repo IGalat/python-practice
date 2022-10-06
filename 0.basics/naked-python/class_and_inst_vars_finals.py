@@ -1,4 +1,7 @@
-from typing import ClassVar, Dict, Final, final
+from typing import ClassVar
+from typing import Dict
+from typing import Final
+from typing import final
 
 
 class BasicStarship:

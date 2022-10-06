@@ -1,7 +1,7 @@
 import re
 
-pattern = re.compile("\$\{[a-zA-Z1-9 ]+}")
-text = 'some ${tab} text${enter}, and ${shift down} more${shift up}'
+pattern = re.compile(r"\$\{[a-zA-Z1-9 ]+}")
+text = "some ${tab} text${enter}, and ${shift down} more${shift up}"
 
 text1 = text
 

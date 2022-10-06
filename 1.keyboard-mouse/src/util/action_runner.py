@@ -1,6 +1,7 @@
 from asyncio import Future
 from concurrent.futures import ThreadPoolExecutor
-from typing import Callable, ClassVar
+from typing import Callable
+from typing import ClassVar
 
 
 class ActionRunner:

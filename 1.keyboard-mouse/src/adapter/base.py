@@ -1,9 +1,11 @@
-from abc import ABC, abstractmethod
+from abc import ABC
+from abc import abstractmethod
 
 from key import Keys
 from tap import Tap
 from util.action_runner import ActionRunner
-from util.key_state import KeypressManager, HotkeyMatcher
+from util.key_state import HotkeyMatcher
+from util.key_state import KeypressManager
 
 
 class BaseAdapter(ABC):  # todo move all logic from here, on_press substitute f
@@ -11,7 +13,10 @@ class BaseAdapter(ABC):  # todo move all logic from here, on_press substitute f
     To use an adapter that implements this, set it as value of Config.adapter
     """
 
-    _NEVER_PRESSED_OR_TOGGLED = (Keys.scroll_wheel_up.vk_code, Keys.scroll_wheel_down.vk_code)
+    _NEVER_PRESSED_OR_TOGGLED = (
+        Keys.scroll_wheel_up.vk_code,
+        Keys.scroll_wheel_down.vk_code,
+    )
 
     @classmethod
     @abstractmethod
@@ -50,7 +55,11 @@ class BaseAdapter(ABC):  # todo move all logic from here, on_press substitute f
             return True
         vk_pressed: set[int] = KeypressManager.keys_pressed()
         try:
-            tap_selected = next(tap for tap in potential_taps if BaseAdapter.all_keys_pressed(tap, vk_pressed))
+            tap_selected = next(
+                tap
+                for tap in potential_taps
+                if BaseAdapter.all_keys_pressed(tap, vk_pressed)
+            )
             if not tap_selected.action:
                 return True  # action is "None" so pass through
         except StopIteration:  # no match
@@ -64,7 +73,9 @@ class BaseAdapter(ABC):  # todo move all logic from here, on_press substitute f
             if not any(vk in vk_pressed for vk in key.all_vk_codes):
                 return False
         if tap.no_additional_keys:
-            if len(vk_pressed) > (len(tap.additional_keys) + 1):  # todo check instead every key pressed
+            if len(vk_pressed) > (
+                len(tap.additional_keys) + 1
+            ):  # todo check instead every key pressed
                 return False
         return True
 

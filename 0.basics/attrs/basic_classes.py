@@ -58,7 +58,7 @@ class BasicClass:
         print(ab1 := BasicClass("a", "b", 7), " assignment with positional args")
 
         """
-        nope, RuntimeError: 'BasicClass' object attribute 'withDefault' is read-only 
+        nope, RuntimeError: 'BasicClass' object attribute 'withDefault' is read-only
         but error only on next instance construction(ab2), not here! wtf?
         if I don't make new instances, I can do this without an error.
         """
@@ -78,7 +78,7 @@ class BasicClass:
         ab1.doggos.append("Rex")
         assert "Rex" not in ab2.doggos
 
-        """ 
+        """
         attrs classes are slotted by default - can't add new properties
         AttributeError: 'BasicClass' object has no attribute 'x'
         """
@@ -109,7 +109,9 @@ class CustomInitActions:
         pass
 
     # probably won't use though. pre- and post-init are always available
-    def __init__(self, a: int, b: int, c: int, ab: int = None, ac: int = None, bc: int = None) -> None:
+    def __init__(
+        self, a: int, b: int, c: int, ab: int = None, ac: int = None, bc: int = None
+    ) -> None:
         # some stuff here, like super.init
 
         self.__attrs_init__(a, b, c, ac, bc)  # mypy warns that it doesn't exist

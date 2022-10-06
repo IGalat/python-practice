@@ -1,4 +1,6 @@
-from enum import Enum, unique, auto
+from enum import auto
+from enum import Enum
+from enum import unique
 
 
 # enum_showcase_2 is more useful
