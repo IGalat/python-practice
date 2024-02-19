@@ -18,3 +18,5 @@ text2 = text
 while match := pattern.search(text2):
     print(match.start(), match.group())
     text2 = text2.replace(match.group(), "_")
+
+print(re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", "10.147.20.147"))

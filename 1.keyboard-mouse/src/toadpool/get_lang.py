@@ -1,13 +1,8 @@
 import ctypes
-from typing import Any
 
 user32 = ctypes.windll.user32
 ole32 = ctypes.windll.ole32
 kernel32 = ctypes.windll.kernel32
-
-
-def bit_slice(value: Any, start: None | int = None, end: None | int = None) -> int:
-    return int(bin(value)[start:end], 2)
 
 
 def main() -> None:
